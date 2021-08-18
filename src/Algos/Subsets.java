@@ -11,6 +11,8 @@ public class Subsets {
     public static void main(String[] args) {
         search(1);
         System.out.printf("Кол-во подмножеств = %d\n %s", subsetsList.size(), subsetsList);
+        bitSearch();
+        System.out.printf("\nКол-во подмножеств = %d (битовый генератор)\n %s", subsetsList.size(), subsetsList);
     }
 
     private static void search(int k) {
@@ -22,5 +24,14 @@ public class Subsets {
             subset.remove(subset.size() - 1);
             search(k);
         }
+    }
+
+    private static void bitSearch() {
+        int set = 3;
+        int bitSet = 0;
+        subsetsList.clear();
+        do {
+            subsetsList.add(BitSet.storeSubSet(bitSet));
+        } while ((bitSet = (bitSet - set) & set) != 0);
     }
 }
