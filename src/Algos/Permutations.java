@@ -24,9 +24,7 @@ public class Permutations {
             permutation.add(i);
             search();
             isPresent.set(i, false);
-            int j = i;
-            if (permutation.size() - 1 < i) j = Math.min(permutation.size() - 1, i);
-            permutation.remove(j);
+            permutation.remove(permutation.size() - 1);
         }
     }
 
