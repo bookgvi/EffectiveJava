@@ -6,7 +6,7 @@ import java.util.List;
 public class Subsets {
     private static final List<Integer> subset = new ArrayList<>();
     private static final List<List<Integer>> subsetsList = new ArrayList<>();
-    private static final int SET_SIZE = 3;
+    private static final int SET_SIZE = 4;
 
     public static void main(String[] args) {
         search(1);
@@ -27,7 +27,7 @@ public class Subsets {
     }
 
     private static void bitSearch() {
-        int set = 3;
+        int set = 15;
         int bitSet = 0;
         subsetsList.clear();
         do {
