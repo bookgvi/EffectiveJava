@@ -1,13 +1,14 @@
 package TestYourSelf;
 
-import java.lang.instrument.Instrumentation;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class R1 {
-    static int inSum = 28;
     static int dWord = Integer.BYTES * 8;
-    static List<Integer> array = List.of(1, 3, 7, 15, 2);
+    static int findThisSum = 1;
+    static List<Integer> array = List.of(1, 3);
 
     public static void main(String[] args) {
         System.out.println(findSubArray(array));
@@ -15,13 +16,16 @@ public class R1 {
 
     public static List<List<Integer>> findSubArray(List<Integer> arr) {
         List<List<Integer>> subResult = new ArrayList<>();
+        List<Map<Integer, List<Integer>>> subResult1 = new ArrayList<>();
         int bitSet = transformTobitSet(arr);
-        subResult.add(storeBitSet(bitSet, dWord));
-        subResult.clear();
         int subSet = 0;
         do {
-            subResult.add(storeBitSet(subSet, dWord));
+            Map<Integer, List<Integer>> hm = storeBitSet(subSet, dWord);
+            List<Integer> findedList = hm.get(findThisSum);
+            if (findedList != null) subResult.add(findedList);
+            subResult1.add(hm);
         } while ((subSet = (subSet - bitSet) & bitSet) != 0);
+        System.out.println(subResult1);
         return subResult;
     }
 
@@ -33,19 +37,18 @@ public class R1 {
         return set;
     }
 
-    private static List<Integer> storeBitSet(int bitSet, int size) {
+    private static Map<Integer, List<Integer>> storeBitSet(int bitSet, int size) {
+        Map<Integer, List<Integer>> resultMap = new HashMap<>();
         List<Integer> arraySet = new ArrayList<>();
-        int sum = 0;
-        for (int i = 0; i <= size; i++) {
-            int shift = 1 << i;
-            int bit = bitSet & shift;
+        for (Integer i = 0; i <= size; i++) {
+            Integer sum = 0;
             if ((bitSet & (1 << i)) != 0) {
                 arraySet.add(i);
                 sum += i;
             }
-
+            if (sum > 0) resultMap.put(sum, arraySet);
         }
-        return arraySet;
+        return resultMap;
     }
 
 
