@@ -8,9 +8,10 @@ import java.util.Map;
 public class Primes {
 
     public static void main(String[] args) {
-        int x = 20;
+        int x = 1 << 25;
         System.out.printf("Primes for %d: %s\n", x, getPrimes(x));
-        System.out.println(erathosfen(x));
+        Map<Integer, Boolean> erath = erathosfen(x);
+        System.out.println(erath.size() > 1000 ? erath.size() : erath);
     }
 
     /*
@@ -35,7 +36,7 @@ public class Primes {
         Map<Integer, Boolean> erathosfen = new HashMap<>();
         for (int i = 2; i <= n; i++) {
             erathosfen.putIfAbsent(i, true);
-            if (!erathosfen.get(i)) continue;
+            if (!erathosfen.get(i) || (i != 2 && i % 2 == 0)) continue;
             for (int j = 2 * i; j <= n; j += i) {
                 erathosfen.putIfAbsent(j, false);
             }
