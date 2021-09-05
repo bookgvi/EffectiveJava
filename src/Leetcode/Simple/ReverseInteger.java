@@ -9,8 +9,9 @@ public class ReverseInteger {
 //        int x = -1;
 //        int x = 5;
 //        int x = 1;
-        int x = (1 << 30);
-//        int x = -(1 << 31);
+//        int x = 1534236469;
+//        int x = (1 << 30);
+        int x = -(1 << 31);
 //        int x = -(1 << 2);
 //        int x = 120;
 //        int x = 0;
@@ -30,12 +31,14 @@ public class ReverseInteger {
             x -= modX;
             x /= 10;
         }
-        try {
-            if (arrX.size() > 0) res = arrX.stream().reduce(0, (cur, prev) -> cur * 10 + prev);
-            return res;
-        } catch (Exception ex) {
-            return DEFAULT;
+        int iterator = 0;
+        while (arrX.size() > iterator) {
+            if ((long) res * 10 > Integer.MAX_VALUE || (long) res * 10 < Integer.MIN_VALUE) return DEFAULT;
+            res *= 10;
+            res += arrX.get(iterator);
+            ++iterator;
         }
+        return res;
     }
 
     public static int reverse(int x) {
