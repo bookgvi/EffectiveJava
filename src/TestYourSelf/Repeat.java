@@ -12,30 +12,37 @@ public class Repeat {
     private static final Integer INF = Integer.MAX_VALUE / 4 * 3;
 
     public static void main(String[] args) {
-        int n = 7;
-        solve(n);
-        System.out.println(values);
-        System.out.println(first);
-        int k = n;
-        StringBuilder solve = new StringBuilder();
-        while (k > 0) {
-            solve.append(first.get(k)).append(" + ");
-            k -= first.get(k);
-        }
-        String res = solve.delete(solve.length() - 2, solve.length()).toString();
-        System.out.println(res);
+        int n = 12, b = 30;
+        System.out.println(getPrimes(n));
+        System.out.println(gcdRecursion(n, b));
+        System.out.println(gcdNonRecursion(n, b));
     }
 
-    private static void solve(int inCoin) {
-        values.put(0, 0);
-        for (int x = 1; x <= inCoin; x++) {
-            values.put(x, INF);
-            for (int coin : Coins) {
-                if (coin <= x && values.get(x - coin) + 1 < values.get(x)) {
-                    values.put(x, values.get(x - coin) + 1);
-                    first.put(x, coin);
-                }
+    public static List<Integer> getPrimes(int x) {
+        List<Integer> primes = new ArrayList<>();
+        for (int i = 2; i * i < x; i++) {
+            while (x % i == 0) {
+                primes.add(i);
+                x /= i;
             }
         }
+        if (x > 1) primes.add(x);
+        return primes;
     }
+
+    public static int gcdRecursion(int a, int b) {
+        if (a == 0) return b;
+        return gcdRecursion(b % a, a);
+    }
+
+    public static int gcdNonRecursion(int a, int b) {
+        int x = b;
+        while (b != 0) {
+            x = b;
+            b = a % b;
+            a = x;
+        }
+        return a;
+    }
+
 }

@@ -1,10 +1,13 @@
 package Algos;
 
+import java.util.Arrays;
+
 public class GCD {
     public static void main(String[] args) {
-        int a = 122, b = 30;
+        int a = 9, b = 7;
         System.out.println(gcd(a, b));
         System.out.println(gcdNotRecursion(a, b));
+        System.out.println(Arrays.toString(diafant(a, b)));
     }
 
     /*
@@ -23,5 +26,24 @@ public class GCD {
             a = x;
         } while (b != 0);
         return a;
+    }
+
+    /*
+     * расширеный алгоритм Евклида:
+     * a*x+b*y=gcd(a,b)
+     * диафантово уравнение
+     * */
+    public static int[] diafant(int a, int b) {
+        int[] res = new int[3];
+        if (a == 0) {
+            res[0] = b;
+            res[2] = 1;
+            return res;
+        }
+        res = diafant(b % a, a);
+        int tmp = res[1];
+        res[1] = res[2] - (b / a) * res[1];
+        res[2] = tmp;
+        return res;
     }
 }
