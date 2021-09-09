@@ -11,11 +11,11 @@ public class ReverseInteger {
 //        int x = 1;
 //        int x = 1534236469;
 //        int x = (1 << 30);
-        int x = -(1 << 31);
+//        int x = -(1 << 31);
 //        int x = -(1 << 2);
 //        int x = 120;
 //        int x = 0;
-//        int x = -321;
+        int x = -321;
         System.out.println(x);
         System.out.println(reverseBrute(x));
 //        System.out.println(reverse(x));
@@ -28,15 +28,15 @@ public class ReverseInteger {
         while (x != 0) {
             int modX = x % 10;
             arrX.add(modX);
-            x -= modX;
+//            x -= modX;
             x /= 10;
         }
         int iterator = 0;
         while (arrX.size() > iterator) {
             if ((long) res * 10 > Integer.MAX_VALUE || (long) res * 10 < Integer.MIN_VALUE) return DEFAULT;
             res *= 10;
-            res += arrX.get(iterator);
-            ++iterator;
+            res += arrX.get(iterator++);
+//            ++iterator;
         }
         return res;
     }
