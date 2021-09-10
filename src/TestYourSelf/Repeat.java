@@ -12,37 +12,59 @@ public class Repeat {
     private static final Integer INF = Integer.MAX_VALUE / 4 * 3;
 
     public static void main(String[] args) {
-        int n = 12, b = 30;
-        System.out.println(getPrimes(n));
-        System.out.println(gcdRecursion(n, b));
-        System.out.println(gcdNonRecursion(n, b));
+        int m = 17;
+        int x = 6;
+        int phi = getEulerFunc(m);
+        int invX = powMod(x, phi - 1, m);
+        int invXprime = powMod(x, 17 - 2, m);
+        System.out.println(phi);
+        System.out.println(invX);
+        System.out.println(invXprime);
     }
 
-    public static List<Integer> getPrimes(int x) {
-        List<Integer> primes = new ArrayList<>();
-        for (int i = 2; i * i < x; i++) {
-            while (x % i == 0) {
-                primes.add(i);
-                x /= i;
+    private static int getEulerFunc(int n) {
+        int result = n;
+        for (int i = 2; i * i <= n; i++) {
+            if (n % i == 0) {
+                while (n % i == 0) {
+                    n /= i;
+                }
+                result -= result / i;
             }
         }
-        if (x > 1) primes.add(x);
-        return primes;
+        if (n > 1) result -= result / n;
+        return result;
     }
 
-    public static int gcdRecursion(int a, int b) {
-        if (a == 0) return b;
-        return gcdRecursion(b % a, a);
-    }
-
-    public static int gcdNonRecursion(int a, int b) {
-        int x = b;
-        while (b != 0) {
-            x = b;
-            b = a % b;
-            a = x;
+    private static int powMod(int n, int pow, int mod) {
+        int res = 1;
+        while(pow > 0) {
+            if ((pow & 1) == 1) res = res * n % mod;
+            n = n * n % mod;
+            pow >>= 1;
         }
-        return a;
+        return res;
+    }
+
+    private static int getEulerFuncForFactorization(int n, List<Integer> primes) {
+        for (int prime : primes) {
+            n -= n / prime;
+        }
+        return n;
+    }
+
+    private static List<Integer> getPrimes(int n) {
+        Map<Integer, Boolean> primesMap = new HashMap<>();
+        List<Integer> primes = new ArrayList<>();
+        for (int i = 2; i <= n; i++) {
+            primesMap.putIfAbsent(i, true);
+            if (!primesMap.get(i)) continue;
+            primes.add(i);
+            for (int j = 2 * i; j <= n; j += i) {
+                primesMap.putIfAbsent(j, false);
+            }
+        }
+        return primes;
     }
 
 }
