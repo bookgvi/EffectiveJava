@@ -8,7 +8,7 @@ import java.util.Map;
 public class Primes {
 
     public static void main(String[] args) {
-        int x = 1 << 25;
+        int x = 150;
         System.out.printf("Primes for %d: %s\n", x, getPrimes(x));
         Map<Integer, Boolean> erath = erathosfen(x);
         System.out.println(erath.size() > 1000 ? erath.size() : erath);
