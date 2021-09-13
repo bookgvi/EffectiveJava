@@ -1,34 +1,44 @@
 package TestYourSelf;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigInteger;
+import java.util.*;
 
 public class Repeat {
-    private static final Map<Integer, Integer> values = new HashMap<>();
-    private static final Map<Integer, Integer> first = new HashMap<>();
-    private static final List<Integer> Coins = List.of(1, 2, 5);
-    private static final Integer INF = Integer.MAX_VALUE / 4 * 3;
-
     public static void main(String[] args) {
-        int m = 17;
-        int x = 6;
-        int phi = getEulerFunc(m);
-        int invX = powMod(x, phi - 1, m);
-        int invXprime = powMod(x, 17 - 2, m);
-        System.out.println(phi);
-        System.out.println(invX);
-        System.out.println(invXprime);
+        int a = 12;
+        int b = 2;
+        int mod = 561;
+        System.out.println(Arrays.toString(extEvklid(b, mod)));
+        System.out.printf("inv(b) = %d\n", extEvklid(b, mod)[1]);
+
+        int phi = phi(mod);
+        int invB = powMod(b, phi - 1, mod);
+        System.out.printf("inv(b) = %d\n", invB);
+
+        BigInteger prime = BigInteger.TWO.pow(mod - 1);
+        String ch = prime.equals(BigInteger.ONE) ? "==" : "!=";
+        System.out.printf("%d простое - %s, phi(%d) = %d %s 1\n", mod, prime.equals(BigInteger.ONE), mod, prime, ch);
     }
 
-    private static int getEulerFunc(int n) {
+    private static int[] extEvklid(int a, int b) {
+        int[] result = new int[3];
+        if (a == 0) {
+            result[0] = b;
+            result[2] = 1;
+            return result;
+        }
+        result = extEvklid(b % a, a);
+        int tmp = result[1];
+        result[1] = result[2] - (b / a) * result[1];
+        result[2] = tmp;
+        return result;
+    }
+
+    private static int phi(int n) {
         int result = n;
         for (int i = 2; i * i <= n; i++) {
             if (n % i == 0) {
-                while (n % i == 0) {
-                    n /= i;
-                }
+                while (n % i == 0) n /= i;
                 result -= result / i;
             }
         }
@@ -37,34 +47,12 @@ public class Repeat {
     }
 
     private static int powMod(int n, int pow, int mod) {
-        int res = 1;
-        while(pow > 0) {
-            if ((pow & 1) == 1) res = res * n % mod;
-            n = n * n % mod;
+        int result = 1;
+        while (pow > 0) {
+            if ((pow & 1) == 1) result = (n * result) % mod;
+            n = (n * n) % mod;
             pow >>= 1;
         }
-        return res;
+        return result;
     }
-
-    private static int getEulerFuncForFactorization(int n, List<Integer> primes) {
-        for (int prime : primes) {
-            n -= n / prime;
-        }
-        return n;
-    }
-
-    private static List<Integer> getPrimes(int n) {
-        Map<Integer, Boolean> primesMap = new HashMap<>();
-        List<Integer> primes = new ArrayList<>();
-        for (int i = 2; i <= n; i++) {
-            primesMap.putIfAbsent(i, true);
-            if (!primesMap.get(i)) continue;
-            primes.add(i);
-            for (int j = 2 * i; j <= n; j += i) {
-                primesMap.putIfAbsent(j, false);
-            }
-        }
-        return primes;
-    }
-
 }

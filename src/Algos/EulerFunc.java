@@ -3,7 +3,7 @@ package Algos;
 public class EulerFunc {
 
     public static void main(String[] args) {
-        int n = 10;
+        int n = 561;
         System.out.println(getEulerFunc(n));
     }
 

@@ -1,5 +1,7 @@
 package Algos;
 
+import java.util.Arrays;
+
 /*
 * Решение уравнений вида a*x+b*y=с
 * x2 = y1 - (b / a) * x1
@@ -10,9 +12,9 @@ package Algos;
 * */
 public class Diofant {
     public static void main(String[] args) {
-        int a = 39;
-        int b = 15;
-        int c = 13;
+        int a = 6;
+        int b = 17;
+        int c = 1;
         int[] ev = evklidExt(a, b);
         int gcd = ev[0];
         System.out.printf("%dx + %dy = %d\n", a, b, c);

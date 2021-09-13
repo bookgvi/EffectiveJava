@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class GCD {
     public static void main(String[] args) {
-        int a = 9, b = 7;
+        int a = 210, b = 588;
         System.out.println(gcd(a, b));
         System.out.println(gcdNotRecursion(a, b));
         System.out.println(Arrays.toString(diafant(a, b)));
