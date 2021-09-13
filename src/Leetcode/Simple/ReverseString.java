@@ -12,7 +12,7 @@ public class ReverseString {
         System.out.printf("%s, %d\n", reverse(strReversed), reverse(strReversed).length());
     }
     private static String reverse(String str) {
-        return Stream.of(str.split(" ", 0)).map(subStr -> new StringBuilder(subStr).reverse().append(" "))
+        return Stream.of(str.split(" ")).map(subStr -> new StringBuilder(subStr).reverse().append(" "))
                 .collect(Collectors.joining())
                 .substring(0, str.length());
     }
