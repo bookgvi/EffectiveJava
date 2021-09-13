@@ -4,64 +4,84 @@ import java.util.*;
 
 public class R1 {
     public static void main(String[] args) {
-        int a = 21009;
-        int b = 58879;
-        System.out.println(gcdEvklid(a, b));
-
-        List<Integer> primesA = factorization(a);
-        List<Integer> primesB = factorization(b);
-        int inter = intersect(primesA, primesB);
-        List<Integer> interElems = getElemsOfSet(inter);
-        int gcd2 = getGcdFromSet(interElems);
-        System.out.println(gcd2);
+        int n = 17;
+        int a = 6;
+        int b = 49;
+        int mod = 17;
+        System.out.println(erat(n));
+        System.out.println(gcd(a, b));
+        System.out.println(Arrays.toString(evclidExt(a, mod, 1)));
+        System.out.println(factorization(b));
+        System.out.println(powMod(2, 5, 1));
+        System.out.println(phi(a));
+        int invA = powMod(a, phi(mod) - 1, mod);
+        System.out.println(invA);
     }
 
-    private static int gcdEvklid(int a, int b) {
-        if (a == 0) return b;
-        return gcdEvklid(b % a, a);
-    }
-
-    private static int set(List<Integer> elems) {
-        int set = 0;
-        for (int elem : elems) {
-            set |= (1 << elem);
+    private static Map<Integer, Boolean> erat(int n) {
+        Map<Integer, Boolean> erat = new HashMap<>();
+        for (int i = 2; i <= n; i += 1) {
+            erat.putIfAbsent(i, true);
+            if (!erat.get(i)) continue;
+            for (int j = 2 * i; j <= n; j += i) erat.putIfAbsent(j, false);
         }
-        return set;
+        return erat;
     }
 
-    private static List<Integer> getElemsOfSet(int set) {
-        List<Integer> elems = new ArrayList<>();
-        for (int i = 0; i < Integer.BYTES * 8; i++) {
-            if ((set & (1 << i)) != 0) elems.add(i);
+    private static int gcd(int a, int b) {
+        if (b == 0) return a;
+        return gcd(b, a % b);
+    }
+
+    private static int[] evclidExt(int a, int b, int mod) {
+        int[] result = new int[3];
+        if (a == 0) {
+            result[0] = b;
+            result[2] = 1;
+            return result;
         }
-        return elems;
-    }
-
-    private static int intersect(int set1, int set2) {
-        return set1 & set2;
-    }
-
-    private static int intersect(List<Integer> set1values, List<Integer> set2values) {
-        int set1 = set(set1values);
-        int set2 = set(set2values);
-        return set1 & set2;
+        result = evclidExt(b % a, a, mod);
+        int tmp = result[1];
+        result[1] = result[2] - (b / a) * result[1];
+        result[2] = tmp;
+        return result;
     }
 
     private static List<Integer> factorization(int n) {
-        List<Integer> primes = new ArrayList<>();
-        for (int i = 2; i * i <= n; i++) {
+        List<Integer> factors = new ArrayList<>();
+        for (int i = 2; i * i <= n; i += 1) {
             if (n % i == 0) {
                 while (n % i == 0) {
-                    primes.add(i);
+                    factors.add(i);
                     n /= i;
                 }
             }
         }
-        if (n > 1) primes.add(n);
-        return primes;
+        if (n > 1) factors.add(n);
+        return factors;
     }
 
-    private static int getGcdFromSet(List<Integer> elemsInSet) {
-       return elemsInSet.stream().reduce(1, (cur, prev) -> cur * prev);
+    private static int powMod(int n, int pow, int mod) {
+        int result = 1;
+        while (pow > 0) {
+            if ((pow & 1) == 1) {
+                result = (result * n) % mod;
+            }
+            n = (n * n) % mod;
+            pow >>= 1;
+        }
+        return result;
+    }
+
+    private static int phi(int n) {
+        int result = n;
+        for (int i = 2; i * i <= n; i += 1) {
+            if (n % i == 0) {
+                while (n % i == 0) n /= i;
+                result -= result / i;
+            }
+        }
+        if (n > 1) result -= result / n;
+        return result;
     }
 }
