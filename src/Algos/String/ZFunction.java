@@ -32,7 +32,7 @@ public class ZFunction {
         for (int i = 1, l = 0, r = 0; i < len; i++) {
             if (i <= r) z[i] = Math.min(z[i - l], r - i + 1);
             while (z[i] + i < len && str.charAt(z[i]) == str.charAt(z[i] + i)) z[i] += 1;
-            if (i > r) {
+            if (i + z[i] - 1 > r) {
                 l = i;
                 r = z[i] + i - 1;
             }
