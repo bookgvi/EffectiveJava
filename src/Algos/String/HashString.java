@@ -6,6 +6,7 @@ import java.util.Arrays;
 public class HashString {
     private static final int k = 31;
     private static final int mod = (int) (1e3 + 7); // не вызывает переполнение для типа int
+    private static final String nullChar = "0";
     private static final int[] pows = pows(k, mod);
 
     public static void main(String[] args) {
@@ -46,7 +47,7 @@ public class HashString {
     private static int hash(String str) {
         int len = str.length();
         int hash = 0;
-        byte a = 0;//"a".getBytes()[0];
+        byte a = nullChar.getBytes()[0];
         byte[] strBytes = str.getBytes();
         for (int i = 0; i < len; i += 1) {
             int ch = strBytes[i] - a + 1;
@@ -59,7 +60,7 @@ public class HashString {
         int len = str.length();
         int[] hashes = new int[len];
         hashes[0] = 0;
-        byte a = 0; //"a".getBytes()[0];
+        byte a = nullChar.getBytes()[0];
         byte[] strBytes = str.getBytes();
         for (int i = 1; i < len; i += 1) {
             int ch = strBytes[i - 1] - a + 1;
