@@ -1,57 +1,69 @@
 package Algos.String;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class HashString {
+    private static final int powsCount = (int) 1e5 + 5;
     private static final int k = 31;
-    private static final int mod = (int) (1e3 + 7); // не вызывает переполнение для типа int
-    private static final String nullChar = "0";
-    private static final int[] pows = pows(k, mod);
+    private static final int mod = (int) 1e3 + 7;
+    private static final int[] pows = pows();
+    private static final String first = "0";
+    private static final byte a = first.getBytes()[0];
 
     public static void main(String[] args) {
-        String str = "012345123000123123123";
-        String subStr = "123";
-        int[] hashes = prefixHashes(str);
-        int hash = hash(str);
-        int hashOfSubStr = hash(subStr);
+        String str = "01234567123998761230";
+        int[] prefixHashes = prefixHashes(str);
+        String s1 = "0";
+        String s2 = "123";
 
-        System.out.printf("PrefixHashes for %s:\n%s\n", str, Arrays.toString(hashes));
-        System.out.printf("\n%s (HASH: %d)\n", str, hash);
-        System.out.printf("\n%s (HASH: %d)\n", subStr, hashOfSubStr);
-
-        int hash123 = removePrefix(str.substring(0, 1), hashes[subStr.length() + 1]);
-        System.out.println(hash123);
+        System.out.printf("%d, %d, %d, %d, %d\n",
+                hash("0"),
+                hash("01"),
+                hash("012"),
+                hash("0123"),
+                hash("01234")
+        );
+        System.out.println(Arrays.toString(prefixHashes));
+        int hashS1AndS2 = concat(s1, s2);
+        int hash0123 = hash(s1 + s2);
+        int hash0123fromPrefixHashes = prefixHashes[(s1 + s2).length()];
+        System.out.printf("%d, %d, %d\n", hashS1AndS2, hash0123, hash0123fromPrefixHashes);
+        int subStrHash = subStr(s1, s1 + s2);
+        System.out.printf("%d, %d\n", hash(s2), subStrHash);
+        System.out.printf("%d, %d\n", hash(s1 + s2), subStrInStr(prefixHashes, 0, 3));
+        System.out.println("Finish");
     }
 
-    private static int removePrefix(String prefix, int hash) {
-        int lenP = prefix.length();
-        int hashP = hash(prefix);
-        int[] evkl = evklidExt(pows[lenP], mod);
-        if (evkl[0] != 1) {
-            System.out.printf("fuck... %d and %d не взаимно просты \n", pows[lenP], mod);
-            return -1;
+    private static int subStrInStr(int[] prefixHashes, int l, int r) {
+        if (l == 0) {
+            return prefixHashes[r];
         }
-        int invK = evkl[1];
-
-        return (hash - hashP) * invK % mod;
+        int invL = modPow(pows[l], phi(mod) - 1, mod);
+        return (prefixHashes[r] - prefixHashes[l - 1]) * invL % mod;
     }
 
-    private static int concatH(String A, String B) {
-        int lenA = A.length();
-        int hashA = hash(A);
-        int hashB = hash(B);
-        return hashA + pows[lenA] * hashB;
+    private static int subStr(String prefix, String str) {
+        int hPrefix = hash(prefix);
+        int hStr = hash(str);
+        int[] diofant = evklidExt(pows[prefix.length()], mod);
+        int invP1 = diofant[1];
+        int invP2 = modPow(pows[prefix.length()], phi(mod) - 1, mod);
+        return (hStr - hPrefix) * invP2 % mod;
+    }
+
+    private static int concat(String s1, String s2) {
+        int h1 = hash(s1);
+        int h2 = hash(s2);
+        return h1 + pows[s1.length()] * h2 % mod;
     }
 
     private static int hash(String str) {
         int len = str.length();
         int hash = 0;
-        byte a = nullChar.getBytes()[0];
         byte[] strBytes = str.getBytes();
         for (int i = 0; i < len; i += 1) {
             int ch = strBytes[i] - a + 1;
-            hash = (hash + (ch * pows[i])) % mod;
+            hash = (ch * pows[i] + hash) % mod;
         }
         return hash;
     }
@@ -59,21 +71,18 @@ public class HashString {
     private static int[] prefixHashes(String str) {
         int len = str.length();
         int[] hashes = new int[len];
-        hashes[0] = 0;
-        byte a = nullChar.getBytes()[0];
         byte[] strBytes = str.getBytes();
+        hashes[0] = (strBytes[0] - a + 1) * pows[0] % mod;
         for (int i = 1; i < len; i += 1) {
-            int ch = strBytes[i - 1] - a + 1;
-            hashes[i] = (hashes[i - 1] + (ch * pows[i - 1])) % mod;
+            hashes[i] = ((strBytes[i] - a + 1) * pows[i] + hashes[i - 1]) % mod;
         }
         return hashes;
     }
 
-    private static int[] pows(int k, int mod) {
-        int limit = (int) (1e5 + 1);
-        int[] pows = new int[limit];
+    private static int[] pows() {
+        int[] pows = new int[powsCount];
         pows[0] = 1;
-        for (int i = 1; i < limit; i += 1) {
+        for (int i = 1; i < powsCount; i += 1) {
             pows[i] = (pows[i - 1] * k) % mod;
         }
         return pows;
@@ -93,4 +102,25 @@ public class HashString {
         return res;
     }
 
+    private static int modPow(int n, int pow, int mod) {
+        int res = 1;
+        while (pow > 0) {
+            if ((pow & 1) == 1) res = (res * n) % mod;
+            pow >>= 1;
+            n = (n * n) % mod;
+        }
+        return res;
+    }
+
+    private static int phi(int n) {
+        int res = n;
+        for (int i = 2; i * i <= n; i += 1) {
+            if (n % i == 0) {
+                while (n % i == 0) n /= i;
+                res -= res / i;
+            }
+        }
+        if (n > 1) res -= res / n;
+        return res;
+    }
 }
