@@ -17,7 +17,7 @@ public class Palindroms {
         int len = str.length();
         int[] m = new int[len];
         for (int i = 1, l = 0, r = 0; i < len; i += 1) {
-            if (i < r) m[i] = Math.min(m[i - l], r - i + 1);
+            if (i < r) m[i] = Math.min(m[r + l - i], r - i + 1);
             while (i - m[i] >= 0 && i + m[i] < len && str.charAt(i - m[i]) == str.charAt(i + m[i]))
                 m[i] += 1;
             if (i + m[i] - 1 > r) {
