@@ -1,8 +1,10 @@
-package TestYourSelf;
+package Algos.String;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class R1 {
+public class HashStringExt {
     private static final int k = (int) 31;
     private static final long mod = (long) 1e5 + 7;
     private static final long[] powsK = pows(k);

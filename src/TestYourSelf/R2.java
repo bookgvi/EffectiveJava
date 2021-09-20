@@ -7,33 +7,47 @@ import java.util.List;
 public class R2 {
     public static void main(String[] args) {
         int n = 6;
-        System.out.println(Arrays.deepToString(new int[][]{fibo(n)[1]}));
+        String str = "abcdabca";
+        System.out.println(Arrays.toString(zFuncExt(str)));
+        System.out.println(Arrays.toString(piFunc(str)));
+        System.out.println(Arrays.toString(piFuncExt(str)));
     }
 
-    private static int[][] matrixMul(int[][] A, int[][] B) {
-        int[][] C = new int[A.length][B.length];
-        for (int i = 0; i < A.length; i++) {
-            for (int j = 0; j < B.length; j += 1) {
-                for (int k = 0; k < A.length; k += 1) {
-                    C[i][j] += A[i][k] * B[k][j];
-                }
+    private static int[] zFuncExt(String str) {
+        int len = str.length();
+        int[] z = new int[len];
+        for (int i = 1, l = 0, r = 0; i < len; i += 1) {
+            if (i <= r) z[i] = Math.min(z[i - l], r - i + 1);
+            while (i + z[i] < len && str.charAt(z[i]) == str.charAt(i + z[i])) z[i] += 1;
+            if (i + z[i] - 1 > r) {
+                l = i;
+                r = i + z[i] - 1;
             }
         }
-        return C;
+        return z;
     }
 
-    private static int[][] matrixPow(int[][] matrix, int pow) {
-        int[][] E = new int[][] {{1, 0}, {0, 1}};
-        while (pow > 0) {
-            if ((pow & 1) == 1) E = matrixMul(matrix, E);
-            matrix = matrixMul(matrix, matrix);
-            pow >>= 1;
+    private static int[] piFunc(String str) {
+        int len = str.length();
+        int[] pi = new int[len];
+        for (int i = 1; i < len; i += 1) {
+            for (int j = 0; j < i; j += 1) {
+                String ss1 = str.substring(0, j + 1).intern();
+                String ss2 = str.substring(i - j, i + 1).intern();
+                if (ss1 == ss2) pi[i] = j + 1;
+            }
         }
-        return E;
+        return pi;
     }
 
-    private static int[][] fibo(int n) {
-        int[][] fiboMatrix = new int[][] {{0, 1}, {1, 1}};
-        return matrixPow(fiboMatrix, n);
+    private static int[] piFuncExt(String str) {
+        int len = str.length();
+        int[] pi = new int[len];
+        for (int i = 1; i < len; i += 1) {
+            int j = pi[i - 1];
+            while(j > 0 && str.charAt(i) != str.charAt(j)) j = pi[j - 1];
+            if (str.charAt(i) == str.charAt(j)) pi[i] = j + 1;
+        }
+        return pi;
     }
 }
