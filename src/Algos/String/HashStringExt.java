@@ -12,14 +12,31 @@ public class HashStringExt {
     private static final byte firstInABC = first.getBytes()[0];
 
     public static void main(String[] args) {
-        String str = "0123451230";
-        String ss1 = "3";
+        String str = "0123451230012345123001234512300123451230012345123001234512300123451230";
+        String ss1 = "0";
         long[] preHashes = preHashes(str);
         System.out.println(Arrays.toString(preHashes));
         System.out.println(getHash(ss1));
-        System.out.printf("Подcтрока %s в строке %s находится в позициях %s", ss1, str, rabbinKarp(ss1, preHashes));
+//        System.out.printf("Подcтрока %s в строке %s находится в позициях %s\n", ss1, str, rabbinKarp(ss1, preHashes));
+        System.out.printf("Подcтрока %s в строке %s находится в позициях %s\n", ss1, str, rabbinKarpMod(ss1, preHashes));
     }
 
+    private static List<Integer> rabbinKarpMod(String str, long[] preHashes) {
+        List<Integer> res = new ArrayList<>();
+        long hashStr = getHash(str);
+        int len = str.length();
+        for (int i = 0; i + len - 1 < preHashes.length; i += 1) {
+            long prefixH = 0;
+            long hash = preHashes[i + len - 1];
+            if (i > 0) prefixH = preHashes[i - 1];
+            long invPrefPow = modPow(powsK[i], phi(mod) - 1, mod);
+            long calcHashStr = hash - prefixH < 0
+                    ? hash * invPrefPow % mod - prefixH * invPrefPow % mod
+                    : (hash - prefixH) * invPrefPow % mod;
+            if (calcHashStr == hashStr) res.add(i);
+        }
+        return res;
+    }
 
     private static List<Integer> rabbinKarp(String str, long[] preHashes) {
         List<Integer> res = new ArrayList<>();
@@ -47,7 +64,7 @@ public class HashStringExt {
         byte[] strBytes = str.getBytes();
         long hash = 0;
         for (int i = 0; i < len; i += 1) {
-            hash = ((strBytes[i] - firstInABC + 1) * powsK[i] + hash); // % mod;
+            hash = ((strBytes[i] - firstInABC + 1) * powsK[i] + hash) % mod;
         }
         return hash;
     }
@@ -56,9 +73,9 @@ public class HashStringExt {
         int len = str.length();
         long[] preHashes = new long[len];
         byte[] strBytes = str.getBytes();
-        preHashes[0] = ((strBytes[0] - firstInABC + 1) * powsK[0]); // % mod;
+        preHashes[0] = ((strBytes[0] - firstInABC + 1) * powsK[0]) % mod;
         for (int i = 1; i < len; i += 1) {
-            preHashes[i] = ((strBytes[i] - firstInABC + 1) * powsK[i] + preHashes[i - 1]); // % mod;
+            preHashes[i] = ((strBytes[i] - firstInABC + 1) * powsK[i] + preHashes[i - 1]) % mod;
         }
         return preHashes;
     }
@@ -68,7 +85,7 @@ public class HashStringExt {
         long[] pows = new long[count];
         pows[0] = 1;
         for (int i = 1; i < count; i += 1) {
-            pows[i] = (pows[i - 1] * k); // % mod;
+            pows[i] = (pows[i - 1] * k) % mod;
         }
         return pows;
     }
