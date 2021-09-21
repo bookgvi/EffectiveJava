@@ -1,109 +1,71 @@
 package TestYourSelf;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Supplier;
 
 public class R1 {
-    private static final int k = (int) 31;
-    private static final long mod = (long) 1e5 + 7;
-    private static final long[] powsK = pows(k);
-    private static final String first = "0";
-    private static final byte firstInABC = first.getBytes()[0];
-
     public static void main(String[] args) {
-        String str = "0123451230";
-        String ss1 = "3";
-        long[] preHashes = preHashes(str);
-        System.out.println(Arrays.toString(preHashes));
-        System.out.println(getHash(ss1));
-        System.out.printf("Подcтрока %s в строке %s находится в позициях %s", ss1, str, rabbinKarp(ss1, preHashes));
+        final int maxValue = 100;
+        final int size = 12;
+        Supplier<int[]> arr = () -> fillArr(maxValue, size);
+        System.out.printf("Bubble: %s\n", Arrays.toString(bubbleSort(arr.get())));
+        System.out.printf("Count: %s\n", Arrays.toString(countingSort(arr.get(), maxValue)));
+        System.out.printf("Select: %s\n", Arrays.toString(selectSort(arr.get())));
+        System.out.printf("Inject: %s\n", Arrays.toString(insertSort(arr.get())));
     }
 
+    private static int[] insertSort(int[] arrOrig) {
+        int[] arr = Arrays.copyOf(arrOrig, arrOrig.length);
+        for (int i = 0; i < arr.length; i += 1) {
+            for (int j = i; j > 0 && arr[j - 1] > arr[j]; j -= 1)
+                swap(j - 1, j, arr);
+        }
+        return arr;
+    }
 
-    private static List<Integer> rabbinKarp(String str, long[] preHashes) {
-        List<Integer> res = new ArrayList<>();
-        int strL = str.length();
-        long prefHash = 0;
-        long strH = getHash(str);
-        for (int i = 0; i < preHashes.length - strL + 1; i += 1) {
-            long strHash = preHashes[i + strL - 1];
-            if (i > 0) prefHash = preHashes[i - 1];
-            if (strHash == prefHash + powsK[i] * strH) {
-                res.add(i);
+    private static int[] selectSort(int[] arrOrig) {
+        int[] arr = Arrays.copyOf(arrOrig, arrOrig.length);
+        for (int i = 0; i < arr.length; i += 1) {
+            for (int j = i + 1; j < arr.length; j += 1) {
+                if (arr[i] - arr[j] > 0) swap(i, j, arr);
             }
         }
-        return res;
+        return arr;
     }
 
-    private static long subHash(long prefH, long strH, int prefL) {
-        long[] evk = evklidExt(powsK[prefL], mod);
-        long invP = evk[1];
-        return ((strH - prefH) * invP) % mod;
-    }
-
-    private static long getHash(String str) {
-        int len = str.length();
-        byte[] strBytes = str.getBytes();
-        long hash = 0;
-        for (int i = 0; i < len; i += 1) {
-            hash = ((strBytes[i] - firstInABC + 1) * powsK[i] + hash); // % mod;
+    private static int[] countingSort(int[] arrOrig, int maxValue) {
+        int[] count = new int[maxValue];
+        int[] arr = new int[arrOrig.length];
+        for (int i : arrOrig) count[i] += 1;
+        int k = 0;
+        for (int i = 0; i < maxValue; i += 1) {
+            while (count[i]-- > 0) arr[k++] = i;
         }
-        return hash;
+        return arr;
     }
 
-    private static long[] preHashes(String str) {
-        int len = str.length();
-        long[] preHashes = new long[len];
-        byte[] strBytes = str.getBytes();
-        preHashes[0] = ((strBytes[0] - firstInABC + 1) * powsK[0]); // % mod;
-        for (int i = 1; i < len; i += 1) {
-            preHashes[i] = ((strBytes[i] - firstInABC + 1) * powsK[i] + preHashes[i - 1]); // % mod;
-        }
-        return preHashes;
-    }
-
-    private static long[] pows(int k) {
-        int count = (int) 1e5 + 5;
-        long[] pows = new long[count];
-        pows[0] = 1;
-        for (int i = 1; i < count; i += 1) {
-            pows[i] = (pows[i - 1] * k); // % mod;
-        }
-        return pows;
-    }
-
-    private static long modPow(long n, long pow, long mod) {
-        long res = 1;
-        while (pow != 0) {
-            if ((pow & 1) == 1) res = (res * n) % mod;
-            n = (n * n) % mod;
-            pow >>= 1;
-        }
-        return res;
-    }
-
-    private static long[] evklidExt(long a, long b) {
-        long[] res = new long[3];
-        if (a == 0) {
-            res[0] = b;
-            res[2] = 1;
-            return res;
-        }
-        res = evklidExt(b % a, a);
-        long tmp = res[1];
-        res[1] = res[2] - (b / a) * res[1];
-        res[2] = tmp;
-        return res;
-    }
-
-    private static long phi(long n) {
-        long res = n;
-        for (long i = 2; i * i <= n; i += 1) {
-            if (n % i == 0) {
-                while (n % i == 0) n /= i;
-                res -= res / i;
+    private static int[] bubbleSort(int[] arrOrig) {
+        int[] arr = Arrays.copyOf(arrOrig, arrOrig.length);
+        for (int i = 0; i < arr.length; i += 1) {
+            for (int j = 0; j + 1 < arr.length; j += 1) {
+                if (arr[j + 1] < arr[j]) swap(j + 1, j, arr);
             }
         }
-        if (res > 1) res -= res / n;
-        return res;
+        return arr;
+    }
+
+    private static void swap(int i, int j, int[] arr) {
+        arr[i] = arr[i] + arr[j];
+        arr[j] = arr[i] - arr[j];
+        arr[i] = arr[i] - arr[j];
+    }
+
+    private static int[] fillArr(int maxValue, int size) {
+        int[] arr = new int[size];
+        for (int i = 0; i < size; i += 1) {
+            arr[i] = ThreadLocalRandom.current().nextInt(maxValue);
+        }
+        return Arrays.copyOf(arr, arr.length);
     }
 }
