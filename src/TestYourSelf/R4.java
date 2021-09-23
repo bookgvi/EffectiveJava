@@ -1,35 +1,73 @@
 package TestYourSelf;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Supplier;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class R4 {
 
     public static void main(String[] args) {
-        int[] coins = new int[]{1, 2, 3, 5};
-        int n = 7;
-        List<Integer> first = solve(n, coins);
-        while (n > 0) {
-            System.out.printf("%d ", first.get(n));
-            n -= first.get(n);
-        }
+        int maxValue = 100;
+        int size = 20;
+        Supplier<int[]> arr = () -> fillArr(maxValue, size);
+        System.out.println(Arrays.toString(bubbleSort(arr.get())));
+        System.out.println(Arrays.toString(selectSort(arr.get())));
+        System.out.println(Arrays.toString(insertSort(arr.get())));
+        System.out.println(Arrays.toString(countSort(arr.get(), maxValue)));
     }
 
-    private static List<Integer> solve(int n, int[] coins) {
-        List<Integer> first = new ArrayList<>();
-        List<Integer> values = new ArrayList<>();
-        first.add(0);
-        values.add(0);
-        for (int i = 0; i <= n; i += 1) {
-            first.add(i);
-            values.add(Integer.MAX_VALUE >> 2 * 3);
-            for (int coin : coins) {
-                if (i - coin >= 0 && values.get(i - coin) + 1 < values.get(i)) {
-                    values.set(i, values.get(i - coin) + 1);
-                    first.set(i, coin);
-                }
+    private static int[] countSort(int[] arr, int maxValue) {
+        int[] count = new int[maxValue];
+        for (int i : arr) count[i] += 1;
+        int k = 0;
+        for (int i = 0; i < maxValue; i += 1) {
+            while (count[i]-- > 0) arr[k++] = i;
+        }
+        return arr;
+    }
+
+    private static int[] insertSort(int[] arr) {
+        for (int i = 0; i < arr.length; i += 1) {
+            for (int j = i; j > 0 && arr[j - 1] - arr[j] > 0; j -= 1) {
+                swap(j - 1, j, arr);
             }
         }
-        return first;
+        return arr;
+    }
+
+    private static int[] selectSort(int[] arr) {
+        for (int i = 0; i < arr.length; i += 1) {
+            for (int j = i + 1; j < arr.length; j += 1) {
+                if (arr[i] - arr[j] > 0) swap(i, j, arr);
+            }
+        }
+        return arr;
+    }
+
+    private static int[] bubbleSort(int[] arr) {
+        for (int i = 0; i < arr.length; i += 1) {
+            for (int j = 0; j < arr.length - 1; j += 1) {
+                if (arr[j] - arr[j + 1] > 0) swap(j, j + 1, arr);
+            }
+        }
+        return arr;
+    }
+
+    private static void swap(int i, int j, int[] arr) {
+        arr[i] = arr[i] + arr[j];
+        arr[j] = arr[i] - arr[j];
+        arr[i] = arr[i] - arr[j];
+    }
+
+    private static int[] fillArr(int maxValue, int size) {
+        int[] arr = new int[size];
+        IntStream.range(0, size).forEach(i -> {
+            arr[i] = ThreadLocalRandom.current().nextInt(maxValue);
+        });
+        return arr;
     }
 }
