@@ -12,6 +12,17 @@ public class R2 {
         System.out.println(Arrays.toString(pFunc(str)));
         System.out.println(Arrays.toString(pFuncExt(str)));
         System.out.println(Arrays.toString(manacher(str)));
+
+        String text = "Мама  мыла   раму и ламу";
+        String reverseText = reverseWords(text);
+        System.out.printf("%s %d == %d\n", reverseText, reverseText.length(), text.length());
+    }
+
+    private static String reverseWords(String str) {
+        return Stream.of(new StringBuilder(str).reverse().toString().split(" "))
+                .map(ch -> new StringBuilder(ch).reverse().append(" "))
+                .collect(Collectors.joining())
+                .substring(0, str.length());
     }
 
     private static int[] zFunc(String str) {

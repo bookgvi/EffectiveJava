@@ -5,6 +5,7 @@ import java.util.Arrays;
 public class App {
     public static void main(String[] args) {
         Graph graph = Graph.INSTANCE;
+//        GraphR graph = new GraphR();
 
         graph.addVertex("A"); // 0
         graph.addVertex("B"); // 1
@@ -20,7 +21,7 @@ public class App {
         graph.addEdge(0, 4); // AD
         graph.addEdge(3, 4); // DE
 
-        System.out.println(Arrays.deepToString(graph.get_matrix()));
+//        System.out.println(Arrays.deepToString(graph.get_matrix()));
         graph.dfs(0);
     }
 }
