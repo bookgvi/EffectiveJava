@@ -18,10 +18,12 @@ public class App {
 
         graph.addEdge(0, 1); // AB
         graph.addEdge(1, 2); // BC
-        graph.addEdge(0, 4); // AD
+        graph.addEdge(0, 3); // AD
         graph.addEdge(3, 4); // DE
 
 //        System.out.println(Arrays.deepToString(graph.get_matrix()));
         graph.dfs(0);
+        System.out.println();
+        graph.bfs(0);
     }
 }

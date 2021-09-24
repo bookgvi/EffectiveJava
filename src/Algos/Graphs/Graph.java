@@ -1,10 +1,8 @@
 package Algos.Graphs;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
-public class Graph {
+public class Graph implements IGraph {
     public final static Graph INSTANCE = new Graph();
     private final int GRAPH_SIZE = 5;
     private final int[][] _matrix;
@@ -53,17 +51,39 @@ public class Graph {
         Stack<Integer> dfsStack = new Stack<>();
         dfsStack.push(startVertex);
         while (!dfsStack.isEmpty()) {
-            int v = getMatrixUnvisited(dfsStack.peek());
-            if (v == -1) dfsStack.pop();
+            int currentVertex = dfsStack.peek();
+            int nextVertex = getMatrixUnvisited(currentVertex);
+            if (nextVertex == -1) dfsStack.pop();
             else {
-                _vertexes.get(v)._isVisited = true;
-                dfsStack.push(v);
-                displayVertex(v);
+                _vertexes.get(nextVertex)._isVisited = true;
+                dfsStack.push(nextVertex);
+                displayVertex(nextVertex);
             }
         }
 
-        for (int j = 0; j < GRAPH_SIZE; j++) {
-            _vertexes.get(j)._isVisited = false;
+        for (Vertex vertex : _vertexes) {
+            vertex._isVisited = false;
+        }
+    }
+
+    public void bfs(int startVertex) {
+        _vertexes.get(startVertex)._isVisited = true;
+        Queue<Integer> vertexQueue = new GraphQueu<>();
+        vertexQueue.offer(startVertex);
+        displayVertex(startVertex);
+        while (!vertexQueue.isEmpty()) {
+            Integer v = vertexQueue.poll();
+            if (v == null) return;
+            int nextVertex;
+            while ((nextVertex = getMatrixUnvisited(v)) != -1) {
+                _vertexes.get(nextVertex)._isVisited = true;
+                displayVertex(nextVertex);
+                vertexQueue.offer(nextVertex);
+            }
+        }
+
+        for (Vertex vertex : _vertexes) {
+            vertex._isVisited = false;
         }
     }
 
@@ -86,6 +106,46 @@ public class Graph {
 
         public void set_isVisited(Boolean _isVisited) {
             this._isVisited = _isVisited;
+        }
+    }
+
+    private static class GraphQueu<T> extends AbstractQueue<T> {
+        private final LinkedList<T> list = new LinkedList<>();
+
+        @Override
+        public Iterator<T> iterator() {
+            return list.iterator();
+        }
+
+        @Override
+        public int size() {
+            return list.size();
+        }
+
+        @Override
+        public boolean offer(T t) {
+            boolean isSucces = false;
+            if (t != null) {
+                list.add(t);
+                isSucces = true;
+            }
+            return isSucces;
+        }
+
+        @Override
+        public T poll() {
+            Iterator<T> iterator = list.iterator();
+            if (iterator.hasNext()) {
+                T t = iterator.next();
+                iterator.remove();
+                return t;
+            }
+            return null;
+        }
+
+        @Override
+        public T peek() {
+            return list.getFirst();
         }
     }
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-public class GraphR {
+public class GraphR implements IGraph {
     private final int MAX_SIZE = 20;
     private final int[][] matrixAdj;
     private int numVertex;
@@ -29,7 +29,7 @@ public class GraphR {
         System.out.println(vertexes[num].label);
     }
 
-    public int setVisited(int vertexNum) {
+    public int hasVisited(int vertexNum) {
         for (int i = 0; i < numVertex; i += 1) {
             if (!vertexes[i].isVisited && matrixAdj[vertexNum][i] == 1) {
                 return i;
@@ -39,21 +39,49 @@ public class GraphR {
     }
 
     public void dfs(int startVertex) {
-        Stack<Integer> vSt = new Stack<>();
         vertexes[startVertex].isVisited = true;
-        vSt.push(startVertex);
+        Stack<Integer> vertexStack = new Stack<>();
         displayVertex(startVertex);
-        while (!vSt.isEmpty()) {
-            int nextVertex = setVisited(vSt.peek());
-            if (nextVertex == -1) {
-                vSt.pop();
-            } else {
+        vertexStack.push(startVertex);
+        while (!vertexStack.isEmpty()) {
+            int vertex = vertexStack.peek();
+            int nextVertex = hasVisited(vertex);
+            if (nextVertex == -1) vertexStack.pop();
+            else {
                 vertexes[nextVertex].isVisited = true;
-                vSt.push(nextVertex);
+                vertexStack.push(nextVertex);
                 displayVertex(nextVertex);
             }
         }
     }
+
+    public int _setVisited(int vertexNum) {
+        for (int i = 0; i < numVertex; i += 1) {
+            if (!vertexes[i].isVisited && matrixAdj[vertexNum][i] == 1) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+//    public void dfs(int startVertex) {
+//        Stack<Integer> vSt = new Stack<>();
+//        vertexes[startVertex].isVisited = true;
+//        vSt.push(startVertex);
+//        displayVertex(startVertex);
+//        while (!vSt.isEmpty()) {
+//            int nextVertex = setVisited(vSt.peek());
+//            if (nextVertex == -1) {
+//                vSt.pop();
+//            } else {
+//                vertexes[nextVertex].isVisited = true;
+//                vSt.push(nextVertex);
+//                displayVertex(nextVertex);
+//            }
+//        }
+//    }
+
+
 
     private static class Vertex {
         private String label;
