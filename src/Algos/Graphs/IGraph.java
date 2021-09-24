@@ -1,7 +1,13 @@
 package Algos.Graphs;
 
 public interface IGraph {
-    int MAX_SIZE = 0;
-    int[][] matrixAdj = new int[][]{};
-    int numVertex = 0;
+    void displayVertex(int vertexNum);
+    void addEdge(int start, int end);
+    void addVertex(String label);
+    int[][] getAdjMatrix();
+    void setAdjMatrix(int[][] adjMatrix);
+    IVertex[] getVertexes();
+    void setVertexes(IVertex[] vertexes);
+    int getVertexesQuantity();
+    void setVertexesQuantity(int num);
 }

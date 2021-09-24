@@ -1,11 +1,9 @@
 package Algos.Graphs;
 
-import java.util.Arrays;
-
 public class App {
     public static void main(String[] args) {
-        Graph graph = Graph.INSTANCE;
-//        GraphR graph = new GraphR();
+        IGraph graph = new Graph(10);
+        GraphUtils graphUtils = GraphUtils.getInstance(graph);
 
         graph.addVertex("A"); // 0
         graph.addVertex("B"); // 1
@@ -22,8 +20,8 @@ public class App {
         graph.addEdge(3, 4); // DE
 
 //        System.out.println(Arrays.deepToString(graph.get_matrix()));
-        graph.dfs(0);
+        graphUtils.dfs(0);
         System.out.println();
-        graph.bfs(0);
+        graphUtils.bfs(0);
     }
 }
