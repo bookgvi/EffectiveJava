@@ -22,18 +22,19 @@ public class R4 {
 
     private static int[] countSort(int[] arr, int maxValue) {
         int[] count = new int[maxValue];
-        for (int i : arr) count[i] += 1;
+        int[] res = new int[arr.length];
+        for (int elt : arr) count[elt] += 1;
         int k = 0;
         for (int i = 0; i < maxValue; i += 1) {
-            while (count[i]-- > 0) arr[k++] = i;
+            while (count[i]-- > 0) res[k++] = i;
         }
-        return arr;
+        return res;
     }
 
     private static int[] insertSort(int[] arr) {
-        for (int i = 0; i < arr.length; i += 1) {
+        for (int i = 1; i < arr.length; i += 1) {
             for (int j = i; j > 0 && arr[j - 1] - arr[j] > 0; j -= 1) {
-                swap(j - 1, j, arr);
+                swap(j, j - 1, arr);
             }
         }
         return arr;
