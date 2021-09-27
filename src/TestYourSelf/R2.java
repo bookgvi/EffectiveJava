@@ -7,10 +7,11 @@ import java.util.stream.Stream;
 
 public class R2 {
     public static void main(String[] args) {
-        String str = "aabcadabcaab";
+        String str = "aabcadabcarab";
+        System.out.println(str);
         System.out.println(Arrays.toString(zFunc(str)));
-        System.out.println(Arrays.toString(pFunc(str)));
-        System.out.println(Arrays.toString(pFuncExt(str)));
+        System.out.println(Arrays.toString(piFunc(str)));
+        System.out.println(Arrays.toString(piFuncExt(str)));
         System.out.println(Arrays.toString(manacher(str)));
 
         String text = "Мама  мыла   раму и ламу";
@@ -39,7 +40,7 @@ public class R2 {
         return z;
     }
 
-    private static int[] pFunc(String str) {
+    private static int[] piFunc(String str) {
         int len = str.length();
         int[] pi = new int[len];
         for (int i = 0; i < len; i += 1) {
@@ -52,7 +53,7 @@ public class R2 {
         return pi;
     }
 
-    private static int[] pFuncExt(String str) {
+    private static int[] piFuncExt(String str) {
         int len = str.length();
         int[] pi = new int[len];
         for (int i = 1; i < len; i += 1) {
@@ -67,7 +68,7 @@ public class R2 {
         int len = str.length();
         int[] m = new int[len];
         for (int i = 1, l = 0, r = 0; i < len; i += 1) {
-            if (i < r) m[i] = Math.min(m[l + (r - i)], r - i + 1);
+            if (i < r) m[i] = Math.min(m[l + r - i], r - i + 1);
             while (i - m[i] >= 0 && i + m[i] < len && str.charAt(i - m[i]) == str.charAt(i + m[i])) m[i] += 1;
             if (i + m[i] - 1 > r) {
                 l = i - m[i] + 1;

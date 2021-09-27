@@ -24,6 +24,20 @@ public class R3 {
             n -= first.get(n);
         }
         System.out.println();
+        System.out.println(erat(k));
+    }
+
+    private static List<Integer> erat(int n) {
+        Map<Integer, Boolean> erat = new HashMap<>();
+        List<Integer> primes = new ArrayList<>();
+        for (int i = 2; i <= n; i += 1) {
+            erat.putIfAbsent(i, true);
+            if (!erat.get(i)) continue;
+            primes.add(i);
+            for (int j = 2 * i; j <= n; j += i)
+                erat.putIfAbsent(j, false);
+        }
+        return primes;
     }
 
     private static int solveR(int n) {
