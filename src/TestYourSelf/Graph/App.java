@@ -9,10 +9,12 @@ public class App {
         theGraph.addVertex("C");
         theGraph.addVertex("D");
         theGraph.addVertex("E");
+        theGraph.addVertex("F");
         theGraph.addEdge(0, 1);
         theGraph.addEdge(1, 2);
         theGraph.addEdge(0, 3);
         theGraph.addEdge(3, 4);
+        theGraph.addEdge(1, 5);
 
         theGraph.mstB(0);
         System.out.println();
