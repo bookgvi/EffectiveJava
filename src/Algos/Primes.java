@@ -12,6 +12,8 @@ public class Primes {
         System.out.printf("Primes for %d: %s\n", x, getPrimes(x));
         Map<Integer, Boolean> erath = erathosfen(x);
         System.out.println(erath.size() > 1000 ? erath.size() : erath);
+        List<Integer> primes = eratExt(x);
+        System.out.println(primes);
     }
 
     /*
@@ -42,5 +44,19 @@ public class Primes {
             }
         }
         return erathosfen;
+    }
+
+    private static List<Integer> eratExt(int n) {
+        List<Integer> primes = new ArrayList<>();
+        int[] erat = new int[n + 1];
+        for (int i = 2; i <= n; i += 1) {
+            if (erat[i] == 1) continue;
+            primes.add(i);
+            for(int j = 2 * i; j <= n; j += i) {
+                erat[j] = 1;
+            }
+        }
+        return primes;
+
     }
 }

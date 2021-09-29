@@ -18,6 +18,10 @@ public class GraphR5 {
         System.out.printf("%s", vertexes[num].label);
     }
 
+    public void displayAdjMatrix() {
+        System.out.println(adjMatrix.size());
+    }
+
     public void addVertex(String label) {
         vertexes[vertexQuantity++] = new Vertex(label);
     }

@@ -10,15 +10,26 @@ public class App {
         theGraph.addVertex("D");
         theGraph.addVertex("E");
         theGraph.addVertex("F");
-        theGraph.addEdge(0, 1);
+        theGraph.addVertex("G");
+        theGraph.addVertex("H");
+        theGraph.addVertex("I");
         theGraph.addEdge(1, 2);
-        theGraph.addEdge(0, 3);
+        theGraph.addEdge(1, 3);
+        theGraph.addEdge(1, 4);
         theGraph.addEdge(3, 4);
-        theGraph.addEdge(1, 5);
+        theGraph.addEdge(3, 6);
+        theGraph.addEdge(2, 4);
+        theGraph.addEdge(4, 6);
+        theGraph.addEdge(4, 8);
 
-        theGraph.mstB(0);
+        theGraph.displayAdjMatrix();
+
+        theGraph.mstB(6);
         System.out.println();
-        theGraph.dfs(0);
+
+        theGraph.dfs(6);
+        System.out.println();
+        theGraph.dfs(7);
         System.out.println();
     }
 
