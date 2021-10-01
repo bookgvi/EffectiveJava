@@ -12,5 +12,8 @@ public class App {
         bor.addString(str1);
         bor.dfs("H");
         bor.dfs("H");
+
+        String str2 = "ing";
+        System.out.println(bor.findString("Hello wow!"));
     }
 }

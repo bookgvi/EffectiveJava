@@ -20,6 +20,15 @@ public class Bor {
         curVertex.isTerminal = true;
     }
 
+    public boolean findString(String str) {
+        Vertex curVertex = root;
+        for (String ch : str.split("")) {
+            if ((curVertex = curVertex.toNext.get(ch)) == null)
+                return false;
+        }
+        return curVertex.isTerminal;
+    }
+
     public void dfs(String startCh) {
         Stack<Vertex> vertexStack = new Stack<>();
         Vertex currentVertex = root.toNext.get(startCh);
@@ -58,7 +67,7 @@ public class Bor {
         }
     }
 
-    private class Vertex {
+    private static class Vertex {
         private final String label;
         private boolean isVisited;
         private Map<String, Vertex> toNext;
