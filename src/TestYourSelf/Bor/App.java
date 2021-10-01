@@ -8,6 +8,7 @@ public class App {
         bor.addString(str1);
         bor.addString(str2);
         bor.dfs("H");
-        bor.dfs("H");
+        bor.bfs("H");
+        System.out.println(bor.findString("Hel"));
     }
 }
