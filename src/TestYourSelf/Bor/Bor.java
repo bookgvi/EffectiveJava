@@ -1,4 +1,4 @@
-package Algos.Bor;
+package TestYourSelf.Bor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,14 +18,6 @@ public class Bor {
             curVertex = curVertex.toNext.get(ch);
         }
         curVertex.isTerminal = true;
-    }
-
-    public boolean findString(String str) {
-        Vertex curVertex = root;
-        for (String ch : str.split("")) {
-            if ((curVertex = curVertex.toNext.get(ch)) == null) return false;
-        }
-        return curVertex.isTerminal;
     }
 
     public void dfs(String startVertex) {
