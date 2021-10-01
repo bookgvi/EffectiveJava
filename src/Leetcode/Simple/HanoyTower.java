@@ -13,7 +13,7 @@ public class HanoyTower {
     private static void hanoy(int n, int from, int middle, int target) {
         if (n != 0) {
             hanoy(n - 1, from, target, middle);
-            System.out.printf("%d -> %d; %d\n", from, target, greyCode(n));
+            System.out.printf("%d диск на %d штырь\n", from, target);
             hanoy(n - 1, middle, from, target);
         }
     }

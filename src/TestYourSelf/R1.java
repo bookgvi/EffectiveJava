@@ -4,6 +4,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class R1 {
     public static final int k = (int) 1e3 + 5;
@@ -11,83 +13,110 @@ public class R1 {
     public static final String str = "1012101";
     public static final String firstCh = "0";
     public static final byte firstChByte = firstCh.getBytes()[0];
-    public static final long[] pows = pows();
-    public static final long[] prefixHashes = prefixHashes(str);
+//    public static final long[] pows = pows();
+//    public static final long[] prefixHashes = prefixHashes(str);
 
     public static void main(String[] args) {
-        String ss = "2";
-        System.out.println(ss);
-        System.out.println(str);
-        System.out.println(rabbinKarp(ss));
+        int max = 10;
+        int maxValue = 15;
+        Supplier<List<Integer>> arr = () -> fillArr(max, maxValue);
+        System.out.println(bubbleSort(arr.get()));
+        System.out.println(selectSort(arr.get()));
+        System.out.println(insertSort(arr.get()));
+        System.out.println(countSort(maxValue, arr.get()));
+
+        List<Integer> sortArr = countSort(maxValue, arr.get());
+        int findMe = ThreadLocalRandom.current().nextInt(maxValue);
+        int index = binSearch(findMe, sortArr);
+        System.out.printf("%s in %s, index = %d\n", findMe, sortArr, index);
+        int indexL = binSearchL(findMe, sortArr);
+        int indexR = binSearchR(findMe, sortArr);
+        String range = Arrays.toString(IntStream.rangeClosed(indexL, indexR).boxed().toArray());
+        System.out.printf("%s in %s, indexes = %s\n", findMe, sortArr, range);
     }
 
-    private static List<Integer> rabbinKarp(String subStr) {
-        int len = subStr.length();
-        List<Integer> indexes = new ArrayList<>();
-        long hashSubStr = getHash(subStr);
-        long prefixHash = 0;
-        for (int i = 0; i + len - 1 < prefixHashes.length; i += 1) {
-            long hash = prefixHashes[i + len - 1];
-            if (i > 0) prefixHash = prefixHashes[i - 1];
-            long invP = modPow(pows[i], phi(mod) - 1, mod);
-            long calcHash = hash - prefixHash < 0
-                    ? hash * invP % mod - prefixHash * invP % mod
-                    : (hash - prefixHash) * invP % mod;
-            if (hashSubStr == calcHash) indexes.add(i);
+    private static int binSearchR(int n, List<Integer> arr) {
+        int len = arr.size();
+        int k = 0;
+        for (int i = len / 2; i >= 1; i /= 2) {
+            while (i + k < len && arr.get(i + k) <= n) k += i;
         }
-        return indexes;
+        if (arr.get(k) == n) return k;
+        return -1;
     }
 
-    private static long getHash(String str) {
-        int len = str.length();
-        byte[] strByte = str.getBytes();
-        long hash = 0;
-        for (int i = 0; i < len; i += 1) {
-            hash = (hash + (strByte[i] - firstChByte + 1) * pows[i]) % mod;
+    private static int binSearchL(int n, List<Integer> arr) {
+        int len = arr.size();
+        int k = len;
+        for (int i = len / 2; i >= 1; i /= 2) {
+            while (k - i >= 0 && arr.get(k - i) >= n) k -= i;
         }
-        return hash;
+        if (arr.get(k) == n) return k;
+        return -1;
     }
 
-    private static long[] prefixHashes(String str) {
-        int len = str.length();
-        long[] hashes = new long[len];
-        byte[] strBytes = str.getBytes();
-        hashes[0] = (strBytes[0] - firstChByte + 1) * pows[0] % mod;
-        for (int i = 1; i < len; i += 1) {
-            hashes[i] = (hashes[i - 1] + (strBytes[i] - firstChByte + 1) * pows[i]) % mod;
+    private static int binSearch(int n, List<Integer> arr) {
+        int l = 0;
+        int r = arr.size() - 1;
+        while (r - l >= 0) {
+            int mid = (r + l) / 2;
+            if (arr.get(mid) == n) return mid;
+            else if (arr.get(mid) < n) l = mid + 1;
+            else r = mid - 1;
         }
-        return hashes;
+        return -1;
     }
 
-    private static long[] pows() {
-        int size = (int) 1e5 + 5;
-        long[] pows = new long[size];
-        pows[0] = 1;
-        for (int i = 1; i < size; i += 1) {
-            pows[i] = pows[i - 1] * k % mod;
+    private static List<Integer> countSort(int maxValue, List<Integer> arr) {
+        int[] countArr = new int[maxValue];
+        for(int elt : arr) countArr[elt] += 1;
+        int k = 0;
+        for (int i = 0; i < maxValue; i += 1) {
+            while(countArr[i]-- > 0) arr.set(k++, i);
         }
-        return pows;
+        return arr;
     }
 
-    private static long modPow(long n, long pow, int mod) {
-        long res = 1;
-        while (pow != 0) {
-            if ((pow & 1) == 1) res = (res * n) % mod;
-            n = (n * n) % mod;
-            pow >>= 1;
-        }
-        return res;
-    }
-
-    private static long phi(long n) {
-        long res = n;
-        for (long i = 2; i * i <= n; i += 1) {
-            if (n % i == 0) {
-                while (n % i == 0) n /= i;
-                res -= res / i;
+    private static List<Integer> insertSort(List<Integer> arr) {
+        for (int i = 0, len = arr.size(); i < len; i += 1) {
+            for (int j = i; j > 0 && arr.get(j - 1) - arr.get(j) > 0; j -= 1) {
+                swap(j, j - 1, arr);
             }
         }
-        if (n > 1) res -= res / n;
-        return res;
+        return arr;
+    }
+
+    private static List<Integer> bubbleSort(List<Integer> arr) {
+        for (int i = 0, len = arr.size(); i < len; i += 1) {
+            for (int j = 0; j < len - 1; j += 1) {
+                if (arr.get(j) - arr.get(j + 1) > 0) swap(j, j + 1, arr);
+            }
+        }
+        return arr;
+    }
+
+    private static List<Integer> selectSort(List<Integer> arr) {
+        for (int i = 0, len = arr.size(); i < len; i += 1) {
+            for (int j = i + 1; j < len; j += 1) {
+                if (arr.get(i) - arr.get(j) > 0) swap(i, j, arr);
+            }
+        }
+        return arr;
+    }
+
+    private static void swap(int i, int j, int[] arr) {
+        arr[i] = arr[i] + arr[j];
+        arr[j] = arr[i] - arr[j];
+        arr[i] = arr[i] - arr[j];
+    }
+
+    private static void swap(int i, int j, List<Integer> arr) {
+        arr.set(i, arr.get(i) + arr.get(j));
+        arr.set(j, arr.get(i) - arr.get(j));
+        arr.set(i, arr.get(i) - arr.get(j));
+    }
+
+    private static List<Integer> fillArr(int size, int maxValue) {
+        return IntStream.range(0, size).mapToObj(index -> ThreadLocalRandom.current().nextInt(maxValue)).collect(Collectors.toList());
     }
 }
