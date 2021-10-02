@@ -12,7 +12,9 @@ public class App {
         bor.addString(str3);
         bor.addString(str4);
         bor.dfs("H");
+        bor.bfs("H");
         bor.dfs("P");
+        bor.bfs("P");
         System.out.println(bor.findString(str1));
         System.out.println(bor.findString("Q" + str1));
         System.out.println(bor.findString("Peace"));
