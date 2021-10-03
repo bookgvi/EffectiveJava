@@ -3,7 +3,7 @@ package TestYourSelf.Bor;
 import java.util.*;
 
 public class Bor {
-    Vertex root;
+    private Vertex root;
 
     Bor() {
         this.root = new Vertex("root");
@@ -18,54 +18,37 @@ public class Bor {
         curVertex.isTerminal = true;
     }
 
-    public boolean findString(String str) {
-        Vertex curVertex = root;
-        for (String ch : str.split("")) {
-            if ((curVertex = curVertex.toNext.get(ch)) == null) return false;
-        }
-        return curVertex.isTerminal;
-    }
-
-    public void bfs(String startVertex) {
-        VertexQueue<Vertex> vertexQueue = new VertexQueue<>();
-        Vertex curVertex = root.toNext.get(startVertex);
-        if (curVertex == null) return;
-        curVertex.isVisited = true;
-        vertexQueue.offer(curVertex);
+    public void dfs(String startLabel) {
+        Vertex currentVertex = findVertex(startLabel, root);
+        if (currentVertex == null) return;
+        Stack<Vertex> vertexStack = new Stack<>();
+        currentVertex.isVisited = true;
+        vertexStack.push(currentVertex);
         Vertex nextVertex;
-        System.out.print(curVertex.label);
-        while(!vertexQueue.isEmpty()) {
-            curVertex = vertexQueue.poll();
-            if (curVertex == null) continue;
-            while ((nextVertex = getUnvisited(curVertex)) != null) {
+        System.out.print(currentVertex.label);
+        while (!vertexStack.isEmpty()) {
+            currentVertex = vertexStack.peek();
+            nextVertex = getUnvisited(currentVertex);
+            if (nextVertex == null) vertexStack.pop();
+            else {
                 nextVertex.isVisited = true;
-                vertexQueue.offer(nextVertex);
+                vertexStack.push(nextVertex);
                 System.out.print(nextVertex.label);
             }
         }
         System.out.println();
-        setUnvisited(root.toNext.get(startVertex));
+        setUnvisited(findVertex(startLabel, root));
     }
 
-    public void dfs(String startVertex) {
-        Vertex curVertex = root.toNext.get(startVertex);
-        if (curVertex == null) return;
-        Stack<Vertex> vertexStack = new Stack<>();
-        curVertex.isVisited = true;
-        vertexStack.push(curVertex);
-        System.out.printf("%s", curVertex.label);
-        while (!vertexStack.isEmpty()) {
-            curVertex = vertexStack.peek();
-            Vertex nexVertex = getUnvisited(curVertex);
-            if (nexVertex == null) vertexStack.pop();
-            else {
-                nexVertex.isVisited = true;
-                vertexStack.push(nexVertex);
-                System.out.printf("%s", nexVertex.label);
-            }
+    private Vertex findVertex(String startLabel, Vertex curVertex) {
+        if (curVertex == null) return null;
+        if (curVertex.label.equals(startLabel)) return curVertex;
+        if (curVertex.isTerminal) return null;
+        Vertex foundV = null;
+        for (Vertex nextVertex : curVertex.toNext.values()) {
+            foundV = findVertex(startLabel, nextVertex);
         }
-        System.out.println();
-        setUnvisited(root.toNext.get(startVertex));
+        return foundV;
     }
 
     private Vertex getUnvisited(Vertex startVertex) {
@@ -79,8 +62,9 @@ public class Bor {
         if (startVertex == null) return;
         startVertex.isVisited = false;
         if (startVertex.isTerminal) return;
-        for (Vertex nextVertex : startVertex.toNext.values())
+        for(Vertex nextVertex : startVertex.toNext.values()) {
             setUnvisited(nextVertex);
+        }
     }
 
     private static class Vertex {
@@ -91,46 +75,9 @@ public class Bor {
 
         Vertex(String label) {
             this.label = label;
-            this.isTerminal = false;
             this.isVisited = false;
-            toNext = new HashMap<>();
-        }
-    }
-
-    private static class VertexQueue<V> extends AbstractQueue<V> {
-        LinkedList<V> vList = new LinkedList<>();
-        @Override
-        public Iterator<V> iterator() {
-            return vList.iterator();
-        }
-
-        @Override
-        public int size() {
-            return vList.size();
-        }
-
-        @Override
-        public boolean offer(V v) {
-            boolean res = false;
-            if (v != null) {
-                res = vList.offer(v);
-            }
-            return res;
-        }
-
-        @Override
-        public V poll() {
-            if (iterator().hasNext()) {
-                V v = iterator().next();
-                vList.poll();
-                return v;
-            }
-            return null;
-        }
-
-        @Override
-        public V peek() {
-            return vList.getFirst();
+            this.isTerminal = false;
+            this.toNext = new HashMap<>();
         }
     }
 }
