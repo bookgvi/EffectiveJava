@@ -1,12 +1,12 @@
-package TestYourSelf.Graph;
+package Algos.Graph;
 
 import java.util.*;
 
-public class GraphR5 {
+public class GraphR5Ref {
     private final Map<String, Vertex> vertexes;
     private final Map<String, Map<String, Edge>> adjMatrix;
 
-    GraphR5() {
+    GraphR5Ref() {
         vertexes = new HashMap<>();
         adjMatrix = new HashMap<>();
     }

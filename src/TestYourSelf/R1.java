@@ -71,7 +71,7 @@ public class R1 {
     }
 
     private static List<Integer> selectSort(List<Integer> arr) {
-        for (int i = 0, len = arr.size(); i < len; i += 1) {
+        for (int i = 0, len = arr.size(); i < len - 1; i += 1) {
             for (int j = i + 1; j < len; j += 1) {
                 if (arr.get(i) - arr.get(j) > 0) swap(i, j, arr);
             }

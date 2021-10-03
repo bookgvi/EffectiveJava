@@ -9,6 +9,7 @@ public class App {
         bor.addString(str2);
         bor.dfs("e");
         bor.dfs("H");
+//        bor.dfs("H");
 //        System.out.println(bor.findString("Hel"));
     }
 }

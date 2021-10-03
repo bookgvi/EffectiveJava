@@ -1,14 +1,16 @@
-package TestYourSelf.Bor;
+package Algos.Bor;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
-public class Bor {
+public class BorRef {
     private final String str = "abcdabdefabooo";
     private final String ss = "ab";
 
     private final Vertex root;
 
-    Bor() {
+    BorRef() {
         this.root = new Vertex("root");
     }
 
