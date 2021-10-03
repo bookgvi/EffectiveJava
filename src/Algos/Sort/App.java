@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class App {
     public static void main(String[] args) {
         int[] arr = new int[]{4, 12, 12, 22, 3, 1, 2, 11, 99, 2, 23, 32 ,5, 4, 4, 6};
 
-        int arrSize = (int) 5e6;
+        int arrSize = (int) 7e6;
         int maxValue = Integer.MAX_VALUE / 10 * 9;
         Supplier<int[]> arrSuplier = () -> generateArr(arrSize, maxValue);
 
@@ -28,15 +30,23 @@ public class App {
         arr = count.sort(arr);
         System.out.printf("CountingSort: %s\n", Arrays.toString(arr));
 
+        IntStream arrStream = Arrays.stream(arrSuplier.get());
         long start = System.nanoTime();
-        List<Integer> arrList = Arrays.stream(arrSuplier.get()).sorted().boxed().collect(Collectors.toList());
+        List<Integer> arrList = arrStream.sorted().boxed().collect(Collectors.toList());
         double elapsedTime = (System.nanoTime() - start) / 1e9;
         System.out.printf("Sort from lib: %.2f seconds for %d elements\n", elapsedTime, arrSize);
 
+        List<Integer> arrToSort = Arrays.stream(arrSuplier.get()).boxed().collect(Collectors.toList());
         start = System.nanoTime();
-        arrList = radix.sort(arrSuplier.get());
+        arrList = radix.sort(arrToSort);
         elapsedTime = (System.nanoTime() - start) / 1e9;
-        System.out.printf("RadixSort: %.2f seconds for %d elements\n", elapsedTime, arrSize);
+        System.out.printf("RadixSort (LSB): %.2f seconds for %d elements\n", elapsedTime, arrSize);
+
+        arrToSort = Arrays.stream(arrSuplier.get()).boxed().collect(Collectors.toList());
+        start = System.nanoTime();
+        arrList = radix.lsbSort(arrToSort);
+        elapsedTime = (System.nanoTime() - start) / 1e9;
+        System.out.printf("LSB: %.2f seconds for %d elements\n", elapsedTime, arrSize);
 
 //        start = System.nanoTime();
 //        arr = insert.sort(arrSuplier.get());

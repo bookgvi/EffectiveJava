@@ -23,6 +23,7 @@ public class R1 {
         System.out.println(bubbleSort(arr.get()));
         System.out.println(selectSort(arr.get()));
         System.out.println(insertSort(arr.get()));
+        System.out.printf("LSB: %s\n", lsbSort(arr.get()));
         List<Integer> sortArr = countSort(maxValue, arr.get());
         int n = 13;
         System.out.println();
@@ -46,10 +47,32 @@ public class R1 {
         int len = sortArr.size();
         int k = len - 1;
         for (int i = len / 2; i > 0; i /= 2) {
-            while(k - i >= 0 && sortArr.get(k - i) >= n) k -= i;
+            while (k - i >= 0 && sortArr.get(k - i) >= n) k -= i;
         }
         if (sortArr.get(k) == n) return k;
         return -1;
+    }
+
+    private static List<Integer> lsbSort(List<Integer> arr) {
+        int SIZE = 1 << Integer.BYTES * 8 / 2;
+        List<List<Integer>> digits = new ArrayList<>();
+        List<Integer> sortArr = List.copyOf(arr);
+        IntStream.range(0, SIZE).forEach(i -> digits.add(new ArrayList<>()));
+
+        for (Integer elt : sortArr) {
+            int index = elt & SIZE - 1;
+            digits.get(index).add(elt);
+        }
+
+        sortArr = digits.stream().flatMap(Collection::stream).collect(Collectors.toList());
+        IntStream.range(0, SIZE).forEach(i -> digits.set(i, new ArrayList<>()));
+        for (Integer elt : sortArr) {
+            int index = elt >>> Integer.BYTES * 8 / 2;;
+            digits.get(index).add(elt);
+        }
+
+        sortArr = digits.stream().flatMap(Collection::stream).collect(Collectors.toList());
+        return sortArr;
     }
 
     private static List<Integer> countSort(int maxVaule, List<Integer> arr) {
@@ -57,7 +80,7 @@ public class R1 {
         for (int elt : arr) count[elt] += 1;
         int k = 0;
         for (int i = 0; i < maxVaule; i += 1) {
-            while(count[i]-- > 0) arr.set(k++, i);
+            while (count[i]-- > 0) arr.set(k++, i);
         }
         return arr;
     }
