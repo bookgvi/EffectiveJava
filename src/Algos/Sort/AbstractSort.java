@@ -1,7 +1,4 @@
 package Algos.Sort;
 
-public class AbstractSort implements ISort{
-    public int[] sort(int[] arrOrig) {
-        return new int[0];
-    }
+public abstract class AbstractSort implements ISort{
 }
