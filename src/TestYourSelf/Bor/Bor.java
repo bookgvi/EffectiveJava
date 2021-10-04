@@ -3,13 +3,11 @@ package TestYourSelf.Bor;
 import java.util.*;
 
 public class Bor {
-    private final String str = "abcdabdefabooo";
-    private final String ss = "ab";
 
     private final Vertex root;
 
     Bor() {
-        this.root = new Vertex("root");
+        root = new Vertex("root");
     }
 
     public void addString(String str) {
@@ -22,7 +20,7 @@ public class Bor {
     }
 
     public void dfs(String startLabel) {
-        Vertex startVertex = getCurVertex(startLabel, root), curVertex = startVertex;
+        Vertex curVertex = getVertexByLabel(startLabel, root);
         if (curVertex == null) return;
         Stack<Vertex> vertexStack = new Stack<>();
         curVertex.isVisited = true;
@@ -30,8 +28,7 @@ public class Bor {
         Vertex nextVertex;
         System.out.print(startLabel);
         while(!vertexStack.isEmpty()) {
-            curVertex = vertexStack.peek();
-            nextVertex = getUnvisited(curVertex);
+            nextVertex = getUnvisited(vertexStack.peek());
             if (nextVertex == null) vertexStack.pop();
             else {
                 nextVertex.isVisited = true;
@@ -40,28 +37,31 @@ public class Bor {
             }
         }
         System.out.println();
-        setUnvisited(startVertex);
+        setUnvisited(curVertex);
     }
 
-    private Vertex getCurVertex(String label, Vertex curVertex) {
+    private Vertex getVertexByLabel(String label, Vertex curVertex) {
+        if (curVertex == null) return null;
         if (curVertex.label.equals(label)) return curVertex;
-        for (Vertex v : curVertex.toNext.values()) {
-            return getCurVertex(label, v);
+        for (Vertex nextVertex : curVertex.toNext.values()) {
+            return getVertexByLabel(label, nextVertex);
         }
         return null;
     }
 
     private Vertex getUnvisited(Vertex startVertex) {
-        for (Vertex curVertex : startVertex.toNext.values()) {
-            if (!curVertex.isVisited) return curVertex;
+        if (startVertex == null) return null;
+        for (Vertex nextVertex : startVertex.toNext.values()) {
+            if (!nextVertex.isVisited) return nextVertex;
         }
         return null;
     }
 
-    private void setUnvisited(Vertex startVertex) {
-        startVertex.isVisited = false;
-        for (Vertex v : startVertex.toNext.values()) {
-            setUnvisited(v);
+    private void setUnvisited(Vertex curVertex) {
+        if (curVertex == null) return;
+        curVertex.isVisited = false;
+        for (Vertex nextVertex : curVertex.toNext.values()) {
+            setUnvisited(nextVertex);
         }
     }
 
@@ -73,9 +73,9 @@ public class Bor {
 
         Vertex(String label) {
             this.label = label;
-            this.isTerminal = false;
-            this.isVisited = false;
             this.toNext = new HashMap<>();
+            this.isVisited = false;
+            this.isTerminal = false;
         }
     }
 }

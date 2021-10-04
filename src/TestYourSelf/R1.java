@@ -23,7 +23,7 @@ public class R1 {
         System.out.println(bubbleSort(arr.get()));
         System.out.println(selectSort(arr.get()));
         System.out.println(insertSort(arr.get()));
-        System.out.printf("LSB: %s\n", lsbSort(arr.get()));
+        System.out.printf("LSD: %s\n", lsdSort(arr.get()));
         List<Integer> sortArr = countSort(maxValue, arr.get());
         int n = 13;
         System.out.println();
@@ -33,46 +33,44 @@ public class R1 {
         System.out.println(binarySearchR(n, sortArr));
     }
 
-    private static int binarySearchR(int n, List<Integer> sortArr) {
-        int len = sortArr.size();
-        int k = 0;
-        for (int i = len / 2; i > 0; i /= 2) {
-            while (i + k < len && sortArr.get(i + k) <= n) k += i;
-        }
-        if (sortArr.get(k) == n) return k;
-        return -1;
-    }
-
-    private static int binarySearchL(int n, List<Integer> sortArr) {
-        int len = sortArr.size();
+    private static int binarySearchL(int n, List<Integer> sortedArr) {
+        int len = sortedArr.size();
         int k = len - 1;
         for (int i = len / 2; i > 0; i /= 2) {
-            while (k - i >= 0 && sortArr.get(k - i) >= n) k -= i;
+            while (k - i >= 0 && sortedArr.get(k - i) >= n) k -= i;
         }
-        if (sortArr.get(k) == n) return k;
+        if (sortedArr.get(k) == n) return k;
         return -1;
     }
 
-    private static List<Integer> lsbSort(List<Integer> arr) {
-        int SIZE = 1 << Integer.BYTES * 8 / 2;
-        List<List<Integer>> digits = new ArrayList<>();
-        List<Integer> sortArr = List.copyOf(arr);
-        IntStream.range(0, SIZE).forEach(i -> digits.add(new ArrayList<>()));
+    private static int binarySearchR(int n, List<Integer> sortedArr) {
+        int len = sortedArr.size();
+        int k = 0;
+        for (int i = len / 2; i > 0; i /= 2) {
+            while (i + k < len && sortedArr.get(i + k) <= n) k += i;
+        }
+        if (sortedArr.get(k) == n) return k;
+        return -1;
+    }
 
-        for (Integer elt : sortArr) {
-            int index = elt & SIZE - 1;
-            digits.get(index).add(elt);
+    private static List<Integer> lsdSort(List<Integer> arr) {
+        final int SIZE = 1 << 16;
+        List<List<Integer>> digits = IntStream.range(0, SIZE).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
+        List<List<Integer>> digits2 = IntStream.range(0, SIZE).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
+
+        for (Integer elt : arr) {
+            digits.get(elt % SIZE).add(elt);
         }
 
-        sortArr = digits.stream().flatMap(Collection::stream).collect(Collectors.toList());
-        IntStream.range(0, SIZE).forEach(i -> digits.set(i, new ArrayList<>()));
-        for (Integer elt : sortArr) {
-            int index = elt >>> Integer.BYTES * 8 / 2;;
-            digits.get(index).add(elt);
+        for (List<Integer> eltList : digits) {
+            for (Integer elt : eltList) {
+                digits2.get(elt / SIZE).add(elt);
+            }
         }
 
-        sortArr = digits.stream().flatMap(Collection::stream).collect(Collectors.toList());
-        return sortArr;
+        arr = digits2.stream().flatMap(Collection::stream).collect(Collectors.toList());
+
+        return arr;
     }
 
     private static List<Integer> countSort(int maxVaule, List<Integer> arr) {

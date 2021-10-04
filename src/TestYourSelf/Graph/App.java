@@ -28,8 +28,8 @@ public class App {
 
         theGraph.dfs("A");
         theGraph.dfs("B");
-        theGraph.bfs("B");
-        theGraph.mstB("B");
+//        theGraph.bfs("B");
+//        theGraph.mstB("B");
     }
 
 }
