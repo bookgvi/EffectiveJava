@@ -21,36 +21,25 @@ public class R4 {
 
     public static void main(String[] args) {
         System.out.println(erat(21));
-        System.out.println(str);
+        System.out.printf("%s   %s\n", str, ss);
         System.out.println(rabbinKarp(ss));
     }
 
     private static List<Integer> rabbinKarp(String subStr) {
-        int ssLen = subStr.length();
+        int len = subStr.length();
         List<Integer> indexes = new ArrayList<>();
         long ssHash = getHash(subStr);
         long prefixHash = 0;
-        for (int i = 0; i + ssLen - 1 < prefixHashes.length; i += 1) {
-            long hash = prefixHashes[i + ssLen - 1];
+        for (int i = 0; i + len - 1 < prefixHashes.length; i += 1) {
+            long hash = prefixHashes[i + len - 1];
             if (i > 0) prefixHash = prefixHashes[i - 1];
-            long invP = modPow(pows[i], phi(mod) - 1, mod);
-//            long invP = evklidExt(pows[i], mod)[1];
-            long calcHash = hash - prefixHash < 0
+            long invP = modPows(pows[i], phi(mod) - 1, mod);
+            long calcHash = (hash - prefixHash) < 0
                     ? hash * invP % mod - prefixHash * invP % mod
                     : (hash - prefixHash) * invP % mod;
-            if (ssHash == calcHash) indexes.add(i);
+            if (calcHash == ssHash) indexes.add(i);
         }
         return indexes;
-    }
-
-    private static long[] pows() {
-        int size = (int) 1e5;
-        long[] pows = new long[size];
-        pows[0] = 1;
-        for (int i = 1; i < size; i += 1) {
-            pows[i] = pows[i - 1] * k % mod;
-        }
-        return pows;
     }
 
     private static long[] prefixHashes(String str) {
@@ -74,7 +63,17 @@ public class R4 {
         return hash;
     }
 
-    private static long modPow(long n, long pow, int mod) {
+    private static long[] pows() {
+        final int SIZE = (int) 1e5;
+        long[] pows = new long[SIZE];
+        pows[0] = 1;
+        for (int i = 1; i < SIZE; i += 1) {
+            pows[i] = pows[i - 1] * k % mod;
+        }
+        return pows;
+    }
+
+    private static long modPows(long n, long pow, int mod) {
         long res = 1;
         while (pow > 0) {
             if ((pow & 1) == 1) res = (res * n) % mod;
@@ -86,13 +85,13 @@ public class R4 {
 
     private static long phi(long n) {
         long res = n;
-        for (int i = 2; (long) i * i <= n; i += 1) {
+        for (long i = 2; i * i <= n; i += 1) {
             if (n % i == 0) {
                 while (n % i == 0) n /= i;
                 res -= res / i;
             }
         }
-        if (n > 1) res -= res / n;
+        if (n > 0) res -= res / n;
         return res;
     }
 

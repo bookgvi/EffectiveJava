@@ -2,14 +2,15 @@ package TestYourSelf.Bor;
 
 public class App {
     public static void main(String[] args) {
-        Bor bor = new Bor();
-        String str1 = "Hello!";
-        String str2 = "Helping.";
-        bor.addString(str1);
-        bor.addString(str2);
-        bor.dfs("H");
-        bor.dfs("e");
-        bor.dfs("H");
-//        System.out.println(bor.findString("Hel"));
+        AhoKorasik bor = new AhoKorasik();
+        String[] strArr = {"he", "she", "his", "hers", " t"};
+        for (String str : strArr) {
+            bor.addString(str);
+        }
+//        bor.dfs("root");
+        bor.bfs("root");
+        System.out.println();
+        System.out.println(bor.findStr("is she sister"));
+        bor.bfs("h", true);
     }
 }
