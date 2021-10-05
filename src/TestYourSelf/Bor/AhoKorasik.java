@@ -12,32 +12,42 @@ public class AhoKorasik {
 
     public void addString(String str) {
         Vertex curVertex = root;
+        StringBuilder prefix = new StringBuilder();
         for (String ch : str.split("")) {
-            curVertex.toNext.putIfAbsent(ch, new Vertex(ch));
+            prefix.append(ch);
+            curVertex.toNext.putIfAbsent(ch, new Vertex(prefix.toString()));
             curVertex = curVertex.toNext.get(ch);
         }
         curVertex.isTerminal = true;
     }
 
-    public boolean findString(String str) {
-        Vertex curVertex = root;
-        for (String ch : str.split("")) {
-            curVertex = curVertex.toNext.get(ch);
-            if (curVertex == null) return false;
-        }
-        return curVertex.isTerminal;
-    }
-
-    public boolean findStr(String str) {
+    public Map<String, List<Integer>> findKeyWords(String text) {
+        Map<String, List<Integer>> keywords = new HashMap<>();
         Vertex curVertex = root, suffixTransition;
         Map<String, Vertex> automata = bfs(rootLabel);
-        for (String ch : str.split("")) {
+        StringBuilder word = new StringBuilder();
+        int index = 0;
+        for (String ch : text.split("")) {
+            index += 1;
+            word.append(ch);
+
             curVertex = curVertex.toNext.get(ch);
-            suffixTransition = automata.get(ch);
-            if (curVertex == null && suffixTransition == null) return false;
-            else curVertex = suffixTransition.toNext.get(ch);
+            if (curVertex == null) {
+                suffixTransition = automata.get(ch);
+                if (suffixTransition == null) {
+                    curVertex = root; // reset simple transition
+                    word = new StringBuilder();
+                    continue;
+                }
+                curVertex = suffixTransition.toNext.get(ch);
+            }
+            if (curVertex.isTerminal) {
+                List<Integer> pos = keywords.getOrDefault(word.toString(), new ArrayList<>());
+                pos.add(index - word.length());
+                keywords.putIfAbsent(word.toString(), pos);
+            }
         }
-        return true; //curVertex.isTerminal;
+        return keywords;
     }
 
     public Map<String, Vertex> bfs(String startLabel) {

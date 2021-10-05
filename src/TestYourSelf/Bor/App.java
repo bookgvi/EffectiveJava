@@ -3,14 +3,15 @@ package TestYourSelf.Bor;
 public class App {
     public static void main(String[] args) {
         AhoKorasik bor = new AhoKorasik();
-        String[] strArr = {"he", "she", "his", "hers", " t"};
+        String[] strArr = {"fuck", "cunt", "ass"};
+        String strToFind = "Motherfucker fuck for funny. Kiss my ass. Dirty cunt";
         for (String str : strArr) {
             bor.addString(str);
         }
 //        bor.dfs("root");
         bor.bfs("root");
-        System.out.println();
-        System.out.println(bor.findStr("is she sister"));
-        bor.bfs("h", true);
+        System.out.println(strToFind);
+        System.out.println(bor.findKeyWords(strToFind));
+//        bor.bfs("h", true);
     }
 }
