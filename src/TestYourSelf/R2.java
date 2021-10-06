@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 public class R2 {
     public static void main(String[] args) {
-        String str = "aabaa";
+        String str = "aabaaab";
         System.out.println(Arrays.toString(zFunc(str)));
         System.out.println(Arrays.toString(piFunc(str)));
         System.out.println(Arrays.toString(piFuncExt(str)));
