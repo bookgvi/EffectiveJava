@@ -23,7 +23,10 @@ public class AhoKorasik {
         Vertex curVertex = root;
         for (String ch : str.split("")) {
             curVertex.toNext.putIfAbsent(ch, new Vertex(ch));
+            Vertex parent = curVertex;
             curVertex = curVertex.toNext.get(ch);
+            curVertex.parent = parent;
+            curVertex.parentChar = parent.label;
         }
         curVertex.isTerminal = true;
     }
@@ -32,7 +35,7 @@ public class AhoKorasik {
     public Map<String, List<Integer>> analizeText(String text) {
         Map<String, List<Integer>> words = new HashMap<>();
         Vertex curVertex = root, suffixTransition;
-        Map<String, Vertex> automata = bfs(rootLabel);
+        Map<String, Vertex> automata = bfs();
         StringBuilder word = new StringBuilder();
         int index = 0;
         for (String ch : text.split("")) {
@@ -40,7 +43,7 @@ public class AhoKorasik {
             word.append(ch);
             curVertex = curVertex.toNext.get(ch);
             if (curVertex == null) {
-                word = new StringBuilder(word.substring(1, word.length()));
+                word = new StringBuilder(word.substring(word.length() - 1, word.length()));
                 suffixTransition = automata.get(ch);
                 if (suffixTransition == null) {
                     word = new StringBuilder();
@@ -59,21 +62,52 @@ public class AhoKorasik {
         return words;
     }
 
-    private Map<String, Vertex> bfs(String startLabel) {
+    public Map<String, List<Integer>> analizeTextExt(String text) {
+        Map<String, List<Integer>> words = new HashMap<>();
+        Vertex curVertex = root, suffixVertex = null;
+        StringBuilder word = new StringBuilder();
+        bfs();
+        int index = 0;
+        for (String ch : text.split("")) {
+            index += 1;
+            suffixVertex = curVertex.sufLink;
+            curVertex = curVertex.toNext.get(ch);
+            if (curVertex == null) curVertex = suffixVertex;
+            if (curVertex == null) {
+                word = new StringBuilder();
+                curVertex = root;
+                continue;
+            }
+            word.append(ch);
+            if (curVertex.isTerminal) {
+                List<Integer> positions = words.getOrDefault(word.toString(), new ArrayList<>());
+                positions.add(index - word.length());
+                words.putIfAbsent(word.toString(), positions);
+            }
+        }
+        return words;
+    }
+
+    private Map<String, Vertex> bfs() {
         Map<String, Vertex> automata = new HashMap<>();
-        Vertex curVertex = Objects.equals(startLabel, rootLabel) ? root : root.toNext.get(startLabel), nextVertex;
-        if (curVertex == null) return automata;
+        Vertex curVertex = root, nextVertex;
 
         VertexQueue<Vertex> vertexQueue = new VertexQueue<>();
         curVertex.isVisited = true;
+        setRootSuffix();
         vertexQueue.offer(curVertex);
-        while(!vertexQueue.isEmpty()) {
+        while (!vertexQueue.isEmpty()) {
             curVertex = vertexQueue.poll();
             if (curVertex == null) continue;
             while ((nextVertex = getUnvisited(curVertex)) != null) {
                 nextVertex.isVisited = true;
                 vertexQueue.offer(nextVertex);
-                nextVertex.parent = curVertex;
+
+                Vertex parentSuffix = curVertex.sufLink;
+                if (parentSuffix != null && nextVertex.sufLink == null) {
+                    nextVertex.sufLink = parentSuffix.toNext.get(nextVertex.label);
+                    if (nextVertex.sufLink == null) nextVertex.sufLink = root;
+                }
                 automata.putIfAbsent(nextVertex.label, curVertex);
             }
         }
@@ -81,9 +115,16 @@ public class AhoKorasik {
         return automata;
     }
 
+    private void setRootSuffix() {
+        root.sufLink = root;
+        for (Vertex firstAfterRoot : root.toNext.values()) firstAfterRoot.sufLink = root;
+    }
+
     private Vertex getUnvisited(Vertex startVertex) {
         for (Vertex curVertex : startVertex.toNext.values()) {
-            if (!curVertex.isVisited) return curVertex;
+            if (!curVertex.isVisited) {
+                return curVertex;
+            }
         }
         return null;
     }
@@ -99,7 +140,9 @@ public class AhoKorasik {
     private static class Vertex {
         private final String label;
         private final Map<String, Vertex> toNext;
+        private Vertex sufLink;
         private Vertex parent;
+        private String parentChar;
         private boolean isTerminal;
         private boolean isVisited;
 
@@ -109,6 +152,7 @@ public class AhoKorasik {
             this.parent = null;
             this.isTerminal = false;
             this.isVisited = false;
+//            this.sufLink = AhoKorasik.this.root;
         }
     }
 
