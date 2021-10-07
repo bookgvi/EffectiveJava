@@ -24,23 +24,23 @@ public class R1 {
         System.out.printf("\n%s   %d -> [%d, %d]\n", sortedArr, n, lN, rN);
     }
 
-    private static int binSearchR(int n, List<Integer> sortArr) {
-        int len = sortArr.size();
-        int k = 0;
+    private static int binSearchL(int n, List<Integer> sortedArr){
+        int len = sortedArr.size();
+        int k = len - 1;
         for (int i = len / 2; i > 0; i /= 2) {
-            while (i + k < len && sortArr.get(i + k) <= n) k += i;
+            while(k - i >= 0 && sortedArr.get(k - i) >= n) k -= i;
         }
-        if (sortArr.get(k) == n) return k;
+        if (sortedArr.get(k) == n) return k;
         return -1;
     }
 
-    private static int binSearchL(int  n, List<Integer> sortArr) {
-        int len = sortArr.size();
-        int k = len - 1;
-        for (int i = len / 2; i > 0; i /= 2) {
-            while (k - i >= 0 && sortArr.get(k - i) >= n) k -= i;
+    private static int binSearchR(int n, List<Integer> sortedArr) {
+        int len = sortedArr.size();
+        int k = 0;
+        for (int i = len /2; i > 0; i /= 2) {
+            while(i + k < len && sortedArr.get(i + k) <= n) k += i;
         }
-        if (sortArr.get(k) == n) return k;
+        if (sortedArr.get(k) == n) return k;
         return -1;
     }
 
@@ -49,12 +49,39 @@ public class R1 {
         int l = 0;
         int r = len - 1;
         while (r - l >= 0) {
-            int mid = (r + l) >> 1;
+            int mid = (r + l) / 2;
             if (sortedArr.get(mid) == n) return mid;
-            if (sortedArr.get(mid) > n) r = mid - 1;
-            else l = mid + 1;
+            if (sortedArr.get(mid) < n) l = mid + 1;
+            else r = mid - 1;
         }
         return -1;
+    }
+
+    private static List<Integer> bubbleSort(List<Integer> arr) {
+        for(int i = 0, len = arr.size(); i < len; i += 1) {
+            for (int j = 0; j < len - 1; j += 1) {
+                if (arr.get(j) - arr.get(j + 1) > 0) swap(j, j + 1, arr);
+            }
+        }
+        return arr;
+    }
+
+    private static List<Integer> selectSort(List<Integer> arr) {
+        for (int i = 0, len = arr.size(); i < len; i += 1) {
+            for (int j = i + 1; j < len; j += 1) {
+                if (arr.get(i) - arr.get(j) > 0) swap(i, j, arr);
+            }
+        }
+        return arr;
+    }
+
+    private static List<Integer> insertSort(List<Integer> arr) {
+        for (int i = 0, len = arr.size(); i < len; i += 1) {
+            for (int j = i; j > 0 && arr.get(j - 1) - arr.get(j) > 0; j -= 1) {
+                swap(j - 1, j, arr);
+            }
+        }
+        return arr;
     }
 
     private static List<Integer> lsdSort(List<Integer> arr) {
@@ -73,33 +100,6 @@ public class R1 {
         }
 
         return digits2.stream().flatMap(Collection::stream).collect(Collectors.toList());
-    }
-
-    private static List<Integer> insertSort(List<Integer> arr) {
-        for (int i = 0, len = arr.size(); i < len; i += 1) {
-            for (int j = i; j > 0 && arr.get(j - 1) - arr.get(j) > 0; j -= 1) {
-                swap(j, j - 1, arr);
-            }
-        }
-        return arr;
-    }
-
-    private static List<Integer> selectSort(List<Integer> arr) {
-        for (int i = 0, len = arr.size(); i < len - 1; i += 1) {
-            for (int j = i + 1; j < len; j += 1) {
-                if (arr.get(i) - arr.get(j) > 0) swap(i, j, arr);
-            }
-        }
-        return arr;
-    }
-
-    private static List<Integer> bubbleSort(List<Integer> arr) {
-        for (int i = 0, len = arr.size(); i < len; i += 1) {
-            for (int j = 0; j < len - 1; j += 1) {
-                if (arr.get(j) - arr.get(j + 1) > 0) swap(j, j + 1, arr);
-            }
-        }
-        return arr;
     }
 
     private static void swap(int a, int b, List<Integer> arr) {

@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 public class R2 {
     public static void main(String[] args) {
         String str = "aabaaab";
+        System.out.println(str);
         System.out.println(Arrays.toString(zFunc(str)));
         System.out.println(Arrays.toString(piFunc(str)));
         System.out.println(Arrays.toString(piFuncExt(str)));
@@ -58,7 +59,7 @@ public class R2 {
         int[] m = new int[len];
         for (int i = 1, l = 0, r = 0; i < len; i += 1) {
             if (i < r) m[i] = Math.min(m[l - (i - r)], r - i + 1);
-            while(i - m[i] >=0 && i + m[i] < len && str.charAt(i - m[i]) == str.charAt(i + m[i])) m[i] += 1;
+            while (i - m[i] >= 0 && i + m[i] < len && str.charAt(i - m[i]) == str.charAt(i + m[i])) m[i] += 1;
             if (i + m[i] - 1 > r) {
                 l = i - m[i] + 1;
                 r = i + m[i] - 1;

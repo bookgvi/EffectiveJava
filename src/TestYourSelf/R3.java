@@ -22,6 +22,24 @@ public class R3 {
         values.add(0);
         for (int i = 1; i <= n; i += 1) {
             first.add(0);
+            values.add(Integer.MAX_VALUE / 10 * 9);
+            for (int coin : coins) {
+                if (i - coin >= 0 && values.get(i - coin) + 1 < values.get(i)) {
+                    values.set(i, values.get(i - coin) + 1);
+                    first.set(i, coin);
+                }
+            }
+        }
+        return first;
+    }
+
+    private static List<Integer> solve1(int n, int[] coins) {
+        List<Integer> first = new ArrayList<>();
+        List<Integer> values = new ArrayList<>();
+        first.add(0);
+        values.add(0);
+        for (int i = 1; i <= n; i += 1) {
+            first.add(0);
             values.add(Integer.MAX_VALUE / 4 * 3);
             for (int coin : coins) {
                 if (i - coin >= 0 && values.get(i - coin) + 1 < values.get(i)) {

@@ -6,8 +6,8 @@ public class App {
         String[] keyWords = {"a", "abba", "acb", "ac"};
         String text = "abacabba";
 
-        for (String keyWord : keyWords) bor.addKeyWords(keyWord);
-        System.out.println(text);
-        System.out.println(bor.textAnalyze(text));
+//        for (String keyWord : keyWords) bor.addKeyWords(keyWord);
+//        System.out.println(text);
+//        System.out.println(bor.textAnalyze(text));
     }
 }

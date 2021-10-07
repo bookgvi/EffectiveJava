@@ -11,33 +11,30 @@ public class Fibonacci {
         }
     }
 
-    public static int[][] getFiboForNum(int n) {
-        int[][] FiboMatrix = new int[][]{{0, 1}, {1, 1}};
-        return binaryPow(FiboMatrix, n);
+    private static int[][] getFiboForNum(int n) {
+        int[][] FIBO = new int[][]{{0, 1}, {1, 1}};
+        return matrixPow(FIBO, n);
+    }
+
+    private static int[][] matrixPow(int[][] matrix, int pow) {
+        int[][] E = new int[][] {{1, 0}, {0, 1}};
+        while(pow > 0) {
+            if ((pow & 1) == 1) E = matrixMultiply(E, matrix);
+            matrix = matrixMultiply(matrix, matrix);
+            pow >>= 1;
+        }
+        return E;
     }
 
     private static int[][] matrixMultiply(int[][] A, int[][] B) {
-        int[][] C = new int[A.length][A[0].length];
-        for (int i = 0; i < A.length; i++) {
-            for (int j = 0; j < A[0].length; j++) {
-                for (int k = 0; k < A[0].length; k++) {
+        int[][] C = new int[A.length][B.length];
+        for (int i = 0; i < A.length; i += 1) {
+            for (int j = 0; j < B.length; j += 1) {
+                for (int k = 0; k < A.length; k += 1) {
                     C[i][j] += A[i][k] * B[k][j];
                 }
             }
         }
         return C;
-    }
-
-    private static int[][] binaryPow(int[][] matrix, int pow) {
-        int[][] E = new int[][]{{1, 0}, {0, 1}};
-        while (pow > 0) {
-            if ((pow & 1) == 1) {
-                E = matrixMultiply(matrix, E);
-                pow--;
-            }
-            matrix = matrixMultiply(matrix, matrix);
-            pow >>= 1;
-        }
-        return E;
     }
 }

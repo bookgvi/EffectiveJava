@@ -4,17 +4,17 @@ import java.util.Arrays;
 
 public class App {
     public static void main(String[] args) {
-        Bor bor = new Bor();
-        String[] strArr = {"ab", "about", "at", "ate", "be", "bed", "edge", "get"};
+        AhoKorasik bor = new AhoKorasik();
+        String[] strArr = {"i", "in", "tin", "sting"};
         String[] keyWords = {"he",  "s", "she", "his", "hers", "him"};
-        String strToFind = "abccab";
+        String textForAnal = "sting";
         String text = "shsshers";
 
 
-        bor.addKeyWords(keyWords);
+        bor.addKeyWord(strArr);
 
-        System.out.println(Arrays.toString(keyWords));
-        System.out.println(text);
-        System.out.println(bor.analizeText(text));
+        System.out.println(Arrays.toString(strArr));
+        System.out.println(textForAnal);
+        System.out.println(bor.searchForStrings(textForAnal));
     }
 }
