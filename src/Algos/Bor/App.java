@@ -1,13 +1,20 @@
 package Algos.Bor;
 
+import java.util.List;
+
 public class App {
     public static void main(String[] args) {
         AhoKorasik bor = new AhoKorasik();
-        String[] keyWords = {"a", "abba", "acb", "ac"};
-        String text = "abacabba";
+        String[] keyWords1 = {"i", "in", "tin", "sting"};
+        String[] keyWords2 = {"he", "s", "she", "his", "hers", "him"};
+        String[] keyWords3 = {"a", "aa", "aaa", "aaaa", "hers", "s"};
+        String[] keyWords4 = {"a", "bc", "abc", "dab", "dabc"};
 
-//        for (String keyWord : keyWords) bor.addKeyWords(keyWord);
-//        System.out.println(text);
-//        System.out.println(bor.textAnalyze(text));
+
+        String textForAnal = "stinghersstinger dabc";
+
+        List.of(keyWords1, keyWords2, keyWords3, keyWords4).forEach(bor::addKeyWord);
+        System.out.println(textForAnal);
+        System.out.println(bor.searchForStrings(textForAnal));
     }
 }

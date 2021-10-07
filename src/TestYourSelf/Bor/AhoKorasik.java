@@ -50,22 +50,29 @@ public class AhoKorasik {
                     curVertex = curVertex.toNext.get(ch);
                 }
             }
-            if (curVertex.isTerminal) {
-                for (String wordToStore : new String[]{curVertex.suffix}) {
-                    int pos = index - wordToStore.length();
-                    Set<Integer> positions = words.getOrDefault(wordToStore, new HashSet<>());
-                    positions.add(pos);
-                    words.putIfAbsent(wordToStore, positions);
-                }
-            }
+            isOut(curVertex, words, index);
         }
         return words;
     }
 
     private Vertex delta(String ch, Vertex curVertex) {
-        if (curVertex.go.get(ch) == null) return curVertex.sufLink.toNext.get(ch);
-        else if (curVertex.go.get(ch) != null) return curVertex.go.get(ch);
+        if (curVertex.toNext.get(ch) == null && curVertex.sufLink.toNext.get(ch) != null)
+            return curVertex.sufLink.toNext.get(ch);
+        else if (curVertex.toNext.get(ch) != null) return curVertex.toNext.get(ch);
         return root;
+    }
+
+    private void isOut(Vertex curVertex, Map<String, Set<Integer>> words, int index) {
+        if (curVertex == null || curVertex == root) return;
+        if (curVertex.isTerminal) storeVertex(words, curVertex.suffix, index);
+        isOut(curVertex.sufLink, words, index);
+    }
+
+    private void storeVertex(Map<String, Set<Integer>> words, String word, int index) {
+        int pos = index - word.length();
+        Set<Integer> positions = words.getOrDefault(word, new HashSet<>());
+        positions.add(pos);
+        words.putIfAbsent(word, positions);
     }
 
     private void bfs() {
@@ -88,12 +95,8 @@ public class AhoKorasik {
                             ? suffixLink.toNext.get(nextVertex.label)
                             : root;
                 }
-                if (nextVertex.parent.sufLink != root)
-                    nextVertex.parent.sufLink.go.putIfAbsent(nextVertex.label, nextVertex);
-                else nextVertex.parent.sufLink.go = nextVertex.toNext;
             }
         }
-        return;
     }
 
     private void setRootSuffixLinks() {
@@ -120,7 +123,7 @@ public class AhoKorasik {
         private final String label;
         private String suffix = "";
         private final Map<String, Vertex> toNext;
-        private Map<String, Vertex> go;
+        private Map<String, Vertex> out;
         private Vertex sufLink;
         private Vertex parent;
         private boolean isTerminal;
@@ -129,7 +132,7 @@ public class AhoKorasik {
         Vertex(String label) {
             this.label = label;
             this.toNext = new HashMap<>();
-            this.go = new HashMap<>();
+            this.out = new HashMap<>();
             this.parent = this;
             this.isTerminal = false;
             this.isVisited = false;
@@ -139,7 +142,7 @@ public class AhoKorasik {
             this.label = label;
             this.suffix = suffix;
             this.toNext = new HashMap<>();
-            this.go = new HashMap<>();
+            this.out = new HashMap<>();
             this.parent = this;
             this.isTerminal = false;
             this.isVisited = false;

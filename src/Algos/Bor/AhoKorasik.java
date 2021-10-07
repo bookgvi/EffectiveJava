@@ -21,110 +21,89 @@ public class AhoKorasik {
 
     public void addKeyWord(String str) {
         Vertex curVertex = root;
+        StringBuilder suffixStr = new StringBuilder();
         for (String ch : str.split("")) {
-            curVertex.toNext.putIfAbsent(ch, new Vertex(ch));
+            suffixStr.append(ch);
+            curVertex.toNext.putIfAbsent(ch, new Vertex(ch, suffixStr.toString()));
             Vertex parent = curVertex;
             curVertex = curVertex.toNext.get(ch);
             curVertex.parent = parent;
-            curVertex.parentChar = parent.label;
         }
         curVertex.isTerminal = true;
     }
 
-    // TODO доделать сохранение слов в MAP - не совсем правильно!!!
-    public Map<String, List<Integer>> analizeText(String text) {
-        Map<String, List<Integer>> words = new HashMap<>();
-        Vertex curVertex = root, suffixTransition;
-        Map<String, Vertex> automata = bfs();
-        StringBuilder word = new StringBuilder();
+    public Map<String, Set<Integer>> searchForStrings(String text) {
+        Map<String, Set<Integer>> words = new HashMap<>();
+        Vertex curVertex = root;
         int index = 0;
-        for (String ch : text.split("")) {
-            index += 1;
-            word.append(ch);
-            curVertex = curVertex.toNext.get(ch);
-            if (curVertex == null) {
-                word = new StringBuilder(word.substring(word.length() - 1, word.length()));
-                suffixTransition = automata.get(ch);
-                if (suffixTransition == null) {
-                    word = new StringBuilder();
-                    curVertex = root;
-                    continue;
-                }
-                curVertex = suffixTransition.toNext.get(ch);
-            }
-
-            if (curVertex.isTerminal) {
-                List<Integer> positions = words.getOrDefault(word.toString(), new ArrayList<>());
-                positions.add(index - word.length());
-                words.putIfAbsent(word.toString(), positions);
-            }
-        }
-        return words;
-    }
-
-    public Map<String, List<Integer>> analizeTextExt(String text) {
-        Map<String, List<Integer>> words = new HashMap<>();
-        Vertex curVertex = root, suffixVertex = null;
-        StringBuilder word = new StringBuilder();
         bfs();
-        int index = 0;
         for (String ch : text.split("")) {
             index += 1;
-            suffixVertex = curVertex.sufLink;
-            curVertex = curVertex.toNext.get(ch);
-            if (curVertex == null) curVertex = suffixVertex;
-            if (curVertex == null) {
-                word = new StringBuilder();
-                curVertex = root;
-                continue;
+            curVertex = delta(ch, curVertex);
+            if (curVertex == root) {
+                if (root.toNext.get(ch) == null) {
+                    continue;
+                } else {
+                    curVertex = curVertex.toNext.get(ch);
+                }
             }
-            word.append(ch);
-            if (curVertex.isTerminal) {
-                List<Integer> positions = words.getOrDefault(word.toString(), new ArrayList<>());
-                positions.add(index - word.length());
-                words.putIfAbsent(word.toString(), positions);
-            }
+            isOut(curVertex, words, index);
         }
         return words;
     }
 
-    private Map<String, Vertex> bfs() {
-        Map<String, Vertex> automata = new HashMap<>();
-        Vertex curVertex = root, nextVertex;
+    private Vertex delta(String ch, Vertex curVertex) {
+        if (curVertex.toNext.get(ch) == null && curVertex.sufLink.toNext.get(ch) != null)
+            return curVertex.sufLink.toNext.get(ch);
+        else if (curVertex.toNext.get(ch) != null) return curVertex.toNext.get(ch);
+        return root;
+    }
 
+    private void isOut(Vertex curVertex, Map<String, Set<Integer>> words, int index) {
+        if (curVertex == root) return;
+        if (curVertex.isTerminal) storeVertex(words, curVertex.suffixStr, index);
+        isOut(curVertex.sufLink, words, index);
+    }
+
+    private void storeVertex(Map<String, Set<Integer>> words, String word, int index) {
+        int pos = index - word.length();
+        Set<Integer> positions = words.getOrDefault(word, new HashSet<>());
+        positions.add(pos);
+        words.putIfAbsent(word, positions);
+    }
+
+    private void bfs() {
+        Vertex startVertex = root, curVertex, nextVertex;
         VertexQueue<Vertex> vertexQueue = new VertexQueue<>();
-        curVertex.isVisited = true;
-        setRootSuffix();
-        vertexQueue.offer(curVertex);
+        setRootSuffixLinks();
+        setUnvisited(startVertex);
+        vertexQueue.offer(startVertex);
+        startVertex.isVisited = true;
         while (!vertexQueue.isEmpty()) {
             curVertex = vertexQueue.poll();
-            if (curVertex == null) continue;
+            if (curVertex == null) return;
             while ((nextVertex = getUnvisited(curVertex)) != null) {
                 nextVertex.isVisited = true;
                 vertexQueue.offer(nextVertex);
 
-                Vertex parentSuffix = curVertex.sufLink;
-                if (parentSuffix != null && nextVertex.sufLink == null) {
-                    nextVertex.sufLink = parentSuffix.toNext.get(nextVertex.label);
-                    if (nextVertex.sufLink == null) nextVertex.sufLink = root;
+                Vertex suffixLink = curVertex.sufLink;
+                if (nextVertex.sufLink == null) {
+                    nextVertex.sufLink = suffixLink.toNext.get(nextVertex.label) != null
+                            ? suffixLink.toNext.get(nextVertex.label)
+                            : root;
                 }
-                automata.putIfAbsent(nextVertex.label, curVertex);
             }
         }
-        setUnvisited(root);
-        return automata;
     }
 
-    private void setRootSuffix() {
+    private void setRootSuffixLinks() {
         root.sufLink = root;
         for (Vertex firstAfterRoot : root.toNext.values()) firstAfterRoot.sufLink = root;
     }
 
-    private Vertex getUnvisited(Vertex startVertex) {
-        for (Vertex curVertex : startVertex.toNext.values()) {
-            if (!curVertex.isVisited) {
-                return curVertex;
-            }
+    private Vertex getUnvisited(Vertex curVertex) {
+        for (Vertex nextVertex : curVertex.toNext.values()) {
+            if (!nextVertex.isVisited) return nextVertex;
         }
         return null;
     }
@@ -139,20 +118,28 @@ public class AhoKorasik {
 
     private static class Vertex {
         private final String label;
+        private String suffixStr = "";
         private final Map<String, Vertex> toNext;
         private Vertex sufLink;
         private Vertex parent;
-        private String parentChar;
         private boolean isTerminal;
         private boolean isVisited;
 
         Vertex(String label) {
             this.label = label;
             this.toNext = new HashMap<>();
-            this.parent = null;
+            this.parent = this;
             this.isTerminal = false;
             this.isVisited = false;
-//            this.sufLink = AhoKorasik.this.root;
+        }
+
+        Vertex(String label, String suffixStr) {
+            this.label = label;
+            this.suffixStr = suffixStr;
+            this.toNext = new HashMap<>();
+            this.parent = this;
+            this.isTerminal = false;
+            this.isVisited = false;
         }
     }
 

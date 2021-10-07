@@ -28,16 +28,16 @@ public class Diofant {
     }
 
     private static int[] evklidExt(int a, int b) {
-        int[] result = new int[3];
+        int[] res = new int[3];
         if (a == 0) {
-            result[0] = b;
-            result[2] = 1;
-            return result;
+            res[0] = b;
+            res[2] = 1;
+            return res;
         }
-        result = evklidExt(b % a, a);
-        int tmp = result[1];
-        result[1] = result[2] - (b / a) * result[1];
-        result[2] = tmp;
-        return result;
+        res = evklidExt(b % a, a);
+        int tmp = res[1];
+        res[1] = res[2] - (b / a) * res[1];
+        res[2] = tmp;
+        return res;
     }
 }
