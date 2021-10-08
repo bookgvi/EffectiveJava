@@ -15,7 +15,7 @@ public class R4 {
     private static final String firstChar = "a";
     private static final byte firstCharByte = firstChar.getBytes()[0];
     private static final String str = "abcocbab";
-    private static final String ss = "b";
+    private static final String ss = "ab";
     private static final long[] pows = pows();
     private static final long[] prefixHashes = prefixHashes(str);
 
@@ -26,17 +26,15 @@ public class R4 {
     }
 
     private static List<Integer> rabbinKarp(String subStr) {
-        int len = subStr.length();
         List<Integer> indexes = new ArrayList<>();
+        int len = subStr.length();
         long ssHash = getHash(subStr);
         long prefixHash = 0;
         for (int i = 0; i + len - 1 < prefixHashes.length; i += 1) {
             long hash = prefixHashes[i + len - 1];
             if (i > 0) prefixHash = prefixHashes[i - 1];
             long invP = modPows(pows[i], phi(mod) - 1, mod);
-            long calcHash = (hash - prefixHash) < 0
-                    ? hash * invP % mod - prefixHash * invP % mod
-                    : (hash - prefixHash) * invP % mod;
+            long calcHash = (hash - prefixHash > 0) ? (hash - prefixHash) * invP % mod : hash * invP % mod - prefixHash * invP % mod;
             if (calcHash == ssHash) indexes.add(i);
         }
         return indexes;
@@ -44,8 +42,8 @@ public class R4 {
 
     private static long[] prefixHashes(String str) {
         int len = str.length();
-        long[] hashes = new long[len];
         byte[] strBytes = str.getBytes();
+        long[] hashes = new long[len];
         hashes[0] = (strBytes[0] - firstCharByte + 1) * pows[0] % mod;
         for (int i = 1; i < len; i += 1) {
             hashes[i] = (hashes[i - 1] + (strBytes[i] - firstCharByte + 1) * pows[i]) % mod;
@@ -55,8 +53,8 @@ public class R4 {
 
     private static long getHash(String str) {
         int len = str.length();
-        long hash = 0;
         byte[] strBytes = str.getBytes();
+        long hash = 0;
         for (int i = 0; i < len; i += 1) {
             hash = (hash + (strBytes[i] - firstCharByte + 1) * pows[i]) % mod;
         }
@@ -64,7 +62,7 @@ public class R4 {
     }
 
     private static long[] pows() {
-        final int SIZE = (int) 1e5;
+        final int SIZE = (int) 5e5 + 5;
         long[] pows = new long[SIZE];
         pows[0] = 1;
         for (int i = 1; i < SIZE; i += 1) {
@@ -75,7 +73,7 @@ public class R4 {
 
     private static long modPows(long n, long pow, int mod) {
         long res = 1;
-        while (pow > 0) {
+        while(pow > 0) {
             if ((pow & 1) == 1) res = (res * n) % mod;
             n = (n * n) % mod;
             pow >>= 1;
@@ -85,27 +83,13 @@ public class R4 {
 
     private static long phi(long n) {
         long res = n;
-        for (long i = 2; i * i <= n; i += 1) {
+        for (int i = 2; (long) i * i <= n; i += 1) {
             if (n % i == 0) {
                 while (n % i == 0) n /= i;
                 res -= res / i;
             }
         }
         if (n > 0) res -= res / n;
-        return res;
-    }
-
-    private static long[] evklidExt(long a, long b) {
-        long[] res = new long[3];
-        if (a == 0) {
-            res[0] = b;
-            res[2] = 1;
-            return res;
-        }
-        res = evklidExt(b % a, a);
-        long tmp = res[1];
-        res[1] = res[2] - (b / a) * res[1];
-        res[2] = tmp;
         return res;
     }
 
@@ -120,5 +104,19 @@ public class R4 {
             }
         }
         return primes;
+    }
+
+    private static long[] evklidExt(int a, int b) {
+        long[] res = new long[3];
+        if (a == 0) {
+            res[0] = b;
+            res[2] = 1;
+            return res;
+        }
+        res = evklidExt(b % a, a);
+        long tmp = res[1];
+        res[1] = res[2] - (b / a) * res[1];
+        res[2] = tmp;
+        return res;
     }
 }

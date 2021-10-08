@@ -24,26 +24,6 @@ public class R1 {
         System.out.printf("\n%s   %d -> [%d, %d]\n", sortedArr, n, lN, rN);
     }
 
-    private static int binSearchL(int n, List<Integer> sortedArr){
-        int len = sortedArr.size();
-        int k = len - 1;
-        for (int i = len / 2; i > 0; i /= 2) {
-            while(k - i >= 0 && sortedArr.get(k - i) >= n) k -= i;
-        }
-        if (sortedArr.get(k) == n) return k;
-        return -1;
-    }
-
-    private static int binSearchR(int n, List<Integer> sortedArr) {
-        int len = sortedArr.size();
-        int k = 0;
-        for (int i = len /2; i > 0; i /= 2) {
-            while(i + k < len && sortedArr.get(i + k) <= n) k += i;
-        }
-        if (sortedArr.get(k) == n) return k;
-        return -1;
-    }
-
     private static int binSearch(int n, List<Integer> sortedArr) {
         int len = sortedArr.size();
         int l = 0;
@@ -54,6 +34,26 @@ public class R1 {
             if (sortedArr.get(mid) < n) l = mid + 1;
             else r = mid - 1;
         }
+        return -1;
+    }
+
+    private static int binSearchL(int n, List<Integer> sortedArr) {
+        int len = sortedArr.size();
+        int k = len -1;
+        for (int i = len / 2; i > 0; i /= 2) {
+            while(k - i >= 0 && sortedArr.get(k - i) >= n) k -= i;
+        }
+        if (sortedArr.get(k) == n) return k;
+        return -1;
+    }
+
+    private static int binSearchR(int n, List<Integer> sortedArr) {
+        int len = sortedArr.size();
+        int k = 0;
+        for (int i = len / 2; i > 0; i /= 2) {
+           while(i + k < len && sortedArr.get(i + k) <= n) k += i;
+        }
+        if (sortedArr.get(k) == n) return k;
         return -1;
     }
 
@@ -85,7 +85,7 @@ public class R1 {
     }
 
     private static List<Integer> lsdSort(List<Integer> arr) {
-        final int SIZE = 1 << 16;
+        final int SIZE = Integer.BYTES * 8 / 2;
         List<List<Integer>> digits = IntStream.range(0, SIZE).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
         List<List<Integer>> digits2 = IntStream.range(0, SIZE).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
 

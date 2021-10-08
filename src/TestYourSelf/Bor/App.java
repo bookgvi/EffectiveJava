@@ -1,22 +1,25 @@
 package TestYourSelf.Bor;
 
+
+
 import java.util.Arrays;
+import java.util.List;
 
 public class App {
     public static void main(String[] args) {
         AhoKorasik bor = new AhoKorasik();
-//        String[] keyWords = {"i", "in", "tin", "sting"};
-//        String textForAnal = "sting";
-//        String[] keyWords = {"he",  "s", "she", "his", "hers", "him"};
-//        String textForAnal = "shsshers";
-        String[] keyWords = {"a",  "aa", "aaa", "aaaa", "hers", "s"};
-        String textForAnal = "shsshersaaaaaaaaa";
+        String[] keyWords1 = {"i", "in", "tin", "sting"};
+        String[] keyWords2 = {"he", "s", "she", "his", "hers", "him"};
+        String[] keyWords3 = {"a", "aa", "aaa", "aaaa", "hers", "s"};
+        String[] keyWords4 = {"a", "bc", "abc", "dab", "dabc"};
 
 
-        bor.addKeyWord(keyWords);
+        String textForAnal = "stinghersstinger dabc";
 
-        System.out.println(Arrays.toString(keyWords));
+        List.of(keyWords1, keyWords2, keyWords3, keyWords4).forEach(bor::addKeyWord);
+        bor.init();
+
         System.out.println(textForAnal);
-        System.out.println(bor.searchForStrings(textForAnal));
+        System.out.println(bor.textForAnal(textForAnal));
     }
 }

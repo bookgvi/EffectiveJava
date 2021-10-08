@@ -15,6 +15,6 @@ public class App {
 
         List.of(keyWords1, keyWords2, keyWords3, keyWords4).forEach(bor::addKeyWord);
         System.out.println(textForAnal);
-        System.out.println(bor.searchForStrings(textForAnal));
+        System.out.println(bor.analizeText(textForAnal));
     }
 }
