@@ -12,15 +12,15 @@ public class Fibonacci {
     }
 
     private static int[][] getFiboForNum(int n) {
-        int[][] FIBO = new int[][]{{0, 1}, {1, 1}};
-        return matrixPow(FIBO, n);
+        int[][] fibo = new int[][]{{0, 1}, {1, 1}};
+        return matrixPow(fibo, n);
     }
 
-    private static int[][] matrixPow(int[][] matrix, int pow) {
-        int[][] E = new int[][] {{1, 0}, {0, 1}};
+    private static int[][] matrixPow(int[][] M, int pow) {
+        int[][] E = new int[][]{{1, 0}, {0, 1}};
         while(pow > 0) {
-            if ((pow & 1) == 1) E = matrixMultiply(E, matrix);
-            matrix = matrixMultiply(matrix, matrix);
+            if ((pow & 1) == 1) E = matrixMultiply(E, M);
+            M = matrixMultiply(M, M);
             pow >>= 1;
         }
         return E;

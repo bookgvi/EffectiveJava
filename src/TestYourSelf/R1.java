@@ -58,8 +58,8 @@ public class R1 {
     }
 
     private static List<Integer> bubbleSort(List<Integer> arr) {
-        for(int i = 0, len = arr.size(); i < len; i += 1) {
-            for (int j = 0; j < len - 1; j += 1) {
+        for (int i = 0, len = arr.size(); i < len; i += 1) {
+            for (int  j = 0; j < len - 1; j += 1) {
                 if (arr.get(j) - arr.get(j + 1) > 0) swap(j, j + 1, arr);
             }
         }
@@ -67,7 +67,7 @@ public class R1 {
     }
 
     private static List<Integer> selectSort(List<Integer> arr) {
-        for (int i = 0, len = arr.size(); i < len; i += 1) {
+        for(int i = 0, len = arr.size(); i < len; i += 1) {
             for (int j = i + 1; j < len; j += 1) {
                 if (arr.get(i) - arr.get(j) > 0) swap(i, j, arr);
             }
@@ -77,15 +77,15 @@ public class R1 {
 
     private static List<Integer> insertSort(List<Integer> arr) {
         for (int i = 0, len = arr.size(); i < len; i += 1) {
-            for (int j = i; j > 0 && arr.get(j - 1) - arr.get(j) > 0; j -= 1) {
-                swap(j - 1, j, arr);
+            for (int j = i; j > 0 && arr.get(j - 1) > arr.get(j); j -= 1) {
+                swap(j, j - 1, arr);
             }
         }
         return arr;
     }
 
     private static List<Integer> lsdSort(List<Integer> arr) {
-        final int SIZE = Integer.BYTES * 8 / 2;
+        final int SIZE = 1 << Integer.BYTES * 8 / 2;
         List<List<Integer>> digits = IntStream.range(0, SIZE).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
         List<List<Integer>> digits2 = IntStream.range(0, SIZE).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
 

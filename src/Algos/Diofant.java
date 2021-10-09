@@ -3,7 +3,7 @@ package Algos;
 import java.util.Arrays;
 
 /*
-* Решение уравнений вида a*x+b*y=с
+* Решение уравнений вида ax+by=с
 * x2 = y1 - (b / a) * x1
 * y2 = x1
 * k = c / gcd(a, b)
@@ -16,14 +16,12 @@ public class Diofant {
         int b = 17;
         int c = 1;
         int[] ev = evklidExt(a, b);
-        int gcd = ev[0];
-        System.out.printf("%dx + %dy = %d\n", a, b, c);
-        if ((c % gcd) != 0) {
-            System.out.println("fail... Решений не существует");
+        if (c % ev[0] != 0) {
+            System.out.println("Решений нет...");
             return;
         }
-        int x = ev[1] * c / gcd;
-        int y = ev[2] * c / gcd;
+        int x = ev[1] * (c / ev[0]);
+        int y = ev[2] * (c / ev[0]);
         System.out.printf("x = %d, y = %d\n", x, y);
     }
 

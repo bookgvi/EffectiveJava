@@ -1,8 +1,5 @@
 package TestYourSelf.Bor;
 
-
-
-import java.util.Arrays;
 import java.util.List;
 
 public class App {
@@ -17,9 +14,9 @@ public class App {
         String textForAnal = "stinghersstinger dabc";
 
         List.of(keyWords1, keyWords2, keyWords3, keyWords4).forEach(bor::addKeyWord);
-        bor.init();
+        bor.initBor();
 
         System.out.println(textForAnal);
-        System.out.println(bor.textForAnal(textForAnal));
+        System.out.println(bor.textAnalize(textForAnal));
     }
 }

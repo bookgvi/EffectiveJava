@@ -13,6 +13,14 @@ public class Combinatorics {
     }
 
     private static BigInteger binTreeFactorial(int l, int r) {
+        if (l == r) return BigInteger.valueOf(l);
+        if (l - r > 1) return BigInteger.ONE;
+        if (l - r == 1) return BigInteger.valueOf(l).multiply(BigInteger.valueOf(r));
+        int mid = (l + r) / 2;
+        return binTreeFactorial(l, mid).multiply(binTreeFactorial(mid + 1, r));
+    }
+
+    private static BigInteger binTreeFactorial1(int l, int r) {
         if (l > r) return BigInteger.ONE;
         if (l == r) return BigInteger.valueOf(l);
         else if (r - l == 1) return BigInteger.valueOf(l).multiply(BigInteger.valueOf(r));
