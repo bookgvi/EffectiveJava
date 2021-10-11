@@ -21,21 +21,20 @@ public class R4 {
 
     public static void main(String[] args) {
         System.out.println(erat(21));
-        System.out.printf("%s   %s\n", str, ss);
+        System.out.printf("%s \t%s\n", str, ss);
         System.out.println(rabbinKarp(ss));
     }
 
     private static List<Integer> rabbinKarp(String subStr) {
         List<Integer> indexes = new ArrayList<>();
-        int len = subStr.length();
-        long ssHash = getHash(subStr);
-        long prefixHash = 0;
-        for (int i = 0; i + len - 1 < prefixHashes.length; i += 1) {
-            long hash = prefixHashes[i + len - 1];
+        int ssLen = subStr.length();
+        long hashSS = getHash(subStr), prefixHash = 0;
+        for (int i = 0; i + ssLen - 1 < prefixHashes.length; i += 1) {
+            long hash = prefixHashes[i + ssLen - 1];
             if (i > 0) prefixHash = prefixHashes[i - 1];
-            long invP = modPows(pows[i], phi(mod) - 1, mod);
-            long calcHash = (hash - prefixHash > 0) ? (hash - prefixHash) * invP % mod : hash * invP % mod - prefixHash * invP % mod;
-            if (calcHash == ssHash) indexes.add(i);
+            long invP = modPow(pows[i], phi(mod) - 1, mod);
+            long calcHash = (hash - prefixHash) > 0 ? (hash - prefixHash) * invP % mod : hash * invP % mod - prefixHash * invP % mod;
+            if (calcHash == hashSS) indexes.add(i);
         }
         return indexes;
     }
@@ -62,18 +61,18 @@ public class R4 {
     }
 
     private static long[] pows() {
-        final int SIZE = (int) 5e5 + 5;
-        long[] pows = new long[SIZE];
+        final int MAX_VAL = (int) 1e5;
+        long[] pows = new long[MAX_VAL];
         pows[0] = 1;
-        for (int i = 1; i < SIZE; i += 1) {
+        for (int i = 1; i < MAX_VAL; i += 1) {
             pows[i] = pows[i - 1] * k % mod;
         }
         return pows;
     }
 
-    private static long modPows(long n, long pow, int mod) {
+    private static long modPow(long n, long pow, int mod) {
         long res = 1;
-        while(pow > 0) {
+        while (pow > 0) {
             if ((pow & 1) == 1) res = (res * n) % mod;
             n = (n * n) % mod;
             pow >>= 1;
@@ -89,13 +88,13 @@ public class R4 {
                 res -= res / i;
             }
         }
-        if (n > 0) res -= res / n;
+        if (res > 1) res -= res / n;
         return res;
     }
 
     private static List<Integer> erat(int n) {
-        List<Integer> primes = new ArrayList<>();
         boolean[] erat = new boolean[n + 1];
+        List<Integer> primes = new ArrayList<>();
         for (int i = 2; i <= n; i += 1) {
             if (erat[i]) continue;
             primes.add(i);
@@ -106,7 +105,7 @@ public class R4 {
         return primes;
     }
 
-    private static long[] evklidExt(int a, int b) {
+    private static long[] evklidExt(long a, long b) {
         long[] res = new long[3];
         if (a == 0) {
             res[0] = b;

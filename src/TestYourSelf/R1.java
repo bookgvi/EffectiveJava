@@ -25,13 +25,11 @@ public class R1 {
     }
 
     private static int binSearch(int n, List<Integer> sortedArr) {
-        int len = sortedArr.size();
-        int l = 0;
-        int r = len - 1;
-        while (r - l >= 0) {
+        int len = sortedArr.size(), l = 0, r = len - 1;
+        while(r - l >= 0) {
             int mid = (r + l) / 2;
             if (sortedArr.get(mid) == n) return mid;
-            if (sortedArr.get(mid) < n) l = mid + 1;
+            else if (sortedArr.get(mid) < n) l = mid + 1;
             else r = mid - 1;
         }
         return -1;
@@ -39,8 +37,8 @@ public class R1 {
 
     private static int binSearchL(int n, List<Integer> sortedArr) {
         int len = sortedArr.size();
-        int k = len -1;
-        for (int i = len / 2; i > 0; i /= 2) {
+        int k = len - 1;
+        for(int i = len / 2; i > 0; i /= 2) {
             while(k - i >= 0 && sortedArr.get(k - i) >= n) k -= i;
         }
         if (sortedArr.get(k) == n) return k;
@@ -50,8 +48,8 @@ public class R1 {
     private static int binSearchR(int n, List<Integer> sortedArr) {
         int len = sortedArr.size();
         int k = 0;
-        for (int i = len / 2; i > 0; i /= 2) {
-           while(i + k < len && sortedArr.get(i + k) <= n) k += i;
+        for(int i = len / 2; i > 0; i /= 2) {
+            while(k + i < len && sortedArr.get(k + i) <= n) k += i;
         }
         if (sortedArr.get(k) == n) return k;
         return -1;
@@ -59,7 +57,7 @@ public class R1 {
 
     private static List<Integer> bubbleSort(List<Integer> arr) {
         for (int i = 0, len = arr.size(); i < len; i += 1) {
-            for (int  j = 0; j < len - 1; j += 1) {
+            for (int j = 0; j < len - 1; j += 1) {
                 if (arr.get(j) - arr.get(j + 1) > 0) swap(j, j + 1, arr);
             }
         }
@@ -67,7 +65,7 @@ public class R1 {
     }
 
     private static List<Integer> selectSort(List<Integer> arr) {
-        for(int i = 0, len = arr.size(); i < len; i += 1) {
+        for (int i = 0, len = arr.size(); i < len; i += 1) {
             for (int j = i + 1; j < len; j += 1) {
                 if (arr.get(i) - arr.get(j) > 0) swap(i, j, arr);
             }
@@ -77,8 +75,8 @@ public class R1 {
 
     private static List<Integer> insertSort(List<Integer> arr) {
         for (int i = 0, len = arr.size(); i < len; i += 1) {
-            for (int j = i; j > 0 && arr.get(j - 1) > arr.get(j); j -= 1) {
-                swap(j, j - 1, arr);
+            for (int j = i; j > 0 && arr.get(j - 1) - arr.get(j) > 0; j -= 1) {
+                swap(j - 1, j, arr);
             }
         }
         return arr;
@@ -93,7 +91,7 @@ public class R1 {
             digits.get(elt % SIZE).add(elt);
         }
 
-        for (List<Integer> eltList : digits) {
+        for(List<Integer> eltList : digits) {
             for (Integer elt : eltList) {
                 digits2.get(elt / SIZE).add(elt);
             }

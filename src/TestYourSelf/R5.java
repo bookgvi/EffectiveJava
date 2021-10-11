@@ -5,26 +5,34 @@ import java.util.List;
 
 public class R5 {
     public static void main(String[] args) {
-        int n = 12321;
-        System.out.println(allSubsets(n));
-        System.out.println(allSubsets(n).size());
-        System.out.println(getEltInSet(n));
+        int[] arr = {1, 2, 3232};
+        System.out.println(subSets(arr));
     }
 
-    private static List<List<Integer>> allSubsets(int set) {
-        List<List<Integer>> subsetsList = new ArrayList<>();
+    private static List<List<Integer>> subSets(int[] arr) {
+        List<List<Integer>> allSubsets = new ArrayList<>();
+        int binSet = getBinSet(arr);
         int b = 0;
         do {
-            subsetsList.add(getEltInSet(b));
-        } while ((b = (b - set) & set) != 0);
-        return subsetsList;
+            storeSubSets(allSubsets, b, arr);
+        } while ((b = (b - binSet) & binSet) != 0);
+        return allSubsets;
     }
 
-    private static List<Integer> getEltInSet(int set) {
-        List<Integer> elts = new ArrayList<>();
-        for (int i = 0; i < Integer.BYTES * 8; i += 1) {
-            if ((set & (1 << i)) != 0) elts.add(i);
+    private static int getBinSet(int[] arr) {
+        int set = 0;
+        int index = arr.length;
+        for (int i = 0; i < index; i += 1) {
+            set |= (1 << i);
         }
-        return elts;
+        return set;
+    }
+
+    private static void storeSubSets(List<List<Integer>> allSubSets, int subSet, int[] arr) {
+        List<Integer> subSetElts = new ArrayList<>();
+        for (int i = 0; i < Integer.BYTES * 8; i += 1) {
+            if ((subSet & (1 << i)) != 0) subSetElts.add(arr[i]);
+        }
+        allSubSets.add(subSetElts);
     }
 }

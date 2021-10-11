@@ -11,12 +11,12 @@ public class App {
         String[] keyWords4 = {"a", "bc", "abc", "dab", "dabc"};
 
 
-        String textForAnal = "stinghersstinger dabc";
+        String textForAnal = "   stinghersstinger dabc";
 
         List.of(keyWords1, keyWords2, keyWords3, keyWords4).forEach(bor::addKeyWord);
         bor.initBor();
 
         System.out.println(textForAnal);
-        System.out.println(bor.textAnalize(textForAnal));
+        System.out.println(bor.analizeText(textForAnal));
     }
 }
