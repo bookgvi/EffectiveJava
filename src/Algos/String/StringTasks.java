@@ -6,8 +6,8 @@ import java.util.List;
 public class StringTasks {
     private static final int k = (int) 1e5 + 5;
     private static final int mod = (int) 1e9 + 7;
-    private static final String str = "abcbcbcabcdd";
-    private static final String subStr = "abcb";
+    private static final String str = "abcttabcdd";
+    private static final String subStr = "d";
     private static final String firstChar = "a";
     private static final byte firstCharByte = firstChar.getBytes()[0];
     private static final long[] pows = pows();
@@ -19,24 +19,23 @@ public class StringTasks {
         System.out.println(subStr);
         List<Integer> indexes = rabbinKarp(subStr);
         System.out.println(indexes);
-        int compare = compareStrings(0, 7, subStr.length());
+        int compare = compareStrings(0, 5, subStr.length());
         System.out.printf("%d, %d, %b\n", compare, subStr.length(), compare == subStr.length());
     }
 
     private static int compareStrings(int startIndex1, int startIndex2, int len) {
         int k = 0;
         for(int i = len / 2; i > 0; i /= 2) {
-            while(k + i < len && hash(startIndex1 + k + i) == hash(startIndex2 + k + i)) k += i;
+            while(k + i < len && hash(startIndex1, k + i) == hash(startIndex2, k + i)) k += i;
         }
         return k + 1;
     }
 
-    private static long hash(int startIndex) {
+    private static long hash(int startIndex, int mid) {
+        long hash = prefixHashes[startIndex + mid];
         long prefix = startIndex > 0 ? prefixHashes[startIndex - 1] : 0;
-        long hash = (prefixHashes[startIndex] - prefix) > 0
-                ? (prefixHashes[startIndex] - prefix) * invP[startIndex] % mod
-                : prefixHashes[startIndex] * invP[startIndex] % mod - prefix * invP[startIndex] % mod;
-        return hash;
+        if (hash - prefix < 0) hash += mod;
+        return (hash - prefix) * invP[startIndex] % mod;
     }
 
     private static List<Integer> rabbinKarp(String subStr) {
@@ -46,7 +45,8 @@ public class StringTasks {
         for(int i = 0; i + ssLen - 1 < prefixHashes.length; i += 1) {
             long hash = prefixHashes[i + ssLen - 1];
             if (i > 0) prefix = prefixHashes[i - 1];
-            long calcHash = (hash - prefix) > 0 ? (hash - prefix) * invP[i] % mod : hash * invP[i] % mod - prefix * invP[i] % mod;
+            if(hash - prefix < 0) hash += mod;
+            long calcHash = (hash - prefix) * invP[i] % mod;
             if (ssHash == calcHash) indexes.add(i);
         }
         return indexes;
