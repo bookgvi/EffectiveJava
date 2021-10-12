@@ -14,8 +14,8 @@ public class R4 {
     private static final int mod = (int) 1e9 + 7;
     private static final String firstChar = "a";
     private static final byte firstCharByte = firstChar.getBytes()[0];
-    private static final String str = "abcocbab";
-    private static final String ss = "ab";
+    private static final String str = "abcocbabcdd";
+    private static final String ss = "abc";
     private static final long[] pows = pows();
     private static final long[] prefixHashes = prefixHashes(str);
 

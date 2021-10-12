@@ -3,11 +3,13 @@ package TestYourSelf.Bor;
 import java.util.*;
 
 public class AhoKorasik {
+
     private final String rootLabel = "root";
+    private final String rootSuffix = "";
     private final Vertex root;
 
     AhoKorasik() {
-        this.root = new Vertex(rootLabel, "");
+        this.root = new Vertex(rootLabel, rootSuffix);
     }
 
     void addKeyWord(String keyWord) {
@@ -22,10 +24,10 @@ public class AhoKorasik {
     }
 
     void addKeyWord(String[] keyWords) {
-        for (String keyWord : keyWords) addKeyWord(keyWord);
+        for(String keyWord : keyWords) addKeyWord(keyWord);
     }
 
-    public Map<String, List<Integer>> analizeText(String text) {
+    Map<String, List<Integer>> analizeText(String text) {
         Map<String, List<Integer>> words = new HashMap<>();
         Vertex curVertex = root;
         int index = 0;
@@ -36,19 +38,22 @@ public class AhoKorasik {
                 if (curVertex.toNext.get(ch) == null) continue;
                 else curVertex = curVertex.toNext.get(ch);
             }
+
             isOut(curVertex, words, index);
         }
         return words;
     }
 
     private Vertex delta(String ch, Vertex curVertex) {
-        if (curVertex.toNext.get(ch) == null && curVertex.suffLink.toNext.get(ch) != null) return curVertex.suffLink.toNext.get(ch);
-        else if (curVertex.toNext.get(ch) != null) return curVertex.toNext.get(ch);
+        if (curVertex.toNext.get(ch) == null && curVertex.suffLink.toNext.get(ch) != null)
+            return curVertex.suffLink.toNext.get(ch);
+        else if (curVertex.toNext.get(ch) != null)
+            return curVertex.toNext.get(ch);
         return root;
     }
 
-    private void isOut(Vertex curVertex ,Map<String, List<Integer>> words, int index) {
-        for(Vertex outVertex : curVertex.outArr) fillWords(outVertex, words, index);
+    private void isOut(Vertex curVertex, Map<String, List<Integer>> words, int index) {
+        for (Vertex outVertex : curVertex.outArr) fillWords(outVertex, words, index);
     }
 
     private void fillWords(Vertex outVertex, Map<String, List<Integer>> words, int index) {
@@ -87,7 +92,7 @@ public class AhoKorasik {
 
     private void setRootSuffLink() {
         root.suffLink = root;
-        for (Vertex firstAfterRoot : root.toNext.values()) firstAfterRoot.suffLink = root;
+        for(Vertex firstAfterRoot : root.toNext.values()) firstAfterRoot.suffLink = root;
     }
 
     private void setSuffLink(Vertex parentVertex, Vertex curVertex) {
@@ -98,22 +103,22 @@ public class AhoKorasik {
         }
     }
 
-    private void setOutArr(Vertex curVertex) {
-        for (Vertex nextVertex : curVertex.toNext.values()) {
+    private void setOutArr(Vertex startVertex) {
+        for (Vertex nextVertex : startVertex.toNext.values()) {
             fillOutArr(nextVertex, nextVertex.outArr);
             setOutArr(nextVertex);
         }
     }
 
     private void fillOutArr(Vertex curVertex, List<Vertex> outArr) {
-        if (curVertex.isTerminal) outArr.add(curVertex);
+        if(curVertex.isTerminal) outArr.add(curVertex);
         if (curVertex.suffLink == root) return;
         fillOutArr(curVertex.suffLink, outArr);
     }
 
-    private void setUnvisited(Vertex curVertex) {
-        curVertex.isVisited = false;
-        for (Vertex nextVertex : curVertex.toNext.values()) {
+    private void setUnvisited(Vertex startVertex) {
+        startVertex.isVisited = false;
+        for(Vertex nextVertex : startVertex.toNext.values()) {
             setUnvisited(nextVertex);
         }
     }
@@ -122,7 +127,7 @@ public class AhoKorasik {
         private final String label;
         private final String suffix;
         private final List<Vertex> outArr;
-        private Map<String, Vertex> toNext;
+        private final Map<String, Vertex> toNext;
         private Vertex suffLink;
         private boolean isVisited;
         private boolean isTerminal;
@@ -139,7 +144,6 @@ public class AhoKorasik {
 
     private static class VertexQueue<V> extends AbstractQueue<V> {
         LinkedList<V> vList = new LinkedList<>();
-
         @Override
         public Iterator<V> iterator() {
             return vList.iterator();
@@ -153,9 +157,7 @@ public class AhoKorasik {
         @Override
         public boolean offer(V v) {
             boolean res = false;
-            if (v != null) {
-                res = vList.offer(v);
-            }
+            if (v != null) res = vList.offer(v);
             return res;
         }
 
