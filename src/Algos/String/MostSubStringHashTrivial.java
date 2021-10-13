@@ -3,7 +3,7 @@ package Algos.String;
 import java.util.*;
 import java.util.stream.*;
 
-public class MostSubStringHash {
+public class MostSubStringHashTrivial {
     private static final int k = (int) 1e5 + 5;
     private static final int mod = (int) 1e9 + 7;
     private static final String firstChar = "A";
@@ -19,26 +19,21 @@ public class MostSubStringHash {
         long[] phs1 = prefixHashes(str1);
         long[] phs2 = prefixHashes(str2);
         int len = str1.length();
-        String res = searchSubStr(phs1, phs2, len);
+        String res = hashSearch(phs1, phs2, len);
         System.out.println(res);
     }
 
-    private static String searchSubStr(long[] phs1, long[] phs2, int len) {
+    private static String hashSearch(long[] phs1, long[] phs2, int len) {
         int l = 0, r = len, pos = -1;
         while (r - l > 1) {
             int mid = (r + l) / 2;
-            List<Long> str1Hashes = new ArrayList<>();
-            for (int i = 0; i + mid < len; i += 1) {
-                 str1Hashes.add(hash(phs1, i, mid));
-            }
-            str1Hashes = sort(str1Hashes);
             int p = -1;
             for (int i = 0; i + mid < len; i += 1) {
-                long hstr2 = hash(phs2, i, mid);
-                int isFound = binSearch(hstr2, str1Hashes);
-                if (isFound != -1) {
-                    p = i;
-                    break;
+                for (int j = 0; j + mid < len; j += 1) {
+                    if (binSearch(phs1, i, phs2, j, mid)) {
+                        p = i;
+                        break;
+                    }
                 }
             }
             if (p >= 0) {
@@ -48,42 +43,39 @@ public class MostSubStringHash {
                 r = mid;
             }
         }
-        return str2.substring(pos, pos + l + 1);
+        return str1.substring(pos, pos + l);
     }
 
-    private static long hash(long[] phs, int pos, int offset) {
-        long hash = phs[pos + offset];
-        long prefix = pos > 0 ? phs[pos - 1] : 0;
-        hash = hash - prefix < 0 ? hash + mod : hash;
-        return (hash - prefix) * invP[pos] % mod;
-    }
-
-    private static int binSearch(long n, List<Long> arr) {
-        int len = arr.size();
-        int k = len - 1;
+    private static boolean binSearch(long[] phs1, int pos1, long[] phs2, int pos2, int len) {
+        int k = 0;
         for (int i = len / 2; i > 0; i /= 2) {
-            while (k - i >= 0 && arr.get(k - i) >= n) k -= i;
+            while (i + k < len && hash(phs1, pos1, i + k) == hash(phs2, pos2, i + k)) k += i;
         }
-        if (arr.get(k) == n) return k;
-        return -1;
+        return k + 1 == len;
+    }
+
+    private static long hash(long[] hash, int pos, int offset) {
+        long strH = hash[pos + offset];
+        long prefH = pos > 0 ? hash[pos - 1] : 0;
+        strH = strH < prefH ? strH + mod : strH;
+        return (strH - prefH) * invP[pos] % mod;
     }
 
     private static List<Long> sort(List<Long> unsortedArr) {
-        int size = 1 << (Integer.BYTES << 2) ;
         List<Long> arr = List.copyOf(unsortedArr);
-        List<List<Long>> digits = LongStream.range(0, size).mapToObj(i -> new ArrayList<Long>()).collect(Collectors.toList());
-        List<List<Long>> digits2 = LongStream.range(0, size).mapToObj(i -> new ArrayList<Long>()).collect(Collectors.toList());
-
-        for (Long elt : arr) {
-            digits.get((int) (elt % size)).add(elt);
+        int max = 1 << (Integer.BYTES * 8 >> 1);
+        List<List<Long>> digits = LongStream.range(0, max).mapToObj(i -> new ArrayList<Long>()).collect(Collectors.toList());
+        List<List<Long>> digits2 = LongStream.range(0, max).mapToObj(i -> new ArrayList<Long>()).collect(Collectors.toList());
+        for (long elt : arr) {
+            digits.get((int) (elt % max)).add(elt);
         }
-
         for (List<Long> eltList : digits) {
             for (Long elt : eltList) {
-                digits2.get((int)(elt / size)).add(elt);
+                digits2.get((int) (elt / max)).add(elt);
             }
         }
-        return digits2.stream().flatMap(Collection::stream).collect(Collectors.toList());
+        List<Long> resList = digits2.stream().flatMap(Collection::stream).collect(Collectors.toList());
+        return resList;
     }
 
     private static long[] prefixHashes(String str) {
@@ -98,7 +90,7 @@ public class MostSubStringHash {
     }
 
     private static long[] pows() {
-        int max = (int) 1e5 + 5;
+        final int max = (int) 1e5 + 5;
         long[] pows = new long[max];
         pows[0] = 1;
         for (int i = 1; i < max; i += 1) {
@@ -108,10 +100,10 @@ public class MostSubStringHash {
     }
 
     private static long[] invP() {
-        int len = pows.length;
-        long[] invP = new long[len];
+        final int max = pows.length;
+        long[] invP = new long[max];
         long phi = phi(mod) - 1;
-        for (int i = 0; i < len; i += 1) {
+        for (int i = 0; i < max; i += 1) {
             invP[i] = modPow(pows[i], phi, mod);
         }
         return invP;
