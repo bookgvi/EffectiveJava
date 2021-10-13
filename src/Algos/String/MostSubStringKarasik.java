@@ -1,8 +1,8 @@
-package Leetcode.Simple;
+package Algos.String;
 
 import java.util.*;
 
-public class MostSubString {
+public class MostSubStringKarasik {
     private static final String rootLabel = "root";
     private static final String rootSuffix = "";
     private static final Vertex root = new Vertex(rootLabel, rootSuffix);
