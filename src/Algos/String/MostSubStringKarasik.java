@@ -8,8 +8,8 @@ public class MostSubStringKarasik {
     private static final Vertex root = new Vertex(rootLabel, rootSuffix);
 
     public static void main(String[] args) {
-        String str1 = "VOTEFORTHEGREATALBANIAFORYOU";
-        String textForAnal = "CHOOSETHEGREATALBANIANFUTURE";
+        final String str1 = "VOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOU";
+        final String str2 = "CHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURE";
 
         String[] keyWords = getKeyWords(str1);
         addKeyWord(keyWords);
@@ -22,8 +22,11 @@ public class MostSubStringKarasik {
 //        List.of(keyWords1, keyWords2, keyWords3, keyWords4).forEach(MostSubString::addKeyWord);
 
         intiBor();
-        Map<Integer, List<String>> words = analize(textForAnal);
+        long startTime = System.nanoTime();
+        Map<Integer, List<String>> words = analize(str2);
+        long endTime = System.nanoTime();
         System.out.println(words.get(words.size()));
+        System.out.printf("%.8f\n", (endTime - startTime) / 1e9);
     }
 
     private static String[] getKeyWords(String str) {

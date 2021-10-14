@@ -9,8 +9,8 @@ public class MostSubStringHashTrivial {
     private static final String firstChar = "A";
     private static final byte firstCharByte = firstChar.getBytes()[0];
 
-    private static final String str1 = "VOTEFORTHEGREATALBANIAFORYOU";
-    private static final String str2 = "CHOOSETHEGREATALBANIANFUTURE";
+    private static final String str1 = "VOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOUVOTEFORTHEGREATALBANIAFORYOU";
+    private static final String str2 = "CHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURECHOOSETHEGREATALBANIANFUTURE";
 
     private static final long[] pows = pows();
     private static final long[] invP = invP();
@@ -19,7 +19,10 @@ public class MostSubStringHashTrivial {
         long[] phs1 = prefixHashes(str1);
         long[] phs2 = prefixHashes(str2);
         int len = str1.length();
+        long startTime = System.nanoTime();
         String res = hashSearch(phs1, phs2, len);
+        long endTime = System.nanoTime();
+        System.out.printf("%.8f\n", (endTime - startTime) / 1e9);
         System.out.println(res);
     }
 
