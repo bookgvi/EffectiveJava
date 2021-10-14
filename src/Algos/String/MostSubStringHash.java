@@ -9,16 +9,15 @@ public class MostSubStringHash {
     private static final String firstChar = "A";
     private static final byte firstCharByte = firstChar.getBytes()[0];
 
-    private static final String str1 = "VOTEFORTHEGREATALBANIAFORYOU";
-    private static final String str2 = "CHOOSETHEGREATALBANIANFUTURE";
-
+    private static final String str1 = " if you want to fuck for funny fuck yourself and keep the maoney";
+    private static final String str2 = " have a sex fuck my dog if you want to his name is rex";
     private static final long[] pows = pows();
     private static final long[] invP = invP();
 
     public static void main(String[] args) {
         long[] phs1 = prefixHashes(str1);
         long[] phs2 = prefixHashes(str2);
-        int len = str1.length();
+        int len = Math.min(str1.length(), str2.length());
         String res = searchSubStr(phs1, phs2, len);
         System.out.println(res);
     }

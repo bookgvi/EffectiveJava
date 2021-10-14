@@ -24,34 +24,32 @@ public class R1 {
         System.out.printf("\n%s   %d -> [%d, %d]\n", sortedArr, n, lN, rN);
     }
 
-    private static int binSearch(int n, List<Integer> sortedArr) {
-        int len = sortedArr.size(), l = 0, r = len - 1;
-        while(r - l >= 0) {
+    private static int binSearch(int n, List<Integer> arr) {
+        int len = arr.size(), l = 0, r = len - 1;
+        while (r - l > 1) {
             int mid = (r + l) / 2;
-            if (sortedArr.get(mid) == n) return mid;
-            else if (sortedArr.get(mid) < n) l = mid + 1;
-            else r = mid - 1;
+            if (arr.get(mid) == n) return mid;
+            else if (arr.get(mid) < n) l = mid;
+            else r = mid;
         }
         return -1;
     }
 
-    private static int binSearchL(int n, List<Integer> sortedArr) {
-        int len = sortedArr.size();
-        int k = len - 1;
-        for(int i = len / 2; i > 0; i /= 2) {
-            while(k - i >= 0 && sortedArr.get(k - i) >= n) k -= i;
+    private static int binSearchL(int n, List<Integer> arr) {
+        int len = arr.size(), k = len - 1;
+        for (int i = len / 2; i > 0; i /= 2) {
+            while (k - i >= 0 && arr.get(k - i) >= n) k -= i;
         }
-        if (sortedArr.get(k) == n) return k;
+        if (arr.get(k) == n) return k;
         return -1;
     }
 
-    private static int binSearchR(int n, List<Integer> sortedArr) {
-        int len = sortedArr.size();
-        int k = 0;
-        for(int i = len / 2; i > 0; i /= 2) {
-            while(k + i < len && sortedArr.get(k + i) <= n) k += i;
+    private static int binSearchR(int n, List<Integer> arr) {
+        int len = arr.size(), k = 0;
+        for (int i = len / 2; i > 0; i /= 2) {
+            while (i + k < len && arr.get(i + k) <= n) k += i;
         }
-        if (sortedArr.get(k) == n) return k;
+        if (arr.get(k) == n) return k;
         return -1;
     }
 
@@ -83,20 +81,18 @@ public class R1 {
     }
 
     private static List<Integer> lsdSort(List<Integer> arr) {
-        final int SIZE = 1 << Integer.BYTES * 8 / 2;
-        List<List<Integer>> digits = IntStream.range(0, SIZE).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
-        List<List<Integer>> digits2 = IntStream.range(0, SIZE).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
+        int size = 1 << Integer.BYTES;
+        List<List<Integer>> digits = IntStream.range(0, size).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
+        List<List<Integer>> digits2 = IntStream.range(0, size).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
 
         for (Integer elt : arr) {
-            digits.get(elt % SIZE).add(elt);
+            digits.get(elt % size).add(elt);
         }
-
-        for(List<Integer> eltList : digits) {
+        for (List<Integer> eltList : digits) {
             for (Integer elt : eltList) {
-                digits2.get(elt / SIZE).add(elt);
+                digits2.get(elt / size).add(elt);
             }
         }
-
         return digits2.stream().flatMap(Collection::stream).collect(Collectors.toList());
     }
 

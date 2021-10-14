@@ -17,6 +17,6 @@ public class App {
         bor.initBor();
 
         System.out.println(textForAnal);
-        System.out.println(bor.analizeTexts(textForAnal));
+        System.out.println(bor.textAnalize(textForAnal));
     }
 }
