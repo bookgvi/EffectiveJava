@@ -3,13 +3,13 @@ package TestYourSelf.Bor;
 import java.util.*;
 import java.util.stream.IntStream;
 
-public class AhoKorasik {
+public class SuffixSort_tmp {
 
     private final String rootLabel = "root";
     private final String rootSuffix = "";
     private final Vertex root;
 
-    AhoKorasik() {
+    SuffixSort_tmp() {
         this.root = new Vertex(rootLabel, rootSuffix);
     }
 

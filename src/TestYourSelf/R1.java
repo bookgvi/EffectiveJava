@@ -10,12 +10,15 @@ import java.util.stream.IntStream;
 public class R1 {
     public static void main(String[] args) {
         int size = 10;
-        int maxValue = 15;
+        int maxValue = 3;
         Supplier<List<Integer>> arr = () -> fillArr(size, maxValue);
         System.out.printf("Bubble: %s\n", bubbleSort(arr.get()));
         System.out.printf("Select: %s\n", selectSort(arr.get()));
         System.out.printf("Insert: %s\n", insertSort(arr.get()));
         System.out.printf("LSD: %s\n", lsdSort(arr.get()));
+        List<Integer> unArr = arr.get();
+        System.out.println(unArr);
+        System.out.printf("radix: %s\n", Arrays.toString(radixSort(unArr)));
 
         int n = ThreadLocalRandom.current().nextInt(maxValue);
         List<Integer> sortedArr = lsdSort(arr.get());
@@ -51,6 +54,28 @@ public class R1 {
         }
         if (arr.get(k) == n) return k;
         return -1;
+    }
+
+    private static int[] radixSort(List<Integer> arr) {
+        final int d = 8;
+        final int base = Integer.BYTES;
+        int[] target = new int[arr.size()];
+        int[] res = new int[arr.size()];
+        IntStream.range(0, arr.size()).forEach(i -> res[i] = arr.get(i));
+        for (int p = 0; p < base; p += 1) {
+            int[] digits = new int[1 << d];
+            for (int elt : res) {
+                digits[((elt ^ Integer.MIN_VALUE) >> (p * d)) & ((1 << d) - 1)] += 1;
+            }
+            for (int i = 1; i < digits.length; i += 1) {
+                digits[i] += digits[i - 1];
+            }
+            for (int i = res.length - 1; i >= 0; i -= 1) {
+                target[--digits[((res[i] ^ Integer.MIN_VALUE) >> (p * d)) & ((1 << d) - 1)]] = res[i];
+            }
+            System.arraycopy(target, 0, res, 0, target.length);
+        }
+        return res;
     }
 
     private static List<Integer> bubbleSort(List<Integer> arr) {
