@@ -12,21 +12,25 @@ public class App {
         String[] keyWords4 = {"a", "bc", "abc", "dab", "dabc"};
 
 
-        String textForAnal = "   stinghersstinger dabc";
-        List.of(keyWords1, keyWords2, keyWords3, keyWords4).forEach(bor::addKeyWord);
-        bor.initBor();
-        System.out.println(textForAnal);
-        System.out.println(bor.analizeText(textForAnal));
-        bor.dfs();
-
-        bor = new AhoKorasik();
         String str = "abracadabra";
         String[] suffixes = getSuffixes(str);
-        Arrays.stream(suffixes).forEach(bor::addKeyWord);
-        bor.initBor();
-        System.out.println(bor.analizeText(str));
+
+//        String textForAnal = "   stinghersstinger dabc";
+//        List.of(keyWords1, keyWords2, keyWords3, keyWords4).forEach(bor::addKeyWord);
+//        Arrays.stream(suffixes).forEach(bor::addKeyWord);
+//        bor.initBor();
+//        System.out.println(textForAnal);
+//        System.out.println(bor.analizeText(textForAnal));
+//        bor.dfs();
+//        System.out.println();
+//        System.out.println();
+
+        SuffixArrayViaKarasik bor1 = new SuffixArrayViaKarasik();
+        Arrays.stream(suffixes).forEach(bor1::addKeyWord);
+        bor1.initBor();
+        System.out.println(bor1.analizeText(str));
         long startTime = System.nanoTime();
-        bor.dfs();
+        bor1.dfs();
         long endTime = System.nanoTime();
         System.out.printf("%f8\n", (endTime - startTime) / 1e9);
     }

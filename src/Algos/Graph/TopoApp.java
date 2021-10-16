@@ -16,9 +16,9 @@ public class TopoApp {
         theGraph.addEdge("A", "C");
 
         theGraph.dfs("C", true);
-//        theGraph.dfs("B", true);
-//        theGraph.dfs("C", true);
-//        theGraph.dfs("D", true);
+        theGraph.dfs("B", true);
+        theGraph.dfs("C", true);
+        theGraph.dfs("D", true);
         theGraph.displayTopo(); // BAEDGCFH (?)
     }
 }

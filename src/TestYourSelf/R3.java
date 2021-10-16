@@ -6,48 +6,52 @@ import java.util.*;
 
 public class R3 {
     public static void main(String[] args) {
-        int[] coins = new int[]{1, 3, 5, 10, 25, 50};
-        int n = 43, k = 17, a = 5;
-        n = k;
-        List<Integer> first = solve(n, coins);
-        while (n > 0) {
-            System.out.println(first.get(n));
-            n -= first.get(n);
+        int[] coins = new int[]{1, 3, 5, 10};
+        System.out.println(Arrays.toString(coins));
+        for (int i = 1; i < 24; i += 1) {
+            nextPermutation(coins);
+            System.out.println(Arrays.toString(coins));
         }
     }
 
-    private static List<Integer> solve1(int n, int[] coins) {
-        List<Integer> first = new ArrayList<>(), values = new ArrayList<>();
-        first.add(0);
-        values.add(0);
-        for (int i = 1; i <= n; i += 1) {
-            first.add(0);
-            values.add(Integer.MAX_VALUE / 10 * 9);
-            for (int coin : coins) {
-                if (i - coin > 0 && values.get(i - coin) + 1 < values.get(i)) {
-                    values.set(i, values.get(i - coin) + 1);
-                    first.set(i, coin);
+    private static int[] nextPermutation(int[] arr) {
+        int len = arr.length;
+        for(int i = len - 2; i >= 0; i -= 1) {
+            if (arr[i] < arr[i + 1]) {
+                int min = i + 1;
+                for (int j = min; j < len; j += 1) {
+                    if (arr[j] < arr[min] && arr[j] > arr[i])
+                        min = j;
                 }
+                swap(i, min, arr);
+                sort(i + 1, arr);
+                return arr;
             }
         }
-        return first;
+        return null;
     }
 
-    private static List<Integer> solve(int n, int[] coins) {
-        List<Integer> first = new ArrayList<>();
-        List<Integer> values = new ArrayList<>();
-        first.add(0);
-        values.add(0);
-        for (int i = 1; i <= n; i += 1) {
-            first.add(0);
-            values.add(Integer.MAX_VALUE / 10 * 9);
-            for (int coin : coins) {
-                if (i - coin >= 0 && values.get(i - coin) + 1 < values.get(i)) {
-                    values.set(i, values.get(i - coin) + 1);
-                    first.set(i, coin);
-                }
+    private static void sort(int start, int[] arr) {
+        int len = arr.length, b = 8, dw = Integer.BYTES;
+        int[] t = new int[len];
+        for (int p = 0; p < dw; p += 1) {
+            int[] count = new int[1 << b];
+            for (int i = start; i < len; i += 1) {
+                count[((arr[i] ^ Integer.MIN_VALUE) >>> (b * p)) & ((1 << b) - 1)] += 1;
             }
+            for (int i = 1; i < 1 << b; i += 1) {
+                count[i] += count[i - 1];
+            }
+            for (int i = len - 1; i >= start; i -= 1) {
+                t[--count[((arr[i] ^ Integer.MIN_VALUE) >>> (b * p)) & ((1 << b) - 1)]] = arr[i];
+            }
+            System.arraycopy(t, 0, arr, start, len - start);
         }
-        return first;
+    }
+
+    private static void swap(int i, int j, int[] arr) {
+        arr[i] = arr[i] + arr[j];
+        arr[j] = arr[i] - arr[j];
+        arr[i] = arr[i] - arr[j];
     }
 }

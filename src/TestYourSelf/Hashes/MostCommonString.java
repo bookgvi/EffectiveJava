@@ -6,11 +6,13 @@ import java.util.*;
 public class MostCommonString {
     private static final int k = (int) 1e5 + 5;
     private static final int mod = (int) 1e9 + 7;
-    private static final String firstChar = "A";
+    private static final String firstChar = "a";
     private static final byte firstCharByte = firstChar.getBytes()[0];
 
-    private static final String str1 = "VOTEFORTHEGREATALBANIAFORYOU";
-    private static final String str2 = "CHOOSETHEGREATALBANIANFUTURE";
+//    private static final String str1 = "VOTEFORTHEGREATALBANIAFORYOU";
+//    private static final String str2 = "CHOOSETHEGREATALBANIANFUTURE";
+    private static final String str1 = "for the horde!!";
+    private static final String str2 = "for the alliance!";
     private static final long[] pows = pows();
     private static final long[] invP = invP();
 
@@ -48,7 +50,7 @@ public class MostCommonString {
                 r = mid;
             }
         }
-        return pos > 0 ? str2.substring(pos, pos + l + 1) : "";
+        return pos != -1 ? str2.substring(pos, pos + l + 1) : "";
     }
 
     private static long binSearch(long n, long[] arr) {

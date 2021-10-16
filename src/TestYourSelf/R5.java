@@ -10,29 +10,30 @@ public class R5 {
     }
 
     private static List<List<Integer>> subSets(int[] arr) {
-        List<List<Integer>> allSubsets = new ArrayList<>();
-        int binSet = getBinSet(arr);
-        int b = 0;
+        List<List<Integer>> subSets = new ArrayList<>();
+        int bitSet = getBitSet(arr);
+        int bitSubSet = 0;
         do {
-            storeSubSets(allSubsets, b, arr);
-        } while ((b = (b - binSet) & binSet) != 0);
-        return allSubsets;
+            List<Integer> subSet = getSubSetFromBitSet(bitSubSet, arr);
+            if (subSet.size() == 1) subSets.add(subSet);
+        } while((bitSubSet = (bitSubSet - bitSet) & bitSet) != 0);
+        return subSets;
     }
 
-    private static int getBinSet(int[] arr) {
+    private static int getBitSet(int[] arr) {
         int set = 0;
-        int index = arr.length;
-        for (int i = 0; i < index; i += 1) {
+        for (int i = 0, len = arr.length; i < len; i += 1) {
             set |= (1 << i);
         }
         return set;
     }
 
-    private static void storeSubSets(List<List<Integer>> allSubSets, int subSet, int[] arr) {
-        List<Integer> subSetElts = new ArrayList<>();
+    private static List<Integer> getSubSetFromBitSet(int bitSubSet, int[] arr) {
+        List<Integer> subSet = new ArrayList<>();
         for (int i = 0; i < Integer.BYTES * 8; i += 1) {
-            if ((subSet & (1 << i)) != 0) subSetElts.add(arr[i]);
+            if ((bitSubSet & (1 << i)) != 0) subSet.add(arr[i]);
         }
-        allSubSets.add(subSetElts);
+        return subSet;
     }
+
 }

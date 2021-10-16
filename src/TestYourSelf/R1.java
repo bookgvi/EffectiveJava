@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 public class R1 {
     public static void main(String[] args) {
         int size = 10;
-        int maxValue = 3;
+        int maxValue = 30;
         Supplier<List<Integer>> arr = () -> fillArr(size, maxValue);
         System.out.printf("Bubble: %s\n", bubbleSort(arr.get()));
         System.out.printf("Select: %s\n", selectSort(arr.get()));
@@ -28,9 +28,9 @@ public class R1 {
     }
 
     private static int binSearch(int n, List<Integer> arr) {
-        int len = arr.size(), l = 0, r = len - 1;
-        while (r - l > 1) {
-            int mid = (r + l) / 2;
+        int len = arr.size(), l = 0, r = len + 1, mid;
+        while(r - l > 1) {
+            mid = (r + l) >> 1;
             if (arr.get(mid) == n) return mid;
             else if (arr.get(mid) < n) l = mid;
             else r = mid;
@@ -38,50 +38,28 @@ public class R1 {
         return -1;
     }
 
-    private static int binSearchL(int n, List<Integer> arr) {
-        int len = arr.size(), k = len - 1;
-        for (int i = len / 2; i > 0; i /= 2) {
-            while (k - i >= 0 && arr.get(k - i) >= n) k -= i;
-        }
-        if (arr.get(k) == n) return k;
-        return -1;
-    }
-
     private static int binSearchR(int n, List<Integer> arr) {
         int len = arr.size(), k = 0;
-        for (int i = len / 2; i > 0; i /= 2) {
-            while (i + k < len && arr.get(i + k) <= n) k += i;
+        for(int i = len >> 1; i > 0; i >>= 1) {
+            while(k + i < len && arr.get(i + k) <= n) k += i;
         }
         if (arr.get(k) == n) return k;
         return -1;
     }
 
-    private static int[] radixSort(List<Integer> arr) {
-        final int d = 8;
-        final int base = Integer.BYTES;
-        int[] target = new int[arr.size()];
-        int[] res = new int[arr.size()];
-        IntStream.range(0, arr.size()).forEach(i -> res[i] = arr.get(i));
-        for (int p = 0; p < base; p += 1) {
-            int[] digits = new int[1 << d];
-            for (int elt : res) {
-                digits[((elt ^ Integer.MIN_VALUE) >> (p * d)) & ((1 << d) - 1)] += 1;
-            }
-            for (int i = 1; i < digits.length; i += 1) {
-                digits[i] += digits[i - 1];
-            }
-            for (int i = res.length - 1; i >= 0; i -= 1) {
-                target[--digits[((res[i] ^ Integer.MIN_VALUE) >> (p * d)) & ((1 << d) - 1)]] = res[i];
-            }
-            System.arraycopy(target, 0, res, 0, target.length);
+    private static int binSearchL(int n, List<Integer> arr) {
+        int len = arr.size(), k = len - 1;
+        for(int i = len >> 1; i > 0; i >>= 1) {
+            while(k - i >=0 && arr.get(k - i) >= n) k -= i;
         }
-        return res;
+        if (arr.get(k) == n) return k;
+        return -1;
     }
 
     private static List<Integer> bubbleSort(List<Integer> arr) {
         for (int i = 0, len = arr.size(); i < len; i += 1) {
-            for (int j = 0; j < len - 1; j += 1) {
-                if (arr.get(j) - arr.get(j + 1) > 0) swap(j, j + 1, arr);
+            for (int j = 1; j < len; j += 1) {
+                if (arr.get(j - 1) - arr.get(j) > 0) swap(j - 1, j, arr);
             }
         }
         return arr;
@@ -99,26 +77,46 @@ public class R1 {
     private static List<Integer> insertSort(List<Integer> arr) {
         for (int i = 0, len = arr.size(); i < len; i += 1) {
             for (int j = i; j > 0 && arr.get(j - 1) - arr.get(j) > 0; j -= 1) {
-                swap(j - 1, j, arr);
+                swap(j, j - 1, arr);
             }
         }
         return arr;
     }
 
     private static List<Integer> lsdSort(List<Integer> arr) {
-        int size = 1 << Integer.BYTES;
-        List<List<Integer>> digits = IntStream.range(0, size).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
-        List<List<Integer>> digits2 = IntStream.range(0, size).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
+        int max = 1 << 16;
+        List<List<Integer>> digits = IntStream.range(0, max).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
+        List<List<Integer>> digits2 = IntStream.range(0, max).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
 
-        for (Integer elt : arr) {
-            digits.get(elt % size).add(elt);
+        for (int elt : arr) {
+            digits.get(elt % max).add(elt);
         }
         for (List<Integer> eltList : digits) {
-            for (Integer elt : eltList) {
-                digits2.get(elt / size).add(elt);
+            for (int elt : eltList) {
+                digits2.get(elt / max).add(elt);
             }
         }
         return digits2.stream().flatMap(Collection::stream).collect(Collectors.toList());
+    }
+
+    private static int[] radixSort(List<Integer> unorderedArr) {
+        int b = 8, dw = Integer.BYTES, len = unorderedArr.size();
+        int[] t = new int[len], arr = new int[len];
+        IntStream.range(0, len).forEach(i -> arr[i] = unorderedArr.get(i));
+        for (int p = 0; p < dw; p += 1) {
+            int[] count = new int[1 << b];
+            for (int elt : arr) {
+                count[((elt ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
+            }
+            for (int i = 1; i < 1 << b; i += 1) {
+                count[i] += count[i - 1];
+            }
+            for (int i = len - 1; i >= 0; i -= 1) {
+                t[--count[((arr[i] ^ Integer.MIN_VALUE) >>> (p * b) & ((1 << b) - 1))]] = arr[i];
+            }
+            System.arraycopy(t, 0, arr, 0, len);
+        }
+        return arr;
     }
 
     private static void swap(int a, int b, List<Integer> arr) {
