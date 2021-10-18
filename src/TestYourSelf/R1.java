@@ -18,7 +18,7 @@ public class R1 {
         System.out.printf("LSD: %s\n", lsdSort(arr.get()));
         List<Integer> unArr = arr.get();
         System.out.println(unArr);
-        System.out.printf("radix: %s\n", Arrays.toString(radixSort(unArr)));
+        System.out.printf("radix: %s\n", radixSort(unArr));
 
         int n = ThreadLocalRandom.current().nextInt(maxValue);
         List<Integer> sortedArr = lsdSort(arr.get());
@@ -57,7 +57,7 @@ public class R1 {
     }
 
     private static List<Integer> bubbleSort(List<Integer> arr) {
-        for (int i = 0, len = arr.size(); i < len; i += 1) {
+        for(int i = 0, len = arr.size(); i < len; i += 1) {
             for (int j = 1; j < len; j += 1) {
                 if (arr.get(j - 1) - arr.get(j) > 0) swap(j - 1, j, arr);
             }
@@ -68,16 +68,16 @@ public class R1 {
     private static List<Integer> selectSort(List<Integer> arr) {
         for (int i = 0, len = arr.size(); i < len; i += 1) {
             for (int j = i + 1; j < len; j += 1) {
-                if (arr.get(i) - arr.get(j) > 0) swap(i, j, arr);
+                if(arr.get(i) - arr.get(j) > 0) swap(i, j, arr);
             }
         }
         return arr;
     }
 
     private static List<Integer> insertSort(List<Integer> arr) {
-        for (int i = 0, len = arr.size(); i < len; i += 1) {
+        for(int i = 0, len = arr.size(); i < len; i += 1) {
             for (int j = i; j > 0 && arr.get(j - 1) - arr.get(j) > 0; j -= 1) {
-                swap(j, j - 1, arr);
+                swap(j - 1, j, arr);
             }
         }
         return arr;
@@ -87,34 +87,32 @@ public class R1 {
         int max = 1 << 16;
         List<List<Integer>> digits = IntStream.range(0, max).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
         List<List<Integer>> digits2 = IntStream.range(0, max).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
-
         for (int elt : arr) {
             digits.get(elt % max).add(elt);
         }
-        for (List<Integer> eltList : digits) {
-            for (int elt : eltList) {
+        for(List<Integer> eltList : digits) {
+            for(int elt : eltList) {
                 digits2.get(elt / max).add(elt);
             }
         }
         return digits2.stream().flatMap(Collection::stream).collect(Collectors.toList());
     }
 
-    private static int[] radixSort(List<Integer> unorderedArr) {
-        int b = 8, dw = Integer.BYTES, len = unorderedArr.size();
-        int[] t = new int[len], arr = new int[len];
-        IntStream.range(0, len).forEach(i -> arr[i] = unorderedArr.get(i));
-        for (int p = 0; p < dw; p += 1) {
+    private static List<Integer> radixSort(List<Integer> arr) {
+        int b = 8, dw = Integer.BYTES, len = arr.size();
+        int[] t = new int[len];
+        for (int p = 0;  p < dw; p += 1) {
             int[] count = new int[1 << b];
-            for (int elt : arr) {
-                count[((elt ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
+            for(int elt : arr) {
+                count[((elt ^ Integer.MIN_VALUE) >>> (b * p)) & ((1 << b) - 1)] += 1;
             }
             for (int i = 1; i < 1 << b; i += 1) {
                 count[i] += count[i - 1];
             }
-            for (int i = len - 1; i >= 0; i -= 1) {
-                t[--count[((arr[i] ^ Integer.MIN_VALUE) >>> (p * b) & ((1 << b) - 1))]] = arr[i];
+            for(int i = len - 1; i >= 0; i -= 1) {
+                t[--count[((arr.get(i) ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr.get(i);
             }
-            System.arraycopy(t, 0, arr, 0, len);
+            IntStream.range(0, len).forEach(i -> arr.set(i, t[i]));
         }
         return arr;
     }

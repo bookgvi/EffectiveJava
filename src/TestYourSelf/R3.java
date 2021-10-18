@@ -8,7 +8,8 @@ public class R3 {
     public static void main(String[] args) {
         int[] coins = new int[]{1, 3, 5, 10};
         System.out.println(Arrays.toString(coins));
-        for (int i = 1; i < 24; i += 1) {
+        int nFact = fact(coins.length);
+        for (int i = 1; i < nFact; i += 1) {
             nextPermutation(coins);
             System.out.println(Arrays.toString(coins));
         }
@@ -53,5 +54,17 @@ public class R3 {
         arr[i] = arr[i] + arr[j];
         arr[j] = arr[i] - arr[j];
         arr[i] = arr[i] - arr[j];
+    }
+
+    private static int fact(int n) {
+        return getFact(1, n);
+    }
+
+    private static int getFact(int l, int r) {
+//        if (l == r) return l;
+//        if (l > r) return 1;
+        if (r - l == 1) return l * r;
+        int mid = (r + l) >> 1;
+        return getFact(l, mid) * getFact(mid + 1, r);
     }
 }

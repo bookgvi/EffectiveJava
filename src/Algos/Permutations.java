@@ -35,13 +35,12 @@ public class Permutations {
      * */
     private static List<Integer> nextPermutations(List<Integer> arr) {
         int len = arr.size();
-        for (int i = len - 2; i >= 0; i -= 1) {
+        for(int i = len - 2; i >= 0; i -= 1) {
             if (arr.get(i) < arr.get(i + 1)) {
                 int min = i + 1;
                 for (int j = min; j < len; j += 1) {
-                    if (arr.get(j) > arr.get(i) && arr.get(j) < arr.get(min)) {
+                    if (arr.get(j) < arr.get(min) && arr.get(j) > arr.get(i))
                         min = j;
-                    }
                 }
                 swap(i, min, arr);
                 sort(i + 1, arr);
@@ -57,14 +56,13 @@ public class Permutations {
         for (int p = 0; p < dw; p += 1) {
             int[] count = new int[1 << b];
             for (int i = start; i < len; i += 1) {
-                count[((arr.get(i) ^ Integer.MIN_VALUE) >>> (b * p)) & ((1 << b) - 1)] += 1;
+                count[((arr.get(i) ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
             }
-            for (int i = 1; i < 1 << b; i += 1) {
+            for(int i = 1; i < 1 << b; i += 1) {
                 count[i] += count[i - 1];
             }
-            for (int i = len - 1; i >= start; i -= 1) {
-                int elt = arr.get(i);
-                t[--count[((elt ^ Integer.MIN_VALUE) >>> (b * p)) & ((1 << b) - 1)]] = elt;
+            for(int i = len - 1; i >= start; i -= 1) {
+                t[--count[((arr.get(i) ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr.get(i);
             }
             IntStream.range(0, len - start).forEach(i -> arr.set(i + start, t[i]));
         }

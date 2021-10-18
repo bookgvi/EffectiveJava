@@ -11,18 +11,16 @@ public class R5 {
 
     private static List<List<Integer>> subSets(int[] arr) {
         List<List<Integer>> subSets = new ArrayList<>();
-        int bitSet = getBitSet(arr);
-        int bitSubSet = 0;
+        int set = bitSet(arr), bitSubSet = 0;
         do {
-            List<Integer> subSet = getSubSetFromBitSet(bitSubSet, arr);
-            if (subSet.size() == 1) subSets.add(subSet);
-        } while((bitSubSet = (bitSubSet - bitSet) & bitSet) != 0);
+            subSets.add(getSubSetFromBitSet(bitSubSet, arr));
+        } while((bitSubSet = (bitSubSet - set) & set) != 0);
         return subSets;
     }
 
-    private static int getBitSet(int[] arr) {
-        int set = 0;
-        for (int i = 0, len = arr.length; i < len; i += 1) {
+    private static int bitSet(int[] arr) {
+        int set = 0, len = arr.length;
+        for (int i = 0; i < len; i += 1) {
             set |= (1 << i);
         }
         return set;
@@ -35,5 +33,4 @@ public class R5 {
         }
         return subSet;
     }
-
 }

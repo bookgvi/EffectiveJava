@@ -9,10 +9,10 @@ public class MostCommonString {
     private static final String firstChar = "a";
     private static final byte firstCharByte = firstChar.getBytes()[0];
 
-//    private static final String str1 = "VOTEFORTHEGREATALBANIAFORYOU";
-//    private static final String str2 = "CHOOSETHEGREATALBANIANFUTURE";
-    private static final String str1 = "for the horde!!";
-    private static final String str2 = "for the alliance!";
+        private static final String str1 = "VOTEFORTHEGREATALBANIAFORYOU";
+    private static final String str2 = "CHOOSETHEGREATALBANIANFUTURE";
+//    private static final String str1 = "for the horde!!";
+//    private static final String str2 = "for the alliance!";
     private static final long[] pows = pows();
     private static final long[] invP = invP();
 
@@ -29,15 +29,15 @@ public class MostCommonString {
 
     private static String searchString(long[] phs1, long[] phs2, int len) {
         int pos = -1, l = 0, r = len - 1;
-        while (r - l > 1) {
+        while (r - l >= 0) {
             int mid = (r + l) >> 1;
             long[] str1hash = new long[len - mid];
-            for (int i = 0; i + mid < len; i += 1) {
+            for(int i = 0; i + mid < len; i += 1) {
                 str1hash[i] = hash(phs1, i, mid);
             }
             sort(str1hash);
             int p = -1;
-            for (int i = 0; i + mid < len; i += 1) {
+            for(int i = 0; i + mid < len; i += 1) {
                 if (binSearch(hash(phs2, i, mid), str1hash) != -1) {
                     p = i;
                     break;
@@ -45,53 +45,55 @@ public class MostCommonString {
             }
             if (p != -1) {
                 pos = p;
-                l = mid;
+                l = mid + 1;
             } else {
-                r = mid;
+                r = mid - 1;
             }
         }
-        return pos != -1 ? str2.substring(pos, pos + l + 1) : "";
+        return pos != -1 ? str2.substring(pos, pos + l) : "";
     }
 
-    private static long binSearch(long n, long[] arr) {
-        int k = 0, len = arr.length;
-        for (int i = len >> 1; i > 0; i >>= 1) {
-            while (k + i < len && arr[i + k] <= n) k += i;
+    private static int binSearch(long n, long[] arr) {
+        int len = arr.length, k = 0;
+        for(int i = len >> 1; i > 0; i >>= 1) {
+            while(i + k < len && arr[k + i] <= n) k += i;
         }
         if (arr[k] == n) return k;
         return -1;
     }
 
-    private static void sort(long[] a) {
-        final int d = 8;
-        final int w = 32;
-        long[] t = new long[a.length];
-        for (int p = 0; p < w / d; p++) {
-            int[] cnt = new int[1 << d];
-            for (int i = 0; i < a.length; i++)
-                ++cnt[(int) (((a[i] ^ Integer.MIN_VALUE) >>> (d * p)) & ((1 << d) - 1))];
-            for (int i = 1; i < cnt.length; i++)
-                cnt[i] += cnt[i - 1];
-            for (int i = a.length - 1; i >= 0; i--)
-                t[--cnt[(int) (((a[i] ^ Integer.MIN_VALUE) >>> (d * p)) & ((1 << d) - 1))]] = a[i];
-            System.arraycopy(t, 0, a, 0, a.length);
+    private static void sort(long[] arr) {
+        int b = 8, dw = Integer.BYTES, len = arr.length;
+        long[] t = new long[len];
+        for(int p = 0; p < dw; p += 1) {
+            long[] count = new long[1 << b];
+            for (long elt : arr) {
+                count[(int) ((elt ^ Integer.MIN_VALUE) >>> (b * p)) & ((1 << b) - 1)] += 1;
+            }
+            for(int i = 1; i < 1 << b; i += 1) {
+                count[i] += count[i - 1];
+            }
+            for(int i = len - 1; i >= 0; i -= 1) {
+                t[(int) --count[(int) ((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr[i];
+            }
+            System.arraycopy(t, 0, arr, 0, len);
         }
     }
 
     private static long hash(long[] phs, int pos, int offset) {
         long strH = phs[pos + offset];
-        long pref = pos > 0 ? phs[pos - 1] : 0;
-        strH = strH < pref ? strH + mod : strH;
-        return (strH - pref) * invP[pos] % mod;
+        long prefH = pos > 0 ? phs[pos - 1] : 0;
+        strH = strH < prefH ? strH + mod : strH;
+        return (strH - prefH) * invP[pos] % mod;
     }
 
     private static long[] prefixHashes(String str) {
         int len = str.length();
         long[] hashes = new long[len];
-        byte[] strByte = str.getBytes();
-        hashes[0] = (strByte[0] - firstCharByte + 1) * pows[0] % mod;
+        byte[] strBytes = str.getBytes(StandardCharsets.UTF_8);
+        hashes[0] = (strBytes[0] - firstCharByte + 1) * pows[0] % mod;
         for (int i = 1; i < len; i += 1) {
-            hashes[i] = hashes[i - 1] + (strByte[i] - firstCharByte + 1) * pows[i] % mod;
+            hashes[i] = hashes[i - 1] + (strBytes[i] - firstCharByte + 1) * pows[i] % mod;
         }
         return hashes;
     }
@@ -128,9 +130,9 @@ public class MostCommonString {
 
     private static long phi(long n) {
         long res = n;
-        for (int i = 2; (long) i * i <= n; i += 1) {
+        for(int i = 2; (long) i * i <= n; i += 1) {
             if (n % i == 0) {
-                while (n % i == 0) n /= i;
+                while(n % i == 0) n /= i;
                 res -= res / i;
             }
         }

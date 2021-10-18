@@ -15,15 +15,15 @@ public class App {
         String str = "abracadabra";
         String[] suffixes = getSuffixes(str);
 
-//        String textForAnal = "   stinghersstinger dabc";
-//        List.of(keyWords1, keyWords2, keyWords3, keyWords4).forEach(bor::addKeyWord);
-//        Arrays.stream(suffixes).forEach(bor::addKeyWord);
-//        bor.initBor();
-//        System.out.println(textForAnal);
-//        System.out.println(bor.analizeText(textForAnal));
-//        bor.dfs();
-//        System.out.println();
-//        System.out.println();
+        String textForAnal = "   stinghersstinger dabc";
+        List.of(keyWords1, keyWords2, keyWords3, keyWords4).forEach(bor::addKeyWord);
+        Arrays.stream(suffixes).forEach(bor::addKeyWord);
+        bor.initBor();
+        System.out.println(textForAnal);
+        System.out.println(bor.analizeText(textForAnal));
+        bor.dfs();
+        System.out.println();
+        System.out.println();
 
         SuffixArrayViaKarasik bor1 = new SuffixArrayViaKarasik();
         Arrays.stream(suffixes).forEach(bor1::addKeyWord);

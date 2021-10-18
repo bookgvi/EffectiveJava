@@ -18,24 +18,20 @@ public class SuffixArray {
     }
 
     private static int[] lexicoGraphikSuffixSort(String str) {
-        int b = 8, dw = Integer.BYTES, len = str.length();
-        int[] count = new int[1 << b], p= new int[len], c = new int[len];
-        int firstCharByte = "a".getBytes()[0];
-        byte[] strBytes = str.getBytes(StandardCharsets.UTF_8);
-        for (int elt : strBytes) {
-            int code = elt - firstCharByte + 1;
-            count[code] += 1;
+        int len = str.length(), firstCharByte = "a".getBytes(StandardCharsets.UTF_8)[0];
+        int[] c = new int[len], p = new int[len], count = new int[1 << 8];
+        for (int i = 0; i < len; i+= 1) {
+            count[str.charAt(i)] += 1;
         }
-        for (int i = 1; i < 1 << b; i += 1) {
+        for (int i = 1; i < 1 << 8; i += 1) {
             count[i] += count[i - 1];
         }
         for (int i = len - 1; i >= 0; i -= 1) {
-            int code = strBytes[i] - firstCharByte + 1;
-            p[--count[code]] = i;
+            p[--count[str.charAt(i)]] = i;
         }
         int classes = 1;
-        for (int i = 0; i < len - 1; i += 1) {
-            if (str.charAt(p[i]) != str.charAt(p[i + 1])) classes += 1;
+        for (int i = 1; i < len; i += 1) {
+            if (str.charAt(p[i - 1]) != str.charAt(p[i])) classes += 1;
             c[p[i]] = classes - 1;
         }
         return p;
