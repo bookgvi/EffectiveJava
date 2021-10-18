@@ -9,9 +9,9 @@ public class MostCommonString {
     private static final String firstChar = "a";
     private static final byte firstCharByte = firstChar.getBytes()[0];
 
-        private static final String str1 = "VOTEFORTHEGREATALBANIAFORYOU";
+    private static final String str1 = "VOTEFORTHEGREATALBANIAFORYOU";
     private static final String str2 = "CHOOSETHEGREATALBANIANFUTURE";
-//    private static final String str1 = "for the horde!!";
+    //    private static final String str1 = "for the horde!!";
 //    private static final String str2 = "for the alliance!";
     private static final long[] pows = pows();
     private static final long[] invP = invP();
@@ -29,15 +29,15 @@ public class MostCommonString {
 
     private static String searchString(long[] phs1, long[] phs2, int len) {
         int pos = -1, l = 0, r = len - 1;
-        while (r - l >= 0) {
+        while(r - l >= 0) {
             int mid = (r + l) >> 1;
             long[] str1hash = new long[len - mid];
-            for(int i = 0; i + mid < len; i += 1) {
+            for (int i = 0; i + mid < len; i += 1) {
                 str1hash[i] = hash(phs1, i, mid);
             }
             sort(str1hash);
             int p = -1;
-            for(int i = 0; i + mid < len; i += 1) {
+            for (int i = 0; i + mid < len; i += 1) {
                 if (binSearch(hash(phs2, i, mid), str1hash) != -1) {
                     p = i;
                     break;
@@ -56,7 +56,7 @@ public class MostCommonString {
     private static int binSearch(long n, long[] arr) {
         int len = arr.length, k = 0;
         for(int i = len >> 1; i > 0; i >>= 1) {
-            while(i + k < len && arr[k + i] <= n) k += i;
+            while(k + i < len && arr[k + i] <= n) k += i;
         }
         if (arr[k] == n) return k;
         return -1;
@@ -65,17 +65,15 @@ public class MostCommonString {
     private static void sort(long[] arr) {
         int b = 8, dw = Integer.BYTES, len = arr.length;
         long[] t = new long[len];
-        for(int p = 0; p < dw; p += 1) {
-            long[] count = new long[1 << b];
+        for (int p = 0; p < dw; p += 1) {
+            int[] count = new int[1 << b];
             for (long elt : arr) {
-                count[(int) ((elt ^ Integer.MIN_VALUE) >>> (b * p)) & ((1 << b) - 1)] += 1;
+                count[(int) ((elt ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
             }
-            for(int i = 1; i < 1 << b; i += 1) {
+            for (int i = 1; i < 1 << b; i += 1)
                 count[i] += count[i - 1];
-            }
-            for(int i = len - 1; i >= 0; i -= 1) {
-                t[(int) --count[(int) ((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr[i];
-            }
+            for (int i = len - 1; i >= 0; i -= 1)
+                t[--count[(int) ((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr[i];
             System.arraycopy(t, 0, arr, 0, len);
         }
     }
@@ -90,10 +88,10 @@ public class MostCommonString {
     private static long[] prefixHashes(String str) {
         int len = str.length();
         long[] hashes = new long[len];
-        byte[] strBytes = str.getBytes(StandardCharsets.UTF_8);
-        hashes[0] = (strBytes[0] - firstCharByte + 1) * pows[0] % mod;
+        byte[] strByte = str.getBytes(StandardCharsets.UTF_8);
+        hashes[0] = (strByte[0] - firstCharByte + 1) * pows[0] % mod;
         for (int i = 1; i < len; i += 1) {
-            hashes[i] = hashes[i - 1] + (strBytes[i] - firstCharByte + 1) * pows[i] % mod;
+            hashes[i] = hashes[i - 1] + (strByte[i] - firstCharByte + 1) * pows[i] % mod;
         }
         return hashes;
     }
@@ -130,9 +128,9 @@ public class MostCommonString {
 
     private static long phi(long n) {
         long res = n;
-        for(int i = 2; (long) i * i <= n; i += 1) {
+        for (int i = 2; (long) i * i <= n; i += 1) {
             if (n % i == 0) {
-                while(n % i == 0) n /= i;
+                while (n % i == 0) n /= i;
                 res -= res / i;
             }
         }

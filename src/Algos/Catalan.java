@@ -4,11 +4,11 @@ import java.util.stream.*;
 
 public class Catalan {
     public static void main(String[] args) {
-        String startArr = "((()))";
+        String startArr = "((((()))))";
         long Cn = catalan(startArr.length() / 2);
         System.out.printf("Cn = %d\n", Cn);
         for (int i = 1; i <= Cn; i += 1) {
-            System.out.println(startArr);
+            System.out.printf("%d)\t%s\n", i, startArr);
             startArr = permutation(startArr);
         }
     }

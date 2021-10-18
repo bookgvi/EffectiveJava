@@ -23,13 +23,12 @@ public class RabinKarp {
 
     private static List<Integer> rabinKarp(String str, String subStr) {
         List<Integer> indexes = new ArrayList<>();
-        long[] phs = prefixHash(str);
-        int len = str.length();
         int lenSS = subStr.length();
-        long hashSubStr = getHash(subStr);
-        for (int i = 0; i + lenSS - 1 < len; i += 1) {
+        long[] phs = prefixHashes(str);
+        long ssHash = getHash(subStr);
+        for (int i = 0; i + lenSS - 1 < phs.length; i += 1) {
             long calcHash = hash(phs, i, lenSS - 1);
-            if (calcHash == hashSubStr) indexes.add(i);
+            if (calcHash == ssHash) indexes.add(i);
         }
         return indexes;
     }
@@ -38,8 +37,8 @@ public class RabinKarp {
         int len = str.length();
         long hash = 0;
         byte[] strBytes = str.getBytes(StandardCharsets.UTF_8);
-        for (int i = 0; i < len ; i += 1) {
-            hash = hash % mod + (strBytes[i] - firstCharByte + 1) * pows[i] % mod;
+        for (int i = 0; i < len; i += 1) {
+            hash += (strBytes[i] - firstCharByte + 1) * pows[i] % mod;
         }
         return hash;
     }
@@ -51,13 +50,13 @@ public class RabinKarp {
         return (strH - prefH) * invP[pos] % mod;
     }
 
-    private static long[] prefixHash(String str) {
+    private static long[] prefixHashes(String str) {
         int len = str.length();
         long[] hashes = new long[len];
-        byte[] strBytes = str.getBytes(StandardCharsets.UTF_8);
-        hashes[0] = (strBytes[0] - firstCharByte + 1) * pows[0] % mod;
+        byte[] strByte = str.getBytes(StandardCharsets.UTF_8);
+        hashes[0] = (strByte[0] - firstCharByte + 1) * pows[0] % mod;
         for (int i = 1; i < len; i += 1) {
-            hashes[i] = hashes[i - 1] + (strBytes[i] - firstCharByte + 1) * pows[i] % mod;
+            hashes[i] = hashes[i - 1] + (strByte[i] - firstCharByte + 1) * pows[i] % mod;
         }
         return hashes;
     }
@@ -76,7 +75,7 @@ public class RabinKarp {
         int max = pows.length;
         long[] invP = new long[max];
         long phi = phi(mod) - 1;
-        for (int i = 0; i < max; i += 1) {
+        for(int i = 0; i < max; i += 1) {
             invP[i] = modPow(pows[i], phi, mod);
         }
         return invP;
@@ -85,7 +84,7 @@ public class RabinKarp {
     private static long modPow(long n, long pow, int mod) {
         long res = 1;
         while(pow > 0) {
-            if ((pow & 1) == 1) res = res * n % mod;
+            if((pow & 1) == 1) res = res * n % mod;
             n = n * n % mod;
             pow >>= 1;
         }

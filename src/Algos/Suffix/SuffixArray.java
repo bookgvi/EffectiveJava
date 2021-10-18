@@ -12,22 +12,21 @@ public class SuffixArray {
 
     public static void main(String[] args) {
         System.out.println(Arrays.toString(lexicoGraphikSuffixSort(str)));
-        for(int pos : lexicoGraphikSuffixSort(str)){
+        for (int pos : lexicoGraphikSuffixSort(str)) {
             System.out.println(str.substring(pos));
         }
     }
 
     private static int[] lexicoGraphikSuffixSort(String str) {
-        int len = str.length(), firstCharByte = "a".getBytes(StandardCharsets.UTF_8)[0];
-        int[] c = new int[len], p = new int[len], count = new int[1 << 8];
-        for (int i = 0; i < len; i+= 1) {
-            count[str.charAt(i)] += 1;
+        int len = str.length(), b = 8;
+        int[] p = new int[len], c = new int[len], count = new int[1 << b];
+        for (int i = 0; i < len; i += 1) {
+            count[str.codePointAt(i) - firstCharByte + 1] += 1;
         }
-        for (int i = 1; i < 1 << 8; i += 1) {
+        for (int i = 1; i < 1 << b; i += 1)
             count[i] += count[i - 1];
-        }
         for (int i = len - 1; i >= 0; i -= 1) {
-            p[--count[str.charAt(i)]] = i;
+            p[--count[str.codePointAt(i) - firstCharByte + 1]] = i;
         }
         int classes = 1;
         for (int i = 1; i < len; i += 1) {

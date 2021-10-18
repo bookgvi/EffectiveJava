@@ -1,4 +1,4 @@
-package Algos;
+package Algos.SubSets;
 
 import java.util.ArrayList;
 import java.util.List;

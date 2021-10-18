@@ -26,14 +26,14 @@ public class AhoKorasik {
     }
 
     void addKeyWord(String[] keyWords) {
-        for (String keyWord : keyWords) addKeyWord(keyWord);
+        for(String keyWord : keyWords) addKeyWord(keyWord);
     }
 
     Map<String, List<Integer>> analizeText(String text) {
         Map<String, List<Integer>> words = new HashMap<>();
         Vertex curVertex = root;
         int index = 0;
-        for (String ch : text.split("")) {
+        for(String ch : text.split("")) {
             index += 1;
             curVertex = delta(ch, curVertex);
             if (curVertex == root) {
@@ -48,13 +48,13 @@ public class AhoKorasik {
     private Vertex delta(String ch, Vertex curVertex) {
         if (curVertex.toNext.get(ch) == null && curVertex.suffLink.toNext.get(ch) != null)
             return curVertex.suffLink.toNext.get(ch);
-        else if(curVertex.toNext.get(ch) != null)
+        else if (curVertex.toNext.get(ch) != null)
             return curVertex.toNext.get(ch);
         return root;
     }
 
     private void isOutArr(Vertex curVertex, Map<String, List<Integer>> words, int index) {
-        for(Vertex outVertex : curVertex.outArr) fillWords(outVertex, words, index);
+        for (Vertex outVertex : curVertex.outArr) fillWords(outVertex, words, index);
     }
 
     private void fillWords(Vertex outVertex, Map<String, List<Integer>> words, int index) {
@@ -64,33 +64,13 @@ public class AhoKorasik {
         words.putIfAbsent(outVertex.suffix, positions);
     }
 
-    void initBor() {
-        Vertex startVertex = root, curVertex, nextVertex;
-        VertexQueue<Vertex> vertexQueue = new VertexQueue<>();
-        setRootSuffLink();
-        vertexQueue.offer(startVertex);
-        startVertex.isVisited = true;
-        while (!vertexQueue.isEmpty()) {
-            curVertex = vertexQueue.poll();
-            if (curVertex == null) continue;
-            while ((nextVertex = getUnvisited(curVertex)) != null) {
-                nextVertex.isVisited = true;
-                vertexQueue.offer(nextVertex);
-                setSuffLink(curVertex, nextVertex);
-            }
-        }
-        setOutArr(root);
-        setUnvisited(root);
-    }
-
     void dfs() {
         Vertex startVertex = root, curVertex, nextVertex;
         Stack<Vertex> vertexStack = new Stack<>();
         startVertex.isVisited = true;
         vertexStack.push(startVertex);
-        while(!vertexStack.isEmpty()) {
-            curVertex = vertexStack.peek();
-            if ((nextVertex = getUnvisited(curVertex)) == null) vertexStack.pop();
+        while (!vertexStack.isEmpty()) {
+            if ((nextVertex = getUnvisited(vertexStack.peek())) == null) vertexStack.pop();
             else {
                 nextVertex.isVisited = true;
                 vertexStack.push(nextVertex);
@@ -100,15 +80,35 @@ public class AhoKorasik {
         setUnvisited(root);
     }
 
-    private void setRootSuffLink() {
+    void initBor() {
+        Vertex startVertex = root, curVertex, nextVertex;
+        VertexQueue<Vertex> vertexQueue = new VertexQueue<>();
+        setRootSufflink();
+        startVertex.isVisited = true;
+        vertexQueue.offer(startVertex);
+        while(!vertexQueue.isEmpty()) {
+            curVertex = vertexQueue.poll();
+            if (curVertex == null) continue;
+            while((nextVertex = getUnvisited(curVertex)) != null) {
+                nextVertex.isVisited = true;
+                vertexQueue.offer(nextVertex);
+
+                setSuffLink(curVertex, nextVertex);
+            }
+        }
+        setOutArr(root);
+        setUnvisited(root);
+    }
+
+    private void setRootSufflink() {
         root.suffLink = root;
         for (Vertex firstAfterRoot : root.toNext.values()) firstAfterRoot.suffLink = root;
     }
 
     private void setSuffLink(Vertex parentVertex, Vertex curVertex) {
-        Vertex parentSuffLink = parentVertex.suffLink;
+        Vertex parentSufflink = parentVertex.suffLink;
         if (curVertex.suffLink == null) {
-            curVertex.suffLink = parentSuffLink.toNext.get(curVertex.label);
+            curVertex.suffLink = parentSufflink.toNext.get(curVertex.label);
             if (curVertex.suffLink == null) curVertex.suffLink = root;
         }
     }
@@ -134,34 +134,34 @@ public class AhoKorasik {
     }
 
     private Vertex getUnvisited(Vertex curVertex) {
-        List<String> labels = new ArrayList<>(curVertex.toNext.keySet());
-        curVertex.orderedLabels = curVertex.orderedLabels.isEmpty() ? sort(labels) : curVertex.orderedLabels;
-        for (String label : curVertex.orderedLabels) {
+        curVertex.orderedNextLabels = curVertex.orderedNextLabels.isEmpty()
+                ? sortNextLabels(new ArrayList<>(curVertex.toNext.keySet()))
+                : curVertex.orderedNextLabels;
+        for(String label : curVertex.orderedNextLabels) {
             Vertex nextVertex = curVertex.toNext.get(label);
             if (!nextVertex.isVisited) return nextVertex;
         }
         return null;
     }
 
-    private List<String> sort(List<String> arr) {
-        int b = 8, dw = Integer.BYTES, len = arr.size();
+    private List<String> sortNextLabels(List<String> unsortedArr) {
+        List<String> labels = new ArrayList<>(unsortedArr);
+        int len = labels.size(), b = 8, dw = Integer.BYTES;
         int[] t = new int[len];
         for (int p = 0; p < dw; p += 1) {
             int[] count = new int[1 << b];
-            for (String elt : arr) {
-                int charCode = elt.getBytes(StandardCharsets.UTF_8)[0] - "a".getBytes(StandardCharsets.UTF_8)[0] + 1;
-                count[((charCode ^ Integer.MIN_VALUE) >>> (b * p)) & ((1 << b) - 1)] += 1;
+            for (int i = 0; i < len; i += 1) {
+                count[((labels.get(i).getBytes()[0] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
             }
             for (int i = 1; i < 1 << b; i += 1) {
                 count[i] += count[i - 1];
             }
             for (int i = len - 1; i >= 0; i -= 1) {
-                int charCode = arr.get(i).getBytes(StandardCharsets.UTF_8)[0] - "a".getBytes(StandardCharsets.UTF_8)[0] + 1;
-                t[--count[((charCode ^ Integer.MIN_VALUE) >>> (b * p) & ((1 << b) - 1))]] = charCode;
+                t[--count[((labels.get(i).getBytes()[0] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = labels.get(i).getBytes()[0];
             }
-            IntStream.range(0, len).forEach(i -> arr.set(i, Character.toString(t[i] + "a".getBytes(StandardCharsets.UTF_8)[0] - 1)));
+            IntStream.range(0, len).forEach(i -> labels.set(i, Character.toString(t[i])));
         }
-        return arr;
+        return labels;
     }
 
     private static class Vertex {
@@ -169,8 +169,8 @@ public class AhoKorasik {
         private final String suffix;
         private final List<Vertex> outArr;
         private final Map<String, Vertex> toNext;
-        private List<String> orderedLabels;
         private Vertex suffLink;
+        private List<String> orderedNextLabels;
         private boolean isVisited;
         private boolean isTerminal;
 
@@ -178,8 +178,8 @@ public class AhoKorasik {
             this.label = label;
             this.suffix = suffix;
             this.outArr = new ArrayList<>();
-            this.orderedLabels = new ArrayList<>();
             this.toNext = new HashMap<>();
+            this.orderedNextLabels = new ArrayList<>();
             this.isTerminal = false;
             this.isVisited = false;
         }
