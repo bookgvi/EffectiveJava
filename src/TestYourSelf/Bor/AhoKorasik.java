@@ -2,11 +2,12 @@ package TestYourSelf.Bor;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class AhoKorasik {
 
-    private final String rootLabel = "root";
+    private final String rootLabel = " root";
     private final String rootSuffix = "";
     private final Vertex root;
 

@@ -37,8 +37,8 @@ public class ZipStr {
         int[] pi = new int[len];
         for (int i = 1; i < len; i += 1) {
             int j = pi[i - 1];
-            while(j > 0 && str.charAt(j) != str.charAt(i)) j = pi[j - 1];
-            if (str.charAt(j) == str.charAt(i)) pi[i] = j + 1;
+            while (j > 0 && str.charAt(i) != str.charAt(j)) j = pi[j - 1];
+            if (str.charAt(i) == str.charAt(j)) pi[i] = j + 1;
         }
         return pi;
     }

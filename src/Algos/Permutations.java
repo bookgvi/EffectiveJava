@@ -33,9 +33,9 @@ public class Permutations {
      *    4. Сортируем хвост последовательности.
      * Такой алгоритм позволяет получить все перестановки в лексикографическом порядке.
      * */
-    private static List<Integer> nextPermutations(List<Integer> arr) {
+    private static void nextPermutations(List<Integer> arr) {
         int len = arr.size();
-        for(int i = len - 2; i >= 0; i -= 1) {
+        for (int i = len - 2; i >= 0; i -= 1) {
             if (arr.get(i) < arr.get(i + 1)) {
                 int min = i + 1;
                 for (int j = min; j < len; j += 1) {
@@ -44,26 +44,22 @@ public class Permutations {
                 }
                 swap(i, min, arr);
                 sort(i + 1, arr);
-                return arr;
+                return;
             }
         }
-        return null;
     }
 
     private static void sort(int start, List<Integer> arr) {
-        int b = 8, dw = Integer.BYTES, len = arr.size();
+        int len = arr.size(), b = 8, dw = Integer.BYTES;
         int[] t = new int[len];
         for (int p = 0; p < dw; p += 1) {
             int[] count = new int[1 << b];
-            for (int i = start; i < len; i += 1) {
+            for (int i = start; i < len; i += 1)
                 count[((arr.get(i) ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
-            }
-            for(int i = 1; i < 1 << b; i += 1) {
+            for (int i = 1; i < 1 << b; i += 1)
                 count[i] += count[i - 1];
-            }
-            for(int i = len - 1; i >= start; i -= 1) {
+            for (int i = len - 1; i >= start; i -= 1)
                 t[--count[((arr.get(i) ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr.get(i);
-            }
             IntStream.range(0, len - start).forEach(i -> arr.set(i + start, t[i]));
         }
     }

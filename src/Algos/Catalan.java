@@ -14,28 +14,28 @@ public class Catalan {
     }
 
     private static String permutation(String str) {
-        int n = str.length(), depth = 0;
+        int len = str.length(), depth = 0;
         StringBuilder res = new StringBuilder();
-        for (int i = n - 1; i >= 0; i -= 1) {
-            if (str.charAt(i) == '(') depth--;
-            else depth++;
+        for (int i = len - 1; i >= 0; i -= 1) {
+            if (str.charAt(i) == '(') depth -= 1;
+            else depth += 1;
             if (depth > 0 && str.charAt(i) == '(') {
                 depth -= 1;
-                int open = (n - 1 - i - depth) >> 1;
-                int close = n - 1 - i - open;
-                String opens = repeatedStr('(', open);
-                String closes = repeatedStr(')', close);
-                res.append(str, 0, i).append(")").append(opens).append(closes);
+                int open = (len - 1 - i - depth) >> 1;
+                int close = len - 1 - i - open;
+                String openStr = repeated("(", open);
+                String closeStr = repeated(")", close);
+                res.append(str, 0, i).append(")").append(openStr).append(closeStr);
                 break;
             }
         }
         return res.toString();
     }
 
-    private static String repeatedStr(char ch, int count) {
-        StringBuilder sb = new StringBuilder();
-        IntStream.range(0, count).forEach(i -> sb.append(ch));
-        return sb.toString();
+    private static String repeated(String ch, int count) {
+        StringBuilder res = new StringBuilder();
+        IntStream.range(0, count).forEach(i -> res.append(ch));
+        return res.toString();
     }
 
     private static long catalan(int n) {
@@ -48,7 +48,7 @@ public class Catalan {
 
     private static long getFact(int l, int r) {
         if (l == r) return l;
-        if (r - l == 1) return (long) r * l;
+        if (r - l == 1) return (long) l * r;
         int mid = (r + l) >> 1;
         return getFact(l, mid) * getFact(mid + 1, r);
     }
