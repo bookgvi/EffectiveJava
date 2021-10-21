@@ -3,35 +3,35 @@ package TestYourSelf.Graph;
 import java.util.*;
 
 public class GraphR5 {
-    private final Map<String, Vertex> vertexList;
+
+    private final Map<String, Vertex> vertexes;
     private final Map<String, Map<String, Edge>> adjMatrix;
 
     GraphR5() {
-        vertexList = new HashMap<>();
-        adjMatrix = new HashMap<>();
+        this.vertexes = new HashMap<>();
+        this.adjMatrix = new HashMap<>();
     }
 
     void addVertex(String label) {
-        vertexList.putIfAbsent(label, new Vertex(label));
+        vertexes.putIfAbsent(label, new Vertex(label));
     }
 
-    void addEdge(String startLabel, String endLabel) {
+    void addEdge(String start, String end) {
         Edge edge = new Edge(1, 0);
-        Map<String, Edge> col = adjMatrix.getOrDefault(startLabel, new HashMap<>());
-        col.putIfAbsent(endLabel, edge);
-        adjMatrix.putIfAbsent(startLabel, col);
+        Map<String, Edge> col = adjMatrix.getOrDefault(start, new HashMap<>());
+        col.putIfAbsent(end, edge);
+        adjMatrix.putIfAbsent(start, col);
     }
 
-    void dfs(String startLabel) {
-        Vertex curVertex = vertexList.get(startLabel), nextVertex;
-        if (curVertex == null) return;
+    void dfs(String startVertexLabel) {
         Stack<Vertex> vertexStack = new Stack<>();
-        curVertex.isVisited = true;
-        vertexStack.push(curVertex);
+        Vertex startVertex = vertexes.get(startVertexLabel), curVertex, nextVertex;
+        if (startVertex == null) return;
+        startVertex.isVisited = true;
+        vertexStack.push(startVertex);
         while(!vertexStack.isEmpty()) {
             curVertex = vertexStack.peek();
-            nextVertex = getUnvisited(curVertex);
-            if (nextVertex == null) vertexStack.pop();
+            if ((nextVertex = getUnvisited(curVertex)) == null) vertexStack.pop();
             else {
                 nextVertex.isVisited = true;
                 vertexStack.push(nextVertex);
@@ -44,23 +44,19 @@ public class GraphR5 {
 
     private Vertex getUnvisited(Vertex curVertex) {
         Map<String, Edge> cols = adjMatrix.get(curVertex.label);
-        Set<String> nextLabels = cols.keySet();
-        for (String nextLabel : nextLabels) {
-            if (!vertexList.get(nextLabel).isVisited && cols.get(nextLabel).neighbour == 1) return vertexList.get(nextLabel);
+        if (cols == null) return null;
+        for (String nextLabel : cols.keySet()) {
+            if (!vertexes.get(nextLabel).isVisited && cols.get(nextLabel).neighbours == 1) return vertexes.get(nextLabel);
         }
         return null;
     }
 
     private void setUnvisited() {
-        for(Vertex v : vertexList.values()) {
-            v.isVisited = false;
-        }
+        for(Vertex nextVertex : vertexes.values()) nextVertex.isVisited = false;
     }
 
     private static class Vertex {
         private final String label;
-        private Vertex toNext;
-        private Vertex parent;
         private boolean isVisited;
 
         Vertex(String label) {
@@ -70,11 +66,11 @@ public class GraphR5 {
     }
 
     private static class Edge {
-        private final int neighbour;
+        private final int neighbours;
         private final int weight;
 
-        Edge(int neighbour, int weight) {
-            this.neighbour = neighbour;
+        Edge(int neighbours, int weight) {
+            this.neighbours = neighbours;
             this.weight = weight;
         }
     }

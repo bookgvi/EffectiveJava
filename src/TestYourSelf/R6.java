@@ -18,27 +18,24 @@ public class R6 {
         final long[] prefHash2 = prefixHashes(str2);
         int len = Math.min(str1.length(), str2.length());
         long startTime = System.nanoTime();
-        String str = searchString(prefHash1, prefHash2, len);
+        String str = searchCommonString(prefHash1, prefHash2, len);
         long endTime = System.nanoTime();
         System.out.println(str);
         System.out.printf("%.8f\n", (endTime - startTime) / 1e9);
-
-        boolean cmp = strComparator(prefHash1, 7, prefHash2, 6, 14);
-        System.out.println(cmp);
     }
 
-    private static String searchString(long[] phs1, long[] phs2, int len) {
+    private static String searchCommonString(long[] ph1, long[] ph2, int len) {
         int pos = -1, l = 0, r = len - 1;
         while (r - l >= 0) {
             int mid = (r + l) >> 1;
-            long[] str1hash = new long[len - mid];
+            long[] str1hashes = new long[len - mid];
             for (int i = 0; i + mid < len; i += 1) {
-                str1hash[i] = hash(phs1, i, mid);
+                str1hashes[i] = hash(ph1, i, mid);
             }
-            sort(str1hash);
+            sort(str1hashes);
             int p = -1;
             for (int i = 0; i + mid < len; i += 1) {
-                if (binSearch(hash(phs2, i, mid), str1hash) != -1) {
+                if (binSearch(hash(ph2, i, mid), str1hashes) != -1) {
                     p = i;
                     break;
                 }
@@ -50,46 +47,30 @@ public class R6 {
                 r = mid - 1;
             }
         }
-        return str2.substring(pos, pos + l);
+        if (pos != -1) return str2.substring(pos, pos + l);
+        return "";
     }
 
-    private static boolean strComparator(long[] phs1, int pos1, long[] phs2, int pos2, int len) {
-        int l = 0, r = len - 1;
-        while (r - l >= 0) {
-            int mid = (r + l) >> 1;
-            long h1 = hash(phs1, pos1, mid);
-            long h2 = hash(phs2, pos2, mid);
-            if (h1 == h2) {
-                l = mid + 1;
-            } else {
-                r = mid - 1;
-            }
-        }
-        return len == l && str1.charAt(pos1 + l) == str2.charAt(pos2 + l);
-    }
-
-    private static long binSearch(long n, long[] arr) {
-        int k = 0, len = arr.length;
-        for (int i = len >> 1; i > 0; i >>= 1) {
-            while (k + i < len && arr[i + k] <= n) k += i;
-        }
+    private static int binSearch(long n, long[] arr) {
+        int len = arr.length, k = len - 1;
+        for (int i = len >> 1; i > 0; i >>= 1)
+            while (k - i >= 0 && arr[k - i] >= n) k -= i;
         if (arr[k] == n) return k;
         return -1;
     }
 
-    private static void sort(long[] a) {
-        final int d = 8;
-        final int w = 32;
-        long[] t = new long[a.length];
-        for (int p = 0; p < w / d; p++) {
-            int[] cnt = new int[1 << d];
-            for (int i = 0; i < a.length; i++)
-                ++cnt[(int) (((a[i] ^ Integer.MIN_VALUE) >>> (d * p)) & ((1 << d) - 1))];
-            for (int i = 1; i < cnt.length; i++)
-                cnt[i] += cnt[i - 1];
-            for (int i = a.length - 1; i >= 0; i--)
-                t[--cnt[(int) (((a[i] ^ Integer.MIN_VALUE) >>> (d * p)) & ((1 << d) - 1))]] = a[i];
-            System.arraycopy(t, 0, a, 0, a.length);
+    private static void sort(long[] arr) {
+        int b = 8, dw = Integer.BYTES, len = arr.length;
+        long[] t = new long[len];
+        for (int p = 0; p < dw; p += 1) {
+            int[] count = new int[1 << b];
+            for (long elt : arr)
+                count[(int) ((elt ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
+            for (int i = 1; i < 1 << b; i += 1)
+                count[i] += count[i - 1];
+            for (int i = len - 1; i >= 0; i -= 1)
+                t[--count[(int) ((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr[i];
+            System.arraycopy(t, 0, arr, 0, len);
         }
     }
 

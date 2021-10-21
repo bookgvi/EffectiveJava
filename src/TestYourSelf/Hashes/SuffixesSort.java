@@ -15,10 +15,12 @@ public class SuffixesSort {
     private static final int firstCharByte = first.getBytes()[0];
 
     public static void main(String[] args) {
-//        int res = comparator(0, 0);
         int len1 = str1.length();
-//        System.out.println(res);
         int[] arr = new int[len1];
+
+//        int res = comparator(5, 7);
+//        System.out.printf("comparator: %d\n", res);
+
         for (int i = 1; i < len1; i += 1) arr[i - 1] = i;
 
         System.out.println(Arrays.toString(arr));
@@ -43,7 +45,7 @@ public class SuffixesSort {
         int[] merge = new int[r - l];
         int it1 = 0, it2 = 0;
         while (l + it1 < mid && mid + it2 < r) {
-            if (comparator(l + it1, mid + it2) < 0) {
+            if (comparator(l + it1, mid + it2) > 0) {
                 merge[it1 + it2] = arr[l + it1];
                 it1 += 1;
             } else {
@@ -72,10 +74,9 @@ public class SuffixesSort {
     private static int comparator(int pos1, int pos2) {
         long[] phs1 = prefixHashes(SuffixesSort.str1), phs2 = prefixHashes(SuffixesSort.str1);
         int len = Math.min(str1.length() - pos1, str1.length() - pos2), l = 0, r = len - 1;
-        int delta = pos2 - pos1;
         while (r - l >= 0) {
             int mid = (r + l) >> 1;
-            long h1 = hash(phs1, pos1, mid + delta);
+            long h1 = hash(phs1, pos1, mid);
             long h2 = hash(phs2, pos2, mid);
             if (h1 == h2) l = mid + 1;
             else r = mid - 1;

@@ -4,7 +4,7 @@ import java.util.stream.*;
 
 public class Catalan {
     public static void main(String[] args) {
-        String startArr = "((((()))))";
+        String startArr = "(((())))";
         long Cn = catalan(startArr.length() / 2);
         System.out.printf("Cn = %d\n", Cn);
         for (int i = 1; i <= Cn; i += 1) {
@@ -15,7 +15,7 @@ public class Catalan {
 
     private static String permutation(String str) {
         int len = str.length(), depth = 0;
-        StringBuilder res = new StringBuilder();
+        StringBuilder resStr = new StringBuilder();
         for (int i = len - 1; i >= 0; i -= 1) {
             if (str.charAt(i) == '(') depth -= 1;
             else depth += 1;
@@ -23,13 +23,13 @@ public class Catalan {
                 depth -= 1;
                 int open = (len - 1 - i - depth) >> 1;
                 int close = len - 1 - i - open;
-                String openStr = repeated("(", open);
-                String closeStr = repeated(")", close);
-                res.append(str, 0, i).append(")").append(openStr).append(closeStr);
+                String openChar = repeated("(", open);
+                String closeChar = repeated(")", close);
+                resStr.append(str, 0, i).append(")").append(openChar).append(closeChar);
                 break;
             }
         }
-        return res.toString();
+        return resStr.toString();
     }
 
     private static String repeated(String ch, int count) {

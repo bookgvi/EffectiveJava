@@ -21,18 +21,18 @@ public class App {
         bor.initBor();
         System.out.println(textForAnal);
         System.out.println(bor.analizeText(textForAnal));
-        bor.dfs();
+//        bor.dfs();
         System.out.println();
         System.out.println();
 
-        SuffixArrayViaKarasik bor1 = new SuffixArrayViaKarasik();
-        Arrays.stream(suffixes).forEach(bor1::addKeyWord);
-        bor1.initBor();
-        System.out.println(bor1.analizeText(str));
-        long startTime = System.nanoTime();
-        bor1.dfs();
-        long endTime = System.nanoTime();
-        System.out.printf("%f8\n", (endTime - startTime) / 1e9);
+//        SuffixArrayViaKarasik bor1 = new SuffixArrayViaKarasik();
+//        Arrays.stream(suffixes).forEach(bor1::addKeyWord);
+//        bor1.initBor();
+//        System.out.println(bor1.analizeText(str));
+//        long startTime = System.nanoTime();
+//        bor1.dfs();
+//        long endTime = System.nanoTime();
+//        System.out.printf("%f8\n", (endTime - startTime) / 1e9);
     }
 
     private static String[] getSuffixes(String str) {
