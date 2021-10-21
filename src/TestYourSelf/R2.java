@@ -4,7 +4,7 @@ import java.util.*;
 
 public class R2 {
     public static void main(String[] args) {
-        String str = "aabaaab";
+        String str = "pwwkew";
         System.out.println(str);
         System.out.println(Arrays.toString(zFunc(str)));
         System.out.println(Arrays.toString(piFunc(str)));

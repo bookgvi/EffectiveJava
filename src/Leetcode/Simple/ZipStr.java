@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 
 public class ZipStr {
     public static void main(String[] args) {
-        String str = "abababab";
+        String str = "babcbb";
         int[] pi = piFunc(str);
         System.out.println(str);
         System.out.println(Arrays.toString(pi));
@@ -37,15 +37,15 @@ public class ZipStr {
         int[] pi = new int[len];
         for (int i = 1; i < len; i += 1) {
             int j = pi[i - 1];
-            while(j > 0 && str.charAt(j) != str.charAt(i)) j = pi[j - 1];
-            if (str.charAt(j) == str.charAt(i)) pi[i] = j + 1;
+            while (j > 0 && str.charAt(i) != str.charAt(j)) j = pi[j - 1];
+            if (str.charAt(i) == str.charAt(j)) pi[i] = j + 1;
         }
         return pi;
     }
 
     private static int zipStr(int[] pi) {
-        int len = pi.length, lastSuff = pi[len - 1];
-        int pos = len - lastSuff;
+        int len = pi.length, lastPref = pi[len - 1];
+        int pos = len - lastPref;
         if (len % pos == 0) return pos;
         return -1;
     }

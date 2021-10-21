@@ -9,8 +9,8 @@ public class MostSubStringHash {
     private static final String firstChar = "A";
     private static final byte firstCharByte = firstChar.getBytes()[0];
 
-    private static final String str1 = " if you want to fuck for funny fuck yourself and keep the maoney";
-    private static final String str2 = " have a sex fuck my dog if you want to his name is rex";
+    private static final String str1 = "VOTEFORTHEGREATALBANIAFORYOU";
+    private static final String str2 = "CHOOSETHEGREATALBANIANFUTURE";
     private static final long[] pows = pows();
     private static final long[] invP = invP();
 
