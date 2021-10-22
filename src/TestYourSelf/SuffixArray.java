@@ -1,30 +1,25 @@
 package TestYourSelf;
 
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Supplier;
-import java.util.stream.*;
-
-public class R4 {
+public class SuffixArray {
     public static void main(String[] args) {
-        String str = "abracadabra$";
-        int[] suff = sortCyclicStr(str);
+        String str = "abracadabra";
+        int[] p = sortCyclicStrings(str);
 
-        System.out.println(Arrays.toString(suff));
-        for (int i = 0; i < suff.length; i += 1) {
-            System.out.println(str.substring(suff[i]));
-        }
+        for (int i = 0; i < str.length(); i += 1)
+            System.out.println(str.substring(p[i]));
     }
-    private static int[] sortCyclicStr(String str) {
+    private static int[] sortCyclicStrings(String str) {
         int len = str.length();
-        int[] p = new int[len], c = new int[len], count = new int[1 << 8];
-        for (int i = 0; i < len; i += 1)
+        int[] p = new int[len], c = new int[len];
+        int[] count = new int[1 << 8];
+        for (int i = 0; i < len; i += 1) {
             count[str.charAt(i)] += 1;
+        }
         for (int i = 1; i < 1 << 8; i += 1)
             count[i] += count[i - 1];
         for (int i = len - 1; i >= 0; i -= 1)
             p[--count[str.charAt(i)]] = i;
+        c[p[0]] = 0;
         int classes = 1;
         for (int i = 1; i < len; i += 1) {
             if (str.charAt(p[i - 1]) != str.charAt(p[i])) classes += 1;

@@ -28,7 +28,7 @@ public class App {
         SuffixArrayViaKarasik bor1 = new SuffixArrayViaKarasik();
         Arrays.stream(suffixes).forEach(bor1::addKeyWord);
         bor1.initBor();
-//        System.out.println(bor1.analizeText(str));
+        System.out.println(bor1.analizeText(str));
         long startTime = System.nanoTime();
         bor1.dfs();
         long endTime = System.nanoTime();

@@ -29,7 +29,7 @@ public class MostCommonString {
 
     private static String searchString(long[] phs1, long[] phs2, int len) {
         int pos = -1, l = 0, r = len - 1;
-        while(r - l >= 0) {
+        while (r - l >= 0) {
             int mid = (r + l) >> 1;
             long[] str1hashes = new long[len - mid];
             for (int i = 0; i + mid < len; i += 1)
@@ -69,9 +69,28 @@ public class MostCommonString {
     }
 
     private static int binSearch(long n, long[] arr) {
+        int len = arr.length, l = 0, r = len - 1;
+        while(r - l >= 0) {
+            int mid = (r + l) >> 1;
+            if (arr[mid] == n) return mid;
+            else if (arr[mid] < n) l = mid + 1;
+            else r = mid - 1;
+        }
+        return -1;
+    }
+
+    private static int binSearchR(long n, long[] arr) {
+        int len = arr.length, k = 0;
+        for (int i = len >> 1; i > 0; i >>= 1)
+            while (k + i < len && arr[k + i] <= n) k += i;
+        if (arr[k] == n) return k;
+        return -1;
+    }
+
+    private static int binSearchL(long n, long[] arr) {
         int len = arr.length, k = len - 1;
-        for(int i = len >> 1; i > 0; i >>= 1) {
-            while(k - i >= 0 && arr[k - i] >= n) k -= i;
+        for (int i = len >> 1; i > 0; i >>= 1) {
+            while (k - i >= 0 && arr[k - i] >= n) k -= i;
         }
         if (arr[k] == n) return k;
         return -1;
