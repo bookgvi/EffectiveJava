@@ -1,4 +1,4 @@
-package Algos;
+package Algos.Combinatorics;
 
 import java.util.stream.*;
 
