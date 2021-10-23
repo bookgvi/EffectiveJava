@@ -8,14 +8,13 @@ public class SuffixArray {
         for (int i = 0; i < str.length(); i += 1)
             System.out.println(str.substring(p[i]));
     }
+
     private static int[] sortCyclicStrings(String str) {
-        int len = str.length();
-        int[] p = new int[len], c = new int[len];
-        int[] count = new int[1 << 8];
-        for (int i = 0; i < len; i += 1) {
+        int len = str.length(), b = 8;
+        int[] p = new int[len], c = new int[len], count = new int[1 << b];
+        for (int i = 0; i < len; i += 1)
             count[str.charAt(i)] += 1;
-        }
-        for (int i = 1; i < 1 << 8; i += 1)
+        for (int i = 1; i < 1 << b; i += 1)
             count[i] += count[i - 1];
         for (int i = len - 1; i >= 0; i -= 1)
             p[--count[str.charAt(i)]] = i;
@@ -28,14 +27,14 @@ public class SuffixArray {
 
         int[] pn = new int[len], cn = new int[len];
         for (int h = 0; (1 << h) < len; h += 1) {
-            count = new int[1 << 8];
             for (int i = 0; i < len; i += 1) {
                 pn[i] = p[i] - (1 << h);
                 if (pn[i] < 0) pn[i] += len;
             }
+            count = new int[1 << b];
             for (int i = 0; i < len; i += 1)
                 count[c[pn[i]]] += 1;
-            for (int i = 1; i < 1 << 8; i += 1)
+            for (int i = 1; i < 1 << b; i += 1)
                 count[i] += count[i - 1];
             for (int i = len - 1; i >= 0; i -= 1)
                 p[--count[c[pn[i]]]] = pn[i];

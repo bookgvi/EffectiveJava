@@ -19,7 +19,7 @@ public class Sort {
     private static int[] bubbleSort(int[] arr) {
         for (int i = 0, len = arr.length; i < len; i += 1) {
             for (int j = 1; j < len; j += 1) {
-                if (arr[j - 1] - arr[j] > 0) swap(j, j - 1, arr);
+                if (arr[j - 1] - arr[j] > 0) swap(j - 1, j, arr);
             }
         }
         return arr;
@@ -36,15 +36,14 @@ public class Sort {
 
     private static int[] insertSort(int[] arr) {
         for (int i = 0, len = arr.length; i < len; i += 1) {
-            for (int j = i; j > 0 && arr[j - 1] - arr[j] > 0; j -= 1) {
-                swap(j, j - 1, arr);
-            }
+            for (int j = i; j > 0 && arr[j - 1] - arr[j] > 0; j -= 1)
+                swap(j - 1, j, arr);
         }
         return arr;
     }
 
     private static int[] radixSort(int[] arr) {
-        int max = 1 << 16, len = arr.length;
+        int max = 1 << 16;
         List<List<Integer>> digits = IntStream.range(0, max).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
         List<List<Integer>> digits2 = IntStream.range(0, max).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
         for (int elt : arr) {
@@ -55,8 +54,8 @@ public class Sort {
                 digits2.get(elt / max).add(elt);
             }
         }
-        List<Integer> resList = digits2.stream().flatMap(Collection::stream).collect(Collectors.toList());
-        IntStream.range(0, len).forEach(i -> arr[i] = resList.get(i));
+        List<Integer> tmpRes = digits2.stream().flatMap(Collection::stream).collect(Collectors.toList());
+        IntStream.range(0, tmpRes.size()).forEach(i -> arr[i] = tmpRes.get(i));
         return arr;
     }
 
@@ -72,8 +71,8 @@ public class Sort {
     private static void merge(int l, int mid, int r, int[] arr) {
         int it1 = 0, it2 = 0, len = arr.length;
         int[] merge = new int[r - l];
-        while (l + it1 < mid && mid + it2 < r) {
-            if (arr[l + it1] < arr[mid + it2]) {
+        while (l + it1 < mid && it2 + mid < r) {
+            if (arr[l + it1] < arr[it2 + mid]) {
                 merge[it1 + it2] = arr[l + it1];
                 it1 += 1;
             } else {
@@ -89,7 +88,7 @@ public class Sort {
             merge[it1 + it2] = arr[mid + it2];
             it2 += 1;
         }
-        System.arraycopy(merge, 0, arr, l, it1 + it2);
+        IntStream.range(0, it1 + it2).forEach(i -> arr[i + l] = merge[i]);
     }
 
     private static void swap(int j, int i, int[] arr) {

@@ -5,6 +5,7 @@ import java.util.Arrays;
 public class StringAl {
     public static void main(String[] args) {
         String str = "aabaab";
+        System.out.println(str);
         System.out.printf("\t\tZ-func: %s\n", Arrays.toString(zFunc(str)));
         System.out.printf("p-func trivial:\t%s\n", Arrays.toString(piFunc(str)));
         System.out.printf("\t   pi-func: %s\n", Arrays.toString(piFuncExt(str)));
@@ -32,12 +33,13 @@ public class StringAl {
     private static int[] piFunc(String str) {
         int len = str.length();
         int[] pi = new int[len];
-        for (int i = 0; i < len; i += 1)
+        for (int i = 0; i < len; i += 1) {
             for (int j = 0; j < i; j += 1) {
-                String ss1 = str.substring(0, j + 1);
-                String ss2 = str.substring(i - j, i + 1);
-                if (hash(ss1) == hash(ss2)) pi[i] = j + 1;
+                String ss1 = str.substring(0, j + 1).intern();
+                String ss2 = str.substring(i - j, i + 1).intern();
+                if (ss1 == ss2) pi[i] = j + 1;
             }
+        }
         return pi;
     }
 
@@ -46,7 +48,7 @@ public class StringAl {
         int[] pi = new int[len];
         for (int i = 1; i < len; i += 1) {
             int j = pi[i - 1];
-            while (j > 0 && str.charAt(i) != str.charAt(j)) j = pi[j - 1];
+            while(j > 0 && str.charAt(i) != str.charAt(j)) j = pi[j - 1];
             if (str.charAt(i) == str.charAt(j)) pi[i] = j + 1;
         }
         return pi;
@@ -57,10 +59,10 @@ public class StringAl {
         int[] m = new int[len];
         for (int i = 1, l = 0, r = 0; i < len; i += 1) {
             if (i < r) m[i] = Math.min(m[l - (i - r)], r - i + 1);
-            while (i + m[i] < len && i - m[i] >= 0 && str.charAt(i + m[i]) == str.charAt(i - m[i])) m[i] += 1;
+            while(i - m[i] >= 0 && i + m[i] < len && str.charAt(i - m[i]) == str.charAt(i + m[i])) m[i] += 1;
             if (i + m[i] - 1 > r) {
                 l = i - m[i] + 1;
-                r = i + m[i] - 1;
+                r = i - m[i] + 1;
             }
         }
         return m;
@@ -68,13 +70,9 @@ public class StringAl {
 
     private static int zipStr(String str) {
         int[] pi = piFuncExt(str);
-        int len = str.length(), lastSuff = pi[len - 1];
+        int len = pi.length, lastSuff = pi[len - 1];
         int pos = len - lastSuff;
         if (len % pos == 0) return pos;
         return -1;
-    }
-
-    private static String hash(String str) {
-        return str.intern();
     }
 }
