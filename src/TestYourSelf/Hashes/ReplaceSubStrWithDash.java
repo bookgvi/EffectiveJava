@@ -11,12 +11,12 @@ public class ReplaceSubStrWithDash {
     private static final long[] pows = pows();
     private static final long[] invP = invP();
 
-    private static final String firstChar = "a";
+    private static final String firstChar = "0";
     private static final int firstCharByte = firstChar.getBytes()[0];
     private static final String abc = getAbc();
 
     public static void main(String[] args) {
-        String str = "abcefgqqqrsdefghi";
+        String str = "33333333345111";
         long[] phStr = prefixHashes(str);
         long[] phAbc = prefixHashes(abc);
 
@@ -25,28 +25,21 @@ public class ReplaceSubStrWithDash {
     }
 
     private static String searchStr(long[] phStr, long[] phAbc, String str) {
-        int strLen = str.length(), abcLen = phAbc.length, l = 0, r = strLen - 1, mid = 1;
+        int strLen = str.length(), abcLen = phAbc.length, mid = 1;
         Map<Integer, Integer> positions = new HashMap<>();
         StringBuilder res = new StringBuilder();
-        while (r - l >= 0) {
+        while (mid < strLen) {
             mid += 1;
             long[] abcHashes = new long[abcLen - mid];
             for (int i = 0; i + mid < abcLen; i += 1)
                 abcHashes[i] = hash(phAbc, i, mid);
             sort(abcHashes);
-            int p = -1;
             for (int i = 0; i + mid < strLen; i += 1) {
                 if (binSearch(hash(phStr, i, mid), abcHashes) != -1) {
                     positions.put(i, mid + 1);
                     for (int j = 1; j <= mid; j += 1)
                         if (positions.get(i + j) != null) positions.remove(i + j);
-                    p = i;
                 }
-            }
-            if (p != -1) {
-                l = mid + 1;
-            } else {
-                r = mid - 1;
             }
         }
         int curPos = 0;
@@ -55,8 +48,9 @@ public class ReplaceSubStrWithDash {
             res.append(str, curPos, position).append(convert);
             curPos = position + positions.get(position);
         }
+        if (curPos < strLen)
+            res.append(str, curPos, strLen);
         return res.toString();
-//        return str.substring(pos, pos + l);
     }
 
     private static String convertStr(String str) {
