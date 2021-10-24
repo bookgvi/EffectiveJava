@@ -12,7 +12,7 @@ public class BinarySearch {
         int n = 9;
         Supplier<int[]> arr = () -> fillArr(max, size);
 //        int[] arr1 = Arrays.stream(fillArr(max, size)).sorted().toArray();
-        int[] arr1 = {0, 0, 0, 3, 4, 4, 6, 7, 9, 9};
+        int[] arr1 = {0, 0, 0, 3, 4, 4, 6, 7, 9};
 //        n = ThreadLocalRandom.current().nextInt(max);
         System.out.println(n);
         System.out.println(Arrays.toString(arr1));

@@ -1,4 +1,4 @@
-package TestYourSelf;
+package TestYourSelf.SuffixStructures;
 
 public class SuffixArray {
     public static void main(String[] args) {
@@ -21,10 +21,9 @@ public class SuffixArray {
         c[p[0]] = 0;
         int classes = 1;
         for (int i = 1; i < len; i += 1) {
-            if (str.charAt(p[i - 1]) != str.charAt(p[i])) classes += 1;
+            if (str.charAt(p[i]) != str.charAt(p[i - 1])) classes += 1;
             c[p[i]] = classes - 1;
         }
-
         int[] pn = new int[len], cn = new int[len];
         for (int h = 0; (1 << h) < len; h += 1) {
             for (int i = 0; i < len; i += 1) {
