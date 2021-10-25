@@ -45,16 +45,14 @@ public class MostCommonString {
             if (p != -1) {
                 pos = p;
                 l = mid + 1;
-            } else {
-                r = mid - 1;
-            }
+            } else r = mid - 1;
         }
         if (pos != -1) return str2.substring(pos, pos + l);
         return "";
     }
 
     private static void sort(long[] arr) {
-        int b = 8, dw = Integer.BYTES, len = arr.length;
+        int len = arr.length, b = 8, dw = 4;
         long[] t = new long[len];
         for (int p = 0; p < dw; p += 1) {
             int[] count = new int[1 << b];
@@ -62,7 +60,7 @@ public class MostCommonString {
                 count[(int) ((elt ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
             for (int i = 1; i < 1 << b; i += 1)
                 count[i] += count[i - 1];
-            for (int i = len - 1; i > 0; i -= 1)
+            for (int i = len - 1; i >= 0; i -= 1)
                 t[--count[(int) ((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr[i];
             System.arraycopy(t, 0, arr, 0, len);
         }
@@ -70,29 +68,12 @@ public class MostCommonString {
 
     private static int binSearch(long n, long[] arr) {
         int len = arr.length, l = 0, r = len - 1;
-        while(r - l >= 0) {
+        while (r - l >= 0) {
             int mid = (r + l) >> 1;
             if (arr[mid] == n) return mid;
             else if (arr[mid] < n) l = mid + 1;
             else r = mid - 1;
         }
-        return -1;
-    }
-
-    private static int binSearchR(long n, long[] arr) {
-        int len = arr.length, k = 0;
-        for (int i = len >> 1; i > 0; i >>= 1)
-            while (k + i < len && arr[k + i] <= n) k += i;
-        if (arr[k] == n) return k;
-        return -1;
-    }
-
-    private static int binSearchL(long n, long[] arr) {
-        int len = arr.length, k = len - 1;
-        for (int i = len >> 1; i > 0; i >>= 1) {
-            while (k - i >= 0 && arr[k - i] >= n) k -= i;
-        }
-        if (arr[k] == n) return k;
         return -1;
     }
 
@@ -131,6 +112,18 @@ public class MostCommonString {
         return invP;
     }
 
+    private static long phi(long n) {
+        long res = n;
+        for (int i = 2; (long) i * i <= n; i += 1) {
+            if (n % i == 0) {
+                while (n % i == 0) n /= i;
+                res -= res / i;
+            }
+        }
+        if (n > 1) res -= res / n;
+        return res;
+    }
+
     private static long modPow(long n, long pow, int mod) {
         long res = 1;
         while (pow > 0) {
@@ -138,18 +131,6 @@ public class MostCommonString {
             n = n * n % mod;
             pow >>= 1;
         }
-        return res;
-    }
-
-    private static long phi(long n) {
-        long res = n;
-        for (int i = 2; (long) i * i <= n; i += 1) {
-            if (n % i == 0) {
-                while (n % i == 0) n /= i;
-                res -= res / n;
-            }
-        }
-        if (n > 1) res -= res / n;
         return res;
     }
 }
