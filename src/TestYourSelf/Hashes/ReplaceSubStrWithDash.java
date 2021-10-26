@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ReplaceSubStrWithDash {
     private static final int k = (int) 1e5 + 5;
@@ -16,69 +17,60 @@ public class ReplaceSubStrWithDash {
     private static final String abc = getAbc();
 
     public static void main(String[] args) {
-        String str = "33333333345111";
+        String str = "1231233333333345111";
         long[] phStr = prefixHashes(str);
         long[] phAbc = prefixHashes(abc);
 
-        String res = searchStr(phStr, phAbc, str);
+        String res = searchStr(phAbc, phStr, str);
         System.out.println(res);
     }
 
-    private static String searchStr(long[] phStr, long[] phAbc, String str) {
-        int strLen = str.length(), abcLen = phAbc.length, mid = 1;
-        Map<Integer, Integer> positions = new HashMap<>();
-        StringBuilder res = new StringBuilder();
-        while (mid < strLen) {
-            mid += 1;
-            long[] abcHashes = new long[abcLen - mid];
-            for (int i = 0; i + mid < abcLen; i += 1)
-                abcHashes[i] = hash(phAbc, i, mid);
-            sort(abcHashes);
-            for (int i = 0; i + mid < strLen; i += 1) {
-                if (binSearch(hash(phStr, i, mid), abcHashes) != -1) {
-                    positions.put(i, mid + 1);
-                    for (int j = 1; j <= mid; j += 1)
-                        if (positions.get(i + j) != null) positions.remove(i + j);
+    private static String searchStr(long[] phs1, long[] phs2, String str) {
+        int len = str.length(), pos = 2;
+        Map<Integer, Integer> indexes = new HashMap<>();
+        while (pos < len) {
+            long[] str1hashes = new long[phs1.length - pos];
+            for (int i = 0; i + pos < phs1.length; i += 1)
+                str1hashes[i] = hash(phs1, i, pos);
+            sort (str1hashes);
+            for (int i = 0; i + pos < phs2.length; i += 1) {
+                if (binSearch(hash(phs2, i, pos), str1hashes) != -1) {
+                    indexes.put(i, i + pos);
+                    for (int j = i + 1; j < i + pos + 1; j += 1)
+                        if (indexes.get(j) != null) indexes.remove(j);
                 }
             }
+            pos += 1;
         }
-        int curPos = 0;
-        for (int position : positions.keySet()) {
-            String convert = convertStr(str.substring(position, position + positions.get(position)));
-            res.append(str, curPos, position).append(convert);
-            curPos = position + positions.get(position);
+        int cur = 0;
+        StringBuilder res= new StringBuilder();
+        List<Integer> keys = indexes.keySet().stream().sorted().collect(Collectors.toList());
+
+        for (int index : keys) {
+            int l = indexes.get(index);
+            res.append(str, cur, index);
+            res.append(convert(str, index, l));
+            cur = l + 1;
         }
-        if (curPos < strLen)
-            res.append(str, curPos, strLen);
+        if (cur < len) res.append(str, cur, len);
         return res.toString();
     }
 
-    private static String convertStr(String str) {
-        int len = str.length(), firstChar = str.charAt(0), lasChar = str.charAt(len - 1);
-        if (len < 3) return str;
-        String firstStr = Character.toString(firstChar);
-        String lastStr = Character.toString(lasChar);
-        return "[" + firstStr + "-" + lastStr + "]";
-    }
-
-    private static String getAbc() {
-        StringBuilder abc = new StringBuilder();
-        for (int i = 1; i < (1 << 8); i += 1)
-            abc.append(Character.toString(i));
-        return abc.toString();
+    private static String convert(String str, int pos, int len) {
+        return "[" + str.charAt(pos) + "-" + str.charAt(len) + "]";
     }
 
     private static void sort(long[] arr) {
-        int b = 8, dw = Integer.BYTES, len = arr.length;
+        int len = arr.length, b = 8, dw = 4;
         long[] t = new long[len];
         for (int p = 0; p < dw; p += 1) {
-            int[] c = new int[1 << b];
+            int[] count = new int[1 << b];
             for (long elt : arr)
-                c[(int) ((elt ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
+                count[(int) ((elt ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
             for (int i = 1; i < 1 << b; i += 1)
-                c[i] += c[i - 1];
+                count[i] += count[i - 1];
             for (int i = len - 1; i >= 0; i -= 1)
-                t[--c[(int) ((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr[i];
+                t[--count[(int) ((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr[i];
             System.arraycopy(t, 0, arr, 0, len);
         }
     }
@@ -109,6 +101,13 @@ public class ReplaceSubStrWithDash {
         for (int i = 1; i < len; i += 1)
             hashes[i] = hashes[i - 1] + (strBytes[i] - firstCharByte + 1) * pows[i] % mod;
         return hashes;
+    }
+
+    private static String getAbc() {
+        StringBuilder abc = new StringBuilder();
+        for (int i = 31; i < 1 << 8; i += 1)
+            abc.append(Character.toString(i));
+        return abc.toString();
     }
 
     private static long[] pows() {

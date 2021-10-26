@@ -2,6 +2,8 @@ package TestYourSelf;
 
 
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.PriorityQueue;
 import java.util.stream.IntStream;
 
 public class BracketSequence {
@@ -20,23 +22,21 @@ public class BracketSequence {
         }
     }
 
-    private static String nextSequence(String seq) {
-        int len = seq.length(), depth = 0;
-        StringBuilder res = new StringBuilder();
-        for (int i = len - 1; i >= 0; i -= 1) {
-            if (seq.charAt(i) == '(') depth -= 1;
+    private static String nextSequence(String str) {
+        StringBuilder seq = new StringBuilder();
+        int depth = 0;
+        for (int len = str.length(), i = len - 1; i >= 0; i -= 1) {
+            if (str.charAt(i) == '(') depth -= 1;
             else depth += 1;
-            if (depth > 0 && seq.charAt(i) == '(') {
+            if (depth > 0 && str.charAt(i) == '(') {
                 depth -= 1;
                 int open = (len - 1 - i - depth) >> 1;
                 int close = len - 1 - i - open;
-                res.append(seq, 0, i).append(")");
-                IntStream.rangeClosed(1, open).forEach(ii -> res.append("("));
-                IntStream.rangeClosed(1, close).forEach(ii -> res.append(")"));
+                seq.append(str, 0, i).append(")").append(repeated("(", open)).append(repeated(")", close));
                 break;
             }
         }
-        return res.toString();
+        return seq.toString();
     }
 
     private static long catalan(int n) {
@@ -44,9 +44,12 @@ public class BracketSequence {
     }
 
     private static String getFirstSequence(int n) {
+        return repeated("(", n) + repeated(")", n);
+    }
+
+    private static String repeated(String ch, int count) {
         StringBuilder seq = new StringBuilder();
-        IntStream.rangeClosed(1, n).forEach(i -> seq.append("("));
-        IntStream.rangeClosed(1, n).forEach(i -> seq.append(")"));
+        IntStream.range(0, count).forEach(i -> seq.append(ch));
         return seq.toString();
     }
 
