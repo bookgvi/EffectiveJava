@@ -1,30 +1,27 @@
 package TestYourSelf.Bor;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class App {
     public static void main(String[] args) {
         AhoKorasik bor = new AhoKorasik();
-        String[] keyWords1 = {"i", "in", "tin", "sting"};
-        String[] keyWords2 = {"he", "s", "she", "his", "hers", "him"};
-        String[] keyWords3 = {"a", "aa", "aaa", "aaaa", "hers", "s"};
-        String[] keyWords4 = {"a", "bc", "abc", "dab", "dabc"};
+        String[] keyWords1 = {"()", "(())", "()()"};
+        String[] keyWords2 = {"(((())))", "((()()))", "((())())", "((()))()", "(()(()))", "(()()())", "(()())()", "(())(())", "(())()()", "()((()))", "()(()())", "()(())()", "()()(())", "()()()()"};
 
-
-        String str = "abracadabra";
-        String[] suffixes = getSuffixes(str);
-
-        String textForAnal = "   stinghersstinger dabc";
-        List.of(keyWords1, keyWords2, keyWords3, keyWords4).forEach(bor::addKeyWord);
-//        Arrays.stream(suffixes).forEach(bor::addKeyWord);
+        String textForAnal = ")()))";
+        List.of(keyWords1, keyWords2).forEach(bor::addKeyWord);
         bor.initBor();
         System.out.println(textForAnal);
-        System.out.println(bor.analizeText(textForAnal));
+        Map<String, List<Integer>> res = bor.analizeText(textForAnal);
+        List<String> resValues = res.keySet().stream().sorted().collect(Collectors.toList());
+        System.out.println(resValues.get(resValues.size() - 1));
 //        bor.dfs();
         System.out.println();
         System.out.println();
 
+        String str = "abracadabra";
+        String[] suffixes = getSuffixes(str);
         SuffixArrayViaKarasik bor1 = new SuffixArrayViaKarasik();
         Arrays.stream(suffixes).forEach(bor1::addKeyWord);
         bor1.initBor();

@@ -42,6 +42,8 @@ public class Combinatorics {
         return res.toString();
     }
 
+
+
     private static int[] nextPermutation(int[] arr) {
         int len = arr.length;
         for (int i = len - 2; i >= 0; i -= 1) {
@@ -50,9 +52,9 @@ public class Combinatorics {
                 for (int j = min; j < len; j += 1)
                     if (arr[j] < arr[min] && arr[j] > arr[i])
                         min = j;
-            swap(min, i, arr);
-            sort(i + 1, arr);
-            break;
+                swap(min, i, arr);
+                sort(i + 1, arr);
+                break;
             }
         }
         return arr;

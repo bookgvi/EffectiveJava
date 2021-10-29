@@ -1,9 +1,6 @@
 package TestYourSelf.Hashes;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ReplaceSubStrWithDash {
@@ -17,7 +14,7 @@ public class ReplaceSubStrWithDash {
     private static final String abc = getAbc();
 
     public static void main(String[] args) {
-        String str = "1231233333333345111";
+        String str = "aaaabcdfdffdefgrttt";
         long[] phStr = prefixHashes(str);
         long[] phAbc = prefixHashes(abc);
 

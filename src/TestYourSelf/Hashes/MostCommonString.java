@@ -17,6 +17,15 @@ public class MostCommonString {
     private static final long[] invP = invP();
 
     public static void main(String[] args) {
+        int min = Integer.MIN_VALUE;
+        int a = -5 ^ min;
+        int b = a ^ min;
+        int a1 = 34 ^ Integer.MIN_VALUE;
+        int b1 = a1 ^ Integer.MIN_VALUE;
+
+        long[] arr = {12, 4, 34, - 2, 1, -5, 2, 3, 4};
+        sort(arr);
+
         final long[] prefHash1 = prefixHashes(str1);
         final long[] prefHash2 = prefixHashes(str2);
         int len = Math.min(str1.length(), str2.length());
@@ -30,7 +39,7 @@ public class MostCommonString {
     private static String searchString(long[] phs1, long[] phs2, int len) {
         int pos = -1, l = 0, r = len - 1;
         while (r - l >= 0) {
-            int mid = (r + l) >> 1;
+            int mid = ( r + l) >> 1;
             long[] str1hashes = new long[len - mid];
             for (int i = 0; i + mid < len; i += 1)
                 str1hashes[i] = hash(phs1, i, mid);
@@ -47,8 +56,7 @@ public class MostCommonString {
                 l = mid + 1;
             } else r = mid - 1;
         }
-        if (pos != -1) return str2.substring(pos, pos + l);
-        return "";
+        return pos != -1 ? str2.substring(pos, pos + l) : "";
     }
 
     private static void sort(long[] arr) {
@@ -57,21 +65,21 @@ public class MostCommonString {
         for (int p = 0; p < dw; p += 1) {
             int[] count = new int[1 << b];
             for (long elt : arr)
-                count[(int) ((elt ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
+                count[(int) ((elt ^ Integer.MIN_VALUE) >> (p * b)) & ((1 << b) - 1)] += 1;
             for (int i = 1; i < 1 << b; i += 1)
                 count[i] += count[i - 1];
             for (int i = len - 1; i >= 0; i -= 1)
-                t[--count[(int) ((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr[i];
+                t[--count[(int) (arr[i] ^ Integer.MIN_VALUE) >> (p * b) & ((1 << b) - 1)]] = arr[i];
             System.arraycopy(t, 0, arr, 0, len);
         }
     }
 
     private static int binSearch(long n, long[] arr) {
         int len = arr.length, l = 0, r = len - 1;
-        while (r - l >= 0) {
+        while(r - l >= 0) {
             int mid = (r + l) >> 1;
             if (arr[mid] == n) return mid;
-            else if (arr[mid] < n) l = mid + 1;
+            if (arr[mid] < n) l = mid + 1;
             else r = mid - 1;
         }
         return -1;
@@ -80,7 +88,7 @@ public class MostCommonString {
     private static long hash(long[] phs, int pos, int offset) {
         long strH = phs[pos + offset];
         long prefH = pos > 0 ? phs[pos - 1] : 0;
-        strH = strH - prefH < 0 ? strH + mod : strH;
+        strH = strH < prefH ? strH + mod : strH;
         return (strH - prefH) * invP[pos] % mod;
     }
 
@@ -95,7 +103,7 @@ public class MostCommonString {
     }
 
     private static long[] pows() {
-        int max = (int) 1e5 + 5;
+        int max = (int) 1e5;
         long[] pows = new long[max];
         pows[0] = 1;
         for (int i = 1; i < max; i += 1)
@@ -114,9 +122,9 @@ public class MostCommonString {
 
     private static long phi(long n) {
         long res = n;
-        for (int i = 2; (long) i * i <= n; i += 1) {
+        for (int  i = 2; (long) i * i <= n; i += 1) {
             if (n % i == 0) {
-                while (n % i == 0) n /= i;
+                while(n % i == 0) n /= i;
                 res -= res / i;
             }
         }
@@ -126,7 +134,7 @@ public class MostCommonString {
 
     private static long modPow(long n, long pow, int mod) {
         long res = 1;
-        while (pow > 0) {
+        while(pow > 0) {
             if ((pow & 1) == 1) res = res * n % mod;
             n = n * n % mod;
             pow >>= 1;

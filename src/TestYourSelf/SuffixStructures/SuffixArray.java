@@ -3,8 +3,11 @@ package TestYourSelf.SuffixStructures;
 public class SuffixArray {
     public static void main(String[] args) {
         String str = "abracadabra";
+        long startTime = System.nanoTime();
         int[] p = sortCyclicStrings(str);
+        long endTime = System.nanoTime();
 
+        System.out.printf("%.8f\n", (endTime - startTime) / 1e9);
         for (int i = 0; i < str.length(); i += 1)
             System.out.println(str.substring(p[i]));
     }
