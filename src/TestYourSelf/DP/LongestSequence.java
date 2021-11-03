@@ -10,22 +10,22 @@ public class LongestSequence {
     * */
     private static int[] solve(int[] nums) {
         int len = nums.length;
-        int[] values = new int[len];
-        values[0] = 1;
-        for (int i = 1; i < len; i += 1) {
-            int counter = 0;
+        int[] d = new int[len];
+        d[0] = 1;
+        for (int i = 0; i < len; i += 1) {
+            int maxIndex = 0;
             for (int j = i - 1; j >= 0; j -= 1) {
-                if (values[j] > counter && nums[j] < nums[i])
-                    counter = values[j];
+                if (d[j] > maxIndex && nums[j] < nums[i])
+                    maxIndex = d[j];
             }
-            values[i] = counter + 1;
+            d[i] = maxIndex + 1;
         }
-        return values;
+        return d;
     }
 
     public static void main(String[] args) {
-//        int[] nums = {1, 4, 2, 5, 6, 3, 7};
-        int[] nums = {2, 1, 3, 4, 1, 1};
+        int[] nums = {1, 4, 2, 5, 6, 3, 7};
+//        int[] nums = {2, 1, 3, 4, 1, 1};
         int[] res = solve(nums);
     }
 }

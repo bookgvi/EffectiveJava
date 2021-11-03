@@ -17,24 +17,23 @@ public class Sort {
     }
 
     private static int[] bubbleSort(int[] arr) {
-        for (int i = 0, len = arr.length; i < len; i += 1) {
+        for (int i = 0, len = arr.length; i < len; i += 1)
             for (int j = 1; j < len; j += 1)
                 if (arr[j - 1] - arr[j] > 0) swap(j, j - 1, arr);
-        }
         return arr;
     }
 
     private static int[] selectSort(int[] arr) {
         for (int i = 0, len = arr.length; i < len; i += 1)
             for (int j = i + 1; j < len; j += 1)
-                if (arr[i] > arr[j]) swap(i, j, arr);
+                if (arr[j] - arr[i] < 0) swap(i, j, arr);
         return arr;
     }
 
     private static int[] insertSort(int[] arr) {
         for (int i = 0, len = arr.length; i < len; i += 1)
             for (int j = i; j > 0 && arr[j - 1] - arr[j] > 0; j -= 1)
-                swap(j - 1, j, arr);
+                swap(j, j - 1, arr);
         return arr;
     }
 
@@ -47,21 +46,21 @@ public class Sort {
         for (List<Integer> eltList : digits)
             for (int elt : eltList)
                 digits2.get(elt / max).add(elt);
-        return digits2.stream().flatMapToInt(list -> list.stream().mapToInt(elt -> elt)).toArray();
+        return digits2.stream().flatMapToInt(list -> list.stream().mapToInt(i -> i)).toArray();
     }
 
     private static int[] mergeSort(int[] arr) {
         for (int i = 1, len = arr.length; i < len; i <<= 1)
             for (int j = 0; j < len - i; j += i << 1)
-                merge(j, j + i, Math.min(len, j + (i << 1)), arr);
+                merge(j, j + i, Math.min(j + (i << 1), len), arr);
         return arr;
     }
 
     private static void merge(int l, int mid, int r, int[] arr) {
         int it1 = 0, it2 = 0;
         int[] merge = new int[r - l];
-        while(it1 + l < mid && mid + it2 < r) {
-            if (arr[it1 + l] < arr[mid + it2]) {
+        while(l + it1 < mid && mid + it2 < r) {
+            if (arr[l + it1] < arr[mid + it2]) {
                 merge[it1 + it2] = arr[l + it1];
                 it1 += 1;
             } else {
@@ -69,11 +68,11 @@ public class Sort {
                 it2 += 1;
             }
         }
-        while(it1 + l < mid) {
+        while (l + it1 < mid) {
             merge[it1 + it2] = arr[l + it1];
             it1 += 1;
         }
-        while(mid + it2 < r) {
+        while (mid + it2 < r) {
             merge[it1 + it2] = arr[mid + it2];
             it2 += 1;
         }

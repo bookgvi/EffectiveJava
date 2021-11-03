@@ -23,10 +23,10 @@ public class Combinatorics {
     private static String getPermutation(int n, int k) {
         StringBuilder res = new StringBuilder();
         int[] digits = new int[n + 1];
-        for (int i = n; i > 0; i -= 1) {
-            int pn = k % fact[i - 1];
-            int d = k / fact[i - 1];
-            if (pn == 0) pn = fact[i - 1];
+        for (int i = n - 1; i >= 0; i -= 1) {
+            int pn = k % fact[i];
+            int d = k / fact[i];
+            if (pn == 0) pn = fact[i];
             else d += 1;
             k = pn;
             int pos = 0;
@@ -41,8 +41,6 @@ public class Combinatorics {
         }
         return res.toString();
     }
-
-
 
     private static int[] nextPermutation(int[] arr) {
         int len = arr.length;
@@ -63,14 +61,14 @@ public class Combinatorics {
     private static void sort(int start, int[] arr) {
         int len = arr.length, b = 8, dw = 4;
         int[] t = new int[len - start];
-        for (int p = 0; p < dw; p += 1) {
-            int[] c = new int[1 << b];
+        for (int p = 0 ; p < dw; p += 1) {
+            int[] count = new int[1 << b];
             for (int i = start; i < len; i += 1)
-                c[((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
+                count[((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
             for (int i = 1; i < 1 << b; i += 1)
-                c[i] += c[i - 1];
+                count[i] += count[i - 1];
             for (int i = len - 1; i >= start; i -= 1)
-                t[--c[((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr[i];
+                t[--count[((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr[i];
             System.arraycopy(t, 0, arr, start, len - start);
         }
     }

@@ -12,7 +12,7 @@ public class RabinKarp {
 
     public static void main(String[] args) {
         String str = "abracadabra";
-        String ss = "bra";
+        String ss = "abracadabra";
 
         List<Integer> index = searchSubStr(str, ss);
         System.out.println(str);
@@ -45,7 +45,7 @@ public class RabinKarp {
         long strH = phs[pos + offset];
         long prefH = pos > 0 ? phs[pos - 1] : 0;
         strH = strH - prefH < 0 ? strH + mod : strH;
-        return (strH - prefH) * invP[pos] % mod;
+        return (strH - prefH) * invP[pos];
     }
 
     private static long[] prefixHashes(String str) {

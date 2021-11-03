@@ -3,6 +3,7 @@ package TestYourSelf.Tasks.FindSubString;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SuffixArrayTrivial {
     public static void main(String[] args) {
@@ -16,18 +17,20 @@ public class SuffixArrayTrivial {
     }
 
     private static List<Integer> searchSubStr(String str, String ss) {
-        List<Integer> indexes = new ArrayList<>();
+        List<Integer> index = new ArrayList<>();
         int[] p = suffixArray(str);
-        for (int i = 0, ssLen = ss.length(); i < ssLen; i += 1) {
-            int l = binSearchL(ss.charAt(i), p, str, i);
-            if (l == -1) break;
-            int r = binSearchR(ss.charAt(i), p, str, i);
+        for (int i = 0, lenSS = ss.length(); i < lenSS; i += 1) {
+            int l = binSearchL(ss.charAt(i), p, i, str);
+            if (l == -1) {
+                System.out.println("not found");
+                return index;
+            }
+            int r = binSearchR(ss.charAt(i), p, i, str);
             int[] tmp = Arrays.copyOf(p, p.length);
             p = new int[r - l + 1];
             System.arraycopy(tmp, l, p, 0, r - l + 1);
         }
-        Arrays.stream(p).forEach(indexes::add);
-        return indexes;
+        return Arrays.stream(p).boxed().collect(Collectors.toList());
     }
 
     private static int[] suffixArray(String str) {
@@ -42,7 +45,7 @@ public class SuffixArrayTrivial {
         c[p[0]] = 0;
         int classes = 1;
         for (int i = 1; i < len; i += 1) {
-            if (str.charAt(p[i]) != str.charAt(p[i - 1])) classes += 1;
+            if (str.charAt(p[i]) !=  str.charAt(p[i - 1])) classes += 1;
             c[p[i]] = classes - 1;
         }
         int[] pn = new int[len], cn = new int[len];
@@ -70,20 +73,19 @@ public class SuffixArrayTrivial {
         return p;
     }
 
-    private static int binSearchL(int n, int[] arr, String str, int offset) {
+    private static int binSearchL(int chCode, int[] arr, int offset, String str) {
         int len = arr.length, k = len - 1;
-        for (int i = len >> 1; i > 0; i >>= 1)
-            while (k - i >= 0 && str.substring(arr[k - i]).charAt(Math.min(offset, str.substring(arr[k - i]).length())) >= n)
-                k -= i;
-        if (str.substring(arr[k]).charAt(offset) == n) return k;
+        for (int i = len >>> 1; i > 0; i >>>= 1)
+            while(k - i >= 0 && str.substring(arr[k - i]).charAt(Math.min(offset, str.substring(arr[k - i]).length() - 1)) >= chCode) k -= i;
+        if (str.substring(arr[k]).charAt(Math.min(offset, str.substring(arr[k]).length() - 1)) == chCode) return k;
         return -1;
     }
 
-    private static int binSearchR(int n, int[] arr, String str, int offset) {
+    private static int binSearchR(int chCode, int[] arr, int offset, String str) {
         int len = arr.length, k = 0;
-        for (int i = len >> 1; i > 0; i >>= 1)
-            while (i + k < len && str.substring(arr[k + i]).charAt(offset) <= n) k += i;
-        if (str.substring(arr[k]).charAt(offset) == n) return k;
+        for (int i = len >>> 1; i > 0; i >>>= 1)
+            while(i + k < len && str.substring(arr[k + i]).charAt(offset) <= chCode) k += i;
+        if (str.substring(arr[k]).charAt(offset) == chCode) return k;
         return -1;
     }
 }
