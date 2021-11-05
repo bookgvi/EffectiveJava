@@ -1,18 +1,18 @@
 package TestYourSelf.DP;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.*;
 
 public class Coins {
     private static List<Integer> solve(int k, int[] coins) {
-        List<Integer> values = new ArrayList<>(), steps = new ArrayList<>();
-        values.add(0); steps.add(0);
+        List<Integer> d = new ArrayList<>(), steps = new ArrayList<>();
+        d.add(0); steps.add(0);
         for (int i = 1; i <= k; i += 1) {
-            values.add(Integer.MAX_VALUE / 2);
             steps.add(0);
-            for (int coin : coins) {
-                if (i - coin >= 0 && values.get(i - coin) + 1 < values.get(i)) {
-                    values.set(i, values.get(i - coin) + 1);
+            d.add(Integer.MAX_VALUE / 2);
+            for(int coin : coins) {
+                if (i - coin >= 0 && d.get(i - coin) + 1 < d.get(i)) {
+                    d.set(i, d.get(i - coin) + coin);
                     steps.set(i, coin);
                 }
             }

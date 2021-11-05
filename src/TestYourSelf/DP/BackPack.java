@@ -1,23 +1,20 @@
 package TestYourSelf.DP;
 
 import java.util.*;
+import java.util.stream.*;
 
 public class BackPack {
-    private static int[][] solve(int w, List<Pair> things) {
-        int count = things.size() - 1;
-        int[][] d = new int[count][w + 1];
-        List<Integer> first = new ArrayList<>();
-        first.add(0);
+    private static int[][] solve(int weight, List<Pair> things) {
+        int count = things.size();
+        int[][] d = new int[count][weight + 1];
         d[0][0] = 0;
         for (int i = 1; i < count; i += 1) {
-            first.add(0);
-            for (int j = 1; j <= w; j += 1) {
-                if (j - things.get(i).first >= 0 && d[i - 1][j] < d[i - 1][j - things.get(i).first] + things.get(i).second) {
-                    d[i][j] = d[i - 1][j - things.get(i).first] + things.get(i).second;
+            for (int w = 1; w <= weight; w += 1) {
+                if (w - things.get(i).first >= 0 && d[i - 1][w] < d[i - 1][w - things.get(i).first] + things.get(i).second) {
+                    d[i][w] =d[i - 1][w - things.get(i).first] + things.get(i).second;
                 } else {
-                    d[i][j] = d[i - 1][j];
+                    d[i][w] = d[i - 1][w];
                 }
-                first.set(i, d[i][j]);
             }
         }
         return d;
@@ -29,9 +26,18 @@ public class BackPack {
         Pair t2 = Pair.add(3, 14);
         Pair t3 = Pair.add(4, 16);
         Pair t4 = Pair.add(2, 9);
+        Pair t5 = Pair.add(1, 9);
         List<Pair> things = List.of(t0, t1, t2, t3, t4);
         int w = 10;
         int[][] res = solve(w, things);
+        List<Integer> seq = new ArrayList<>();
+        for (int i = things.size() - 1; i > 0; i -= 1) {
+            if (res[i][w] != res[i - 1][w]) {
+                seq.add(i);
+                w -= things.get(i).first;
+            }
+        }
+        System.out.println(seq);
     }
 
     private static class Pair {

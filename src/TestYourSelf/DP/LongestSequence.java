@@ -12,13 +12,13 @@ public class LongestSequence {
         int len = nums.length;
         int[] d = new int[len];
         d[0] = 1;
-        for (int i = 0; i < len; i += 1) {
-            int maxIndex = 0;
+        for (int i = 1; i < len; i += 1) {
+            int maxI = 0;
             for (int j = i - 1; j >= 0; j -= 1) {
-                if (d[j] > maxIndex && nums[j] < nums[i])
-                    maxIndex = d[j];
+                if (d[j] > maxI && nums[j] < nums[i])
+                    maxI = d[j];
             }
-            d[i] = maxIndex + 1;
+            d[i] = maxI + 1;
         }
         return d;
     }
