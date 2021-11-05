@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 public class App {
     public static void main(String[] args) {
         AhoKorasik bor = new AhoKorasik();
-        String[] keyWords1 = {"()", "(())", "()()"};
-        String[] keyWords2 = {"(((())))", "((()()))", "((())())", "((()))()", "(()(()))", "(()()())", "(()())()", "(())(())", "(())()()", "()((()))", "()(()())", "()(())()", "()()(())", "()()()()"};
+        String[] keyWords1 = {"he", "she", "his", "hers"};
+        String[] keyWords2 = {"a", "abba", "aca"};
 
-        String textForAnal = ")()))";
+        String textForAnal = "abacabba";
         List.of(keyWords1, keyWords2).forEach(bor::addKeyWord);
         bor.initBor();
         System.out.println(textForAnal);
@@ -17,7 +17,7 @@ public class App {
         List<String> resValues = res.keySet().stream().sorted().collect(Collectors.toList());
         System.out.println(resValues.get(resValues.size() - 1));
 //        bor.dfs();
-        System.out.println();
+        System.out.println(res);
         System.out.println();
 
         String str = "abracadabra";

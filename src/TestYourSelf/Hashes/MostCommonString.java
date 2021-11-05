@@ -10,7 +10,7 @@ public class MostCommonString {
     private static final byte firstCharByte = firstChar.getBytes()[0];
 
     private static final String str1 = "VOTEFORTHEGREATALBANIAFORYOU";
-    private static final String str2 = "CHOOSETHEGREATALBANIANFUTURE";
+    private static final String str2 = "VYOU";
     //    private static final String str1 = "for the horde!!";
 //    private static final String str2 = "for the alliance!";
     private static final long[] pows = pows();
@@ -29,15 +29,15 @@ public class MostCommonString {
 
     private static String searchString(long[] phs1, long[] phs2) {
         int pos = -1, l = 0, r = phs1.length - 1;
-        while(r - l >= 0) {
+        while (r - l >= 0) {
             int mid = (r + l) >> 1;
-            long[] str1hashes = new long[phs1.length - mid];
-            for (int i = 0; i + mid < phs1.length; i += 1)
-                str1hashes[i] = hash(phs1, i, mid);
+            long[] str1hashes = new long[phs1.length - mid + 1];
+            for (int i = 0; i + mid <= phs1.length; i += 1)
+                str1hashes[i] = hash(phs1, i, mid - 1);
             sort(str1hashes);
             int p = -1;
-            for (int i = 0; i + mid < phs2.length; i += 1) {
-                if (binSearch(hash(phs2, i, mid), str1hashes) != -1) {
+            for (int i = 0, len = phs2.length; i + mid <= len; i += 1) {
+                if (binSearch(hash(phs2, i, mid - 1), str1hashes) != -1) {
                     p = i;
                     break;
                 }
@@ -45,16 +45,17 @@ public class MostCommonString {
             if (p != -1) {
                 pos = p;
                 l = mid + 1;
-            } else r = mid - 1;
+            } else {
+                r = mid - 1;
+            }
         }
-        if (pos != -1) return str2.substring(pos, pos + l);
-        return "";
+        return pos == -1 ? "" : str2.substring(pos, pos + l);
     }
 
     private static int binSearch(long n, long[] arr) {
         int len = arr.length, l = 0, r = len - 1;
-        while(r - l >= 0) {
-            int mid = (r + l) >> 1;
+        while (r - l >= 0) {
+            int mid = (r + l) >>> 1;
             if (arr[mid] == n) return mid;
             else if (arr[mid] < n) l = mid + 1;
             else r = mid - 1;
@@ -67,12 +68,12 @@ public class MostCommonString {
         long[] t = new long[len];
         for (int p = 0; p < dw; p += 1) {
             int[] count = new int[1 << b];
-            for (long elt : arr)
-                count[(int) ((elt ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
+            for (int i = 0; i < len; i += 1)
+                count[(int) ((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
             for (int i = 1; i < 1 << b; i += 1)
                 count[i] += count[i - 1];
             for (int i = len - 1; i >= 0; i -= 1)
-                t[--count[(int) ((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & (( 1 << b) - 1)]] = arr[i];
+                t[--count[(int) ((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr[i];
             System.arraycopy(t, 0, arr, 0, len);
         }
     }

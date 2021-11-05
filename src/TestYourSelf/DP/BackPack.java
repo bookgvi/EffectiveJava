@@ -5,17 +5,19 @@ import java.util.*;
 public class BackPack {
     private static int[][] solve(int w, List<Pair> things) {
         int count = things.size() - 1;
-        int[][] d = new int[count + 1][w + 1];
-        List<Pair> first = new ArrayList<>();
+        int[][] d = new int[count][w + 1];
+        List<Integer> first = new ArrayList<>();
+        first.add(0);
         d[0][0] = 0;
-        for (int i = 1; i <= count; i += 1) {
+        for (int i = 1; i < count; i += 1) {
+            first.add(0);
             for (int j = 1; j <= w; j += 1) {
                 if (j - things.get(i).first >= 0 && d[i - 1][j] < d[i - 1][j - things.get(i).first] + things.get(i).second) {
                     d[i][j] = d[i - 1][j - things.get(i).first] + things.get(i).second;
-                    first.add(things.get(i));
                 } else {
                     d[i][j] = d[i - 1][j];
                 }
+                first.set(i, d[i][j]);
             }
         }
         return d;

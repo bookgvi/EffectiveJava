@@ -1,9 +1,6 @@
 package TestYourSelf.Bor;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class AhoKorasik {
 
@@ -35,20 +32,20 @@ public class AhoKorasik {
                 if (curVertex.toNext.get(ch) == null) continue;
                 else curVertex = curVertex.toNext.get(ch);
             }
-            isOutArr(curVertex, words, index);
+            isOut(curVertex, words, index);
         }
         return words;
     }
 
     private Vertex delta(String ch, Vertex curVertex) {
         if (curVertex.toNext.get(ch) == null && curVertex.suffLink.toNext.get(ch) != null)
-            return curVertex.suffLink.toNext.get(ch);
+           return curVertex.suffLink.toNext.get(ch);
         else if (curVertex.toNext.get(ch) != null)
             return curVertex.toNext.get(ch);
         return root;
     }
 
-    private void isOutArr(Vertex curVertex, Map<String, List<Integer>> words, int index) {
+    private void isOut(Vertex curVertex, Map<String, List<Integer>> words, int index) {
         for (Vertex outVertex : curVertex.outArr) fillWords(outVertex, words, index);
     }
 
@@ -65,10 +62,10 @@ public class AhoKorasik {
         setRootSuffLink();
         startVertex.isVisited = true;
         vertexQueue.offer(startVertex);
-        while(!vertexQueue.isEmpty()) {
+        while (!vertexQueue.isEmpty()) {
             curVertex = vertexQueue.poll();
             if (curVertex == null) continue;
-            while((nextVertex = getUnvisited(curVertex)) != null) {
+            while ((nextVertex = getUnvisited(curVertex)) != null) {
                 nextVertex.isVisited = true;
                 vertexQueue.offer(nextVertex);
                 setSuffLink(curVertex, nextVertex);
@@ -80,7 +77,7 @@ public class AhoKorasik {
 
     private void setRootSuffLink() {
         root.suffLink = root;
-        for (Vertex nextVertex : root.toNext.values()) nextVertex.suffLink = root;
+        for (Vertex firstAfterRoot : root.toNext.values()) firstAfterRoot.suffLink = root;
     }
 
     private void setSuffLink(Vertex parentVertex, Vertex curVertex) {
@@ -136,7 +133,7 @@ public class AhoKorasik {
     }
 
     private static class VertexQueue<V> extends AbstractQueue<V> {
-        LinkedList<V> vList = new LinkedList<>();
+        private final LinkedList<V> vList = new LinkedList<>();
 
         @Override
         public Iterator<V> iterator() {
@@ -152,7 +149,8 @@ public class AhoKorasik {
         public boolean offer(V v) {
             boolean res = false;
             if (v != null) {
-                res = vList.offer(v);
+                vList.offer(v);
+                res = true;
             }
             return res;
         }

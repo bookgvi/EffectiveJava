@@ -24,34 +24,34 @@ public class BracketSequence {
     }
 
     private static String nextSequence(String seq) {
-        int len = seq.length(), depth = 0;
         StringBuilder res = new StringBuilder();
+        int len = seq.length(), depth = 0;
         for (int i = len - 1; i >= 0; i -= 1) {
-            if (seq.charAt(i) =='(') depth -= 1;
+            if (seq.charAt(i) == '(') depth -= 1;
             else depth += 1;
             if (depth > 0 && seq.charAt(i) == '(') {
                 depth -= 1;
-                int open = (len - i - 1 - depth) >>> 1;
+                int open = (len - i - 1 - depth) >> 1;
                 int close = len - i - 1 - open;
-                res.append(seq, 0, i).append(")").append(repeated("(", open)).append(repeated(")", close));
+                res.append(seq, 0, i).append(")").append(repeat("(", open)).append(repeat(")", close));
                 break;
             }
         }
         return res.toString();
     }
 
-    private static String getFirstSequence(int n) {
-        return repeated("(", n) + repeated(")", n);
-    }
-
-    private static String repeated(String ch, int count) {
-        StringBuilder seq = new StringBuilder();
-        IntStream.range(0, count).forEach(i -> seq.append(ch));
-        return seq.toString();
-    }
-
     private static long catalan(int n) {
         return fact[2 * n] / (fact[n] * fact[n + 1]);
+    }
+
+    private static String getFirstSequence(int n) {
+        return repeat("(", n) + repeat(")", n);
+    }
+
+    private static String repeat(String ch, int count) {
+        StringBuilder res = new StringBuilder();
+        IntStream.range(0, count).forEach(i -> res.append(ch));
+        return res.toString();
     }
 
     private static long[] fact() {

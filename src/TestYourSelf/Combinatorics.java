@@ -23,7 +23,7 @@ public class Combinatorics {
     private static String getPermutation(int n, int k) {
         StringBuilder res = new StringBuilder();
         int[] digits = new int[n + 1];
-        for (int i = n - 1; i >= 0; i -= 1) {
+        for (int i = n -1 ; i >= 0; i -= 1) {
             int pn = k % fact[i];
             int d = k / fact[i];
             if (pn == 0) pn = fact[i];
@@ -32,7 +32,7 @@ public class Combinatorics {
             int pos = 0;
             for (int j = 1; j <= n; j += 1) {
                 if (digits[j] == 0) pos += 1;
-                if (d == pos) {
+                if(d == pos) {
                     digits[j] = 1;
                     res.append(j);
                     break;
@@ -51,32 +51,24 @@ public class Combinatorics {
                     if (arr[j] < arr[min] && arr[j] > arr[i])
                         min = j;
                 swap(min, i, arr);
-                sort(i + 1, arr);
+                reverse(i + 1, len - 1, arr);
                 break;
             }
         }
         return arr;
     }
 
-    private static void sort(int start, int[] arr) {
-        int len = arr.length, b = 8, dw = 4;
-        int[] t = new int[len - start];
-        for (int p = 0 ; p < dw; p += 1) {
-            int[] count = new int[1 << b];
-            for (int i = start; i < len; i += 1)
-                count[((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
-            for (int i = 1; i < 1 << b; i += 1)
-                count[i] += count[i - 1];
-            for (int i = len - 1; i >= start; i -= 1)
-                t[--count[((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr[i];
-            System.arraycopy(t, 0, arr, start, len - start);
+    private static void reverse(int start, int end, int[] arr) {
+        for (int i = start; i <= (end + start) >> 1; i += 1) {
+            int tmp = end + start - i;
+            swap (tmp, i, arr);
         }
     }
 
-    private static void swap(int i, int j, int[] arr) {
-        arr[i] += arr[j];
-        arr[j] = arr[i] - arr[j];
-        arr[i] = arr[i] - arr[j];
+    private static void swap(int i, int  j, int[] arr) {
+        int tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
     }
 
     private static int[] facts() {

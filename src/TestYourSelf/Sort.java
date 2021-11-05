@@ -19,21 +19,21 @@ public class Sort {
     private static int[] bubbleSort(int[] arr) {
         for (int i = 0, len = arr.length; i < len; i += 1)
             for (int j = 1; j < len; j += 1)
-                if (arr[j - 1] - arr[j] > 0) swap(j, j - 1, arr);
+                if (arr[j - 1] - arr[j] > 0) swap(j - 1, j, arr);
         return arr;
     }
 
     private static int[] selectSort(int[] arr) {
         for (int i = 0, len = arr.length; i < len; i += 1)
-            for (int j = i + 1; j < len; j += 1)
-                if (arr[j] - arr[i] < 0) swap(i, j, arr);
+            for(int j = i + 1; j < len; j += 1)
+                if (arr[i] - arr[j] > 0) swap(i, j, arr);
         return arr;
     }
 
     private static int[] insertSort(int[] arr) {
         for (int i = 0, len = arr.length; i < len; i += 1)
             for (int j = i; j > 0 && arr[j - 1] - arr[j] > 0; j -= 1)
-                swap(j, j - 1, arr);
+                swap(j - 1, j, arr);
         return arr;
     }
 
@@ -41,18 +41,18 @@ public class Sort {
         int max = 1 << 16;
         List<List<Integer>> digits = IntStream.range(0, max).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
         List<List<Integer>> digits2 = IntStream.range(0, max).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
-        for (int elt : arr)
-            digits.get(elt % max).add(elt);
-        for (List<Integer> eltList : digits)
+        for (int el : arr)
+            digits.get(el % max).add(el);
+        for(List<Integer> eltList : digits)
             for (int elt : eltList)
                 digits2.get(elt / max).add(elt);
-        return digits2.stream().flatMapToInt(list -> list.stream().mapToInt(i -> i)).toArray();
+        return digits2.stream().flatMapToInt(list -> list.stream().mapToInt(elt -> elt)).toArray();
     }
 
     private static int[] mergeSort(int[] arr) {
         for (int i = 1, len = arr.length; i < len; i <<= 1)
             for (int j = 0; j < len - i; j += i << 1)
-                merge(j, j + i, Math.min(j + (i << 1), len), arr);
+                merge(j, i + j, Math.min(len, j + (i << 1)), arr);
         return arr;
     }
 
@@ -68,7 +68,7 @@ public class Sort {
                 it2 += 1;
             }
         }
-        while (l + it1 < mid) {
+        while(l + it1 < mid) {
             merge[it1 + it2] = arr[l + it1];
             it1 += 1;
         }
