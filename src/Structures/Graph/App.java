@@ -1,4 +1,4 @@
-package Algos.Graph;
+package Structures.Graph;
 
 public class App {
     public static void main(String[] args) {

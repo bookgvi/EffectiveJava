@@ -1,4 +1,4 @@
-package Algos.Graphs;
+package Structures.Graphs;
 
 public interface IVertex {
     boolean hasVisited();

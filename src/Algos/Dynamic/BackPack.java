@@ -1,7 +1,7 @@
-package TestYourSelf.DP;
+package Algos.Dynamic;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BackPack {
     private static int[][] solve(int weight, List<Pair> things) {

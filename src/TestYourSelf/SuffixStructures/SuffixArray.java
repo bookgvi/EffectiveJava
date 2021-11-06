@@ -1,18 +1,22 @@
 package TestYourSelf.SuffixStructures;
 
+import java.util.*;
+
 public class SuffixArray {
     public static void main(String[] args) {
-        String str = "abracadabra";
+        String str = "aabaaca$";
         long startTime = System.nanoTime();
         int[] p = sortCyclicStrings(str);
         long endTime = System.nanoTime();
 
+        System.out.println(Arrays.toString(p));
         System.out.printf("%.8f\n", (endTime - startTime) / 1e9);
         for (int i = 0; i < str.length(); i += 1)
             System.out.println(str.substring(p[i]));
     }
 
     private static int[] sortCyclicStrings(String str) {
+        List<int[]> cl = new ArrayList<>();
         int len = str.length(), b = 8;
         int[] p = new int[len], c = new int[len], count = new int[1 << b];
         for (int i = 0; i < len; i += 1)
@@ -27,6 +31,7 @@ public class SuffixArray {
             if (str.charAt(p[i]) != str.charAt(p[i - 1])) classes += 1;
             c[p[i]] = classes - 1;
         }
+        cl.add(Arrays.copyOf(c, len));
         int[] pn = new int[len], cn = new int[len];
         for (int h = 0; (1 << h) < len; h += 1) {
             for (int i = 0; i < len; i += 1) {
@@ -48,6 +53,7 @@ public class SuffixArray {
                 cn[p[i]] = classes - 1;
             }
             System.arraycopy(cn, 0, c, 0, len);
+            cl.add(Arrays.copyOf(c, len));
         }
         return p;
     }

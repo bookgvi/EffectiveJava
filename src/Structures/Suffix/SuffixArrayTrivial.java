@@ -1,4 +1,4 @@
-package Algos.Suffix;
+package Structures.Suffix;
 
 import java.util.*;
 import java.util.stream.*;

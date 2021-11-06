@@ -1,4 +1,4 @@
-package Algos.Graph;
+package Structures.Graph;
 
 import java.util.*;
 

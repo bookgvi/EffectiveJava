@@ -1,4 +1,4 @@
-package Algos.Graphs;
+package Structures.Graphs;
 
 import java.util.AbstractQueue;
 import java.util.Iterator;

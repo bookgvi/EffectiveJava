@@ -11,13 +11,13 @@ public class RadixSortBase256 {
         int maxValue = 20;
         Supplier<int[]> a = () -> fillArr(count, maxValue);
         int[] arr = a.get();
-        int[] arr2 = a.get();
+        int[] arr2 = {1,1,0,-2147483648};
         System.out.println(Arrays.toString(arr));
         long startTime = System.nanoTime();
-        radixSort(arr);
+        radixSort(arr2);
         long endTime = System.nanoTime();
         System.out.printf("%.8f\n", (endTime - startTime) / 1e9);
-        System.out.println(Arrays.toString(arr));
+        System.out.println(Arrays.toString(arr2));
     }
 
     public static void radixSort(int[] a) {
@@ -32,8 +32,10 @@ public class RadixSortBase256 {
             }
             for (int i = 1; i < cnt.length; i++)
                 cnt[i] += cnt[i - 1];
-            for (int i = a.length - 1; i >= 0; i--)
-                t[--cnt[((a[i] ^ Integer.MIN_VALUE) >>> (d * p)) & ((1 << d) - 1)]] = a[i];
+            for (int i = a.length - 1; i >= 0; i--) {
+                int index = --cnt[((a[i] ^ Integer.MIN_VALUE) >>> (d * p)) & ((1 << d) - 1)];
+                t[index] = a[i];
+            }
             System.arraycopy(t, 0, a, 0, a.length);
         }
     }

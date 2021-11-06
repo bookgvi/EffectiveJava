@@ -1,4 +1,4 @@
-package Algos.Bor;
+package Structures.Bor;
 
 import java.util.HashMap;
 import java.util.Map;

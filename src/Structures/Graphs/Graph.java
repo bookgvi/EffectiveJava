@@ -1,4 +1,4 @@
-package Algos.Graphs;
+package Structures.Graphs;
 
 public class Graph extends AbstractGraph {
     public Graph(int max_vertex) {

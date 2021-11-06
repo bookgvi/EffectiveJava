@@ -1,7 +1,6 @@
-package Algos.BinaryHeap;
+package Structures.BinaryHeap;
 
 import java.util.Arrays;
-import java.util.PriorityQueue;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 

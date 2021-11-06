@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 public class FindSubStringTrivial {
     public static void main(String[] args) {
-        String findMe = "";
-        String str = "build a rocket ship";
+        String findMe = "bracadabra";
+        String str = "abracadabra";
         System.out.printf("%s <- %s\n positions ", str, findMe);
         int[] p = suffixArray(str);
         for (int i = 0, len = findMe.length(); i < len; i += 1) {
@@ -22,19 +22,20 @@ public class FindSubStringTrivial {
         System.out.println(Arrays.toString(p));
     }
 
-    private static int binSearchL(int chCode, int[] arr, int offset, String str) {
+    private static int binSearchL(int chCode, int[] arr, int off, String str) {
         int len = arr.length, k = len - 1;
         for (int i = len >> 1; i > 0; i >>= 1)
-            while(k - i >= 0 && str.substring(arr[k - i]).charAt(Math.min(str.substring(arr[k - i]).length() - 1, offset)) >= chCode) k -= i;
-        if(str.substring(arr[k]).charAt(Math.min(str.substring(arr[k]).length() - 1, offset)) == chCode) return k;
+            while (k - i >= 0 && str.substring(arr[k - i]).charAt(Math.min(str.substring(arr[k - i]).length() - 1, off)) >= chCode)
+                k -= i;
+        if (str.substring(arr[k]).charAt(Math.min(str.substring(arr[k]).length() - 1, off)) == chCode) return k;
         return -1;
     }
 
-    private static int binSearchR(int chCode, int[] arr, int offset, String str) {
+    private static int binSearchR(int chCode, int[] arr, int off, String str) {
         int len = arr.length, k = 0;
         for (int i = len >> 1; i > 0; i >>= 1)
-            while(k + i < len && str.substring(arr[k + i]).charAt(offset) <= chCode) k += 1;
-        if (str.substring(arr[k]).charAt(offset) == chCode) return k;
+            while (k + i < len && str.substring(arr[k + i]).charAt(off) <= chCode) k += i;
+        if (str.substring(arr[k]).charAt(off) == chCode) return k;
         return -1;
     }
 
@@ -69,7 +70,7 @@ public class FindSubStringTrivial {
             cn[p[0]] = 0;
             classes = 1;
             for (int i = 1; i < len; i += 1) {
-                int mid1 = (p[i] + (1 << h)) % len, mid2 = ( p[i - 1] + (1 << h)) % len;
+                int mid1 = (p[i] + (1 << h)) % len, mid2 = (p[i - 1] + (1 << h)) % len;
                 if (c[p[i]] != c[p[i - 1]] || c[mid1] != c[mid2]) classes += 1;
                 cn[p[i]] = classes - 1;
             }

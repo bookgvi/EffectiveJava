@@ -1,8 +1,6 @@
-package Algos.Suffix;
+package Structures.Suffix;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.*;
 
 public class SuffixArray {
     private static final String str = "abracadabra";
