@@ -3,6 +3,9 @@ package Algos.Combinatorics;
 import java.util.stream.*;
 
 public class Catalan {
+    private static final int maxF = (int) 1e5;
+    private static long[] fact = fact();
+
     public static void main(String[] args) {
         String startArr = "(((())))";
         long Cn = catalan(startArr.length() / 2);
@@ -15,41 +18,36 @@ public class Catalan {
 
     private static String permutation(String str) {
         int len = str.length(), depth = 0;
-        StringBuilder resStr = new StringBuilder();
+        StringBuilder seq = new StringBuilder();
         for (int i = len - 1; i >= 0; i -= 1) {
             if (str.charAt(i) == '(') depth -= 1;
             else depth += 1;
             if (depth > 0 && str.charAt(i) == '(') {
                 depth -= 1;
-                int open = (len - 1 - i - depth) >> 1;
-                int close = len - 1 - i - open;
-                String openChar = repeated("(", open);
-                String closeChar = repeated(")", close);
-                resStr.append(str, 0, i).append(")").append(openChar).append(closeChar);
+                int open = (len - i - 1 - depth) >> 1;
+                int close = len - i - 1- open;
+                seq.append(str, 0, i).append(")").append(repeat("(", open)).append(repeat(")", close));
                 break;
             }
         }
-        return resStr.toString();
+        return seq.toString();
     }
 
-    private static String repeated(String ch, int count) {
+    private static String repeat(String ch, int count) {
         StringBuilder res = new StringBuilder();
         IntStream.range(0, count).forEach(i -> res.append(ch));
         return res.toString();
     }
 
     private static long catalan(int n) {
-        return fact(2 * n) / (fact(n) * fact(n + 1));
+        return fact[2 * n] / (fact[n] * fact[n + 1]);
     }
 
-    private static long fact(int n) {
-        return getFact(2, n);
-    }
-
-    private static long getFact(int l, int r) {
-        if (l == r) return l;
-        if (r - l == 1) return (long) l * r;
-        int mid = (r + l) >> 1;
-        return getFact(l, mid) * getFact(mid + 1, r);
+    private static long[] fact() {
+        long[] fact = new long[maxF];
+        fact[0] = 1;
+        for (int i = 1; i < maxF; i += 1)
+            fact[i] = fact[i - 1] * i;
+        return fact;
     }
 }

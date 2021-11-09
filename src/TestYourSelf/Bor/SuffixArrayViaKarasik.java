@@ -72,45 +72,45 @@ public class SuffixArrayViaKarasik {
     }
 
     private Vertex getUnvisited(Vertex curVertex) {
-        curVertex.sortedToNextLabels = curVertex.sortedToNextLabels.isEmpty() ? sortLabels(curVertex) : curVertex.sortedToNextLabels;
-        for (String nextLabel : curVertex.sortedToNextLabels) {
+        curVertex.sortedNextLabels = curVertex.outArr.isEmpty() ? storeNextLabels(curVertex) : curVertex.sortedNextLabels;
+        for (String nextLabel : curVertex.sortedNextLabels) {
             Vertex nextVertex = curVertex.toNext.get(nextLabel);
             if (!nextVertex.isVisited) return nextVertex;
         }
         return null;
     }
 
-    private List<String> sortLabels(Vertex curVertex) {
+    private List<String> storeNextLabels(Vertex curVertex) {
         List<String> labels = new ArrayList<>(curVertex.toNext.keySet());
-        sort(labels);
+        int[] codes = new int[labels.size()];
+        List<String> finalLabels = labels;
+        IntStream.range(0, labels.size()).forEach(i -> codes[i] = finalLabels.get(i).charAt(0));
+        sort(codes);
+        labels = Arrays.stream(codes).mapToObj(Character::toString).collect(Collectors.toList());
         return labels;
     }
 
-    private void sort(List<String> arr) {
-        int len = arr.size(), b = 8, dw = 4;
-        List<Byte> t = arr.stream().map(str -> str.getBytes()[0]).collect(Collectors.toList());
+    private void sort(int[] arr) {
+        int len = arr.length, b = 8, dw = 4;
+        int[] t = new int[len];
         for (int p = 0; p < dw; p += 1) {
             int[] count = new int[1 << b];
-            for (int i = 0; i < len; i += 1)
-                count[((arr.get(i).getBytes()[0] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
+            for (int elt : arr)
+                count[((elt ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
             for (int i = 1; i < 1 << b; i += 1)
                 count[i] += count[i - 1];
-            for (int i = len - 1; i >= 0; i -= 1) {
-                int index = count[((arr.get(i).getBytes()[0] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] - 1;
-                t.set(
-                        index,
-                        arr.get(i).getBytes()[0]
-                );
-            }
-            arr = t.stream().map(Character::toString).collect(Collectors.toList());
+            for (int  i = len - 1; i >= 0; i -= 1)
+                t[--count[((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr[i];
+            System.arraycopy(t, 0, arr, 0, len);
         }
     }
 
     private static class Vertex {
         private final String label;
         private final String suffix;
+        private final List<Vertex> outArr;
         private final Map<String, Vertex> toNext;
-        private List<String> sortedToNextLabels;
+        private List<String> sortedNextLabels;
         private Vertex suffLink;
         private boolean isVisited;
         private boolean isTerminal;
@@ -118,8 +118,9 @@ public class SuffixArrayViaKarasik {
         Vertex(String label, String suffix) {
             this.label = label;
             this.suffix = suffix;
+            this.outArr = new ArrayList<>();
             this.toNext = new HashMap<>();
-            this.sortedToNextLabels = new ArrayList<>();
+            this.sortedNextLabels = new ArrayList<>();
             this.isVisited = false;
             this.isTerminal = false;
         }

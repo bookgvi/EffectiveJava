@@ -4,14 +4,14 @@ import java.util.Arrays;
 
 public class FindSubStringTrivial {
     public static void main(String[] args) {
-        String findMe = "bracadabra";
+        String findMe = "a";
         String str = "abracadabra";
         System.out.printf("%s <- %s\n positions ", str, findMe);
         int[] p = suffixArray(str);
-        for (int i = 0, len = findMe.length(); i < len; i += 1) {
+        for (int i = 0, lenSS = findMe.length(); i < lenSS; i += 1) {
             int l = binSearchL(findMe.charAt(i), p, i, str);
             if (l == -1) {
-                System.out.println("not found...");
+                System.out.println("no found...");
                 return;
             }
             int r = binSearchR(findMe.charAt(i), p, i, str);
@@ -22,20 +22,20 @@ public class FindSubStringTrivial {
         System.out.println(Arrays.toString(p));
     }
 
-    private static int binSearchL(int chCode, int[] arr, int off, String str) {
+    private static int binSearchL(int chCode, int[] arr, int offset, String str) {
         int len = arr.length, k = len - 1;
         for (int i = len >> 1; i > 0; i >>= 1)
-            while (k - i >= 0 && str.substring(arr[k - i]).charAt(Math.min(str.substring(arr[k - i]).length() - 1, off)) >= chCode)
+            while (k - i >= 0 && str.substring(arr[k - i]).charAt(Math.min(str.substring(arr[k - i]).length() - 1, offset)) >= chCode)
                 k -= i;
-        if (str.substring(arr[k]).charAt(Math.min(str.substring(arr[k]).length() - 1, off)) == chCode) return k;
+        if (str.substring(arr[k]).charAt(Math.min(str.substring(arr[k]).length() - 1, offset)) == chCode) return k;
         return -1;
     }
 
-    private static int binSearchR(int chCode, int[] arr, int off, String str) {
+    private static int binSearchR(int chCode, int[] arr, int offset, String str) {
         int len = arr.length, k = 0;
         for (int i = len >> 1; i > 0; i >>= 1)
-            while (k + i < len && str.substring(arr[k + i]).charAt(off) <= chCode) k += i;
-        if (str.substring(arr[k]).charAt(off) == chCode) return k;
+            while(k + i < len && str.substring(arr[k + i]).charAt(offset) <= chCode) k += i;
+        if (str.substring(arr[k]).charAt(offset) == chCode) return k;
         return -1;
     }
 

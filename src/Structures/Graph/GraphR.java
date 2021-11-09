@@ -3,129 +3,96 @@ package Structures.Graph;
 import java.util.*;
 
 public class GraphR {
-    private final int MAX_VERTEXES;
-    private int vertexQuantity = 0;
-    private final Vertex[] vertexes;
-    private final int[][] adjMatrix;
+    private Map<String, Vertex> vertexes;
+    private Map<String, Map<String, Edge>> adjMatrix;
 
-    GraphR(int maxVertexes) {
-        MAX_VERTEXES = maxVertexes;
-        vertexes = new Vertex[MAX_VERTEXES];
-        adjMatrix = new int[MAX_VERTEXES][MAX_VERTEXES];
-    }
-
-    void displayVertex(int num) {
-        System.out.printf("%s", vertexes[num].label);
+    GraphR(int n) {
+        vertexes = new HashMap<>();
+        adjMatrix = new HashMap<>();
     }
 
     void addVertex(String label) {
-        vertexes[vertexQuantity++] = new Vertex(label);
+        vertexes.putIfAbsent(label, new Vertex(label));
     }
 
-    void addEdge(int start, int end) {
-        adjMatrix[start][end] = 1;
-        adjMatrix[end][start] = 1;
+    void addEdge(String start, String end) {
+        Edge edge = new Edge(1, 0);
+        Map<String, Edge> cols = adjMatrix.getOrDefault(start, new HashMap<>());
+        cols.putIfAbsent(end, edge);
+        adjMatrix.putIfAbsent(start, cols);
+        cols = adjMatrix.getOrDefault(end, new HashMap<>());
+        cols.putIfAbsent(start, edge);
+        adjMatrix.putIfAbsent(end, cols);
     }
 
-    private int getUnvisited(int startVertex) {
-        for (int i = 0; i < vertexQuantity; i += 1) {
-            if (!vertexes[i].isVisited && adjMatrix[startVertex][i] == 1) {
-                return i;
+    void dfs(String start) {
+        Vertex startVertex = vertexes.get(start), curVertex, nextVertex;
+        if (startVertex == null) {
+            System.out.printf("vertex %s not found\n", start);
+            return;
+        }
+        Stack<Vertex> vertexStack = new Stack<>();
+        startVertex.isVisited = true;
+        vertexStack.push(startVertex);
+        while(!vertexStack.isEmpty()) {
+            curVertex = vertexStack.peek();
+            if ((nextVertex = getUnvisted(curVertex)) == null) vertexStack.pop();
+            else {
+                nextVertex.isVisited = true;
+                vertexStack.push(nextVertex);
+                System.out.printf("%s->%s ", curVertex.label, nextVertex.label);
             }
         }
-        return -1;
+        setUnvisited();
     }
 
-    private void setVertexUnvisited() {
-        for (int i = 0; i < vertexQuantity; i += 1) {
-            vertexes[i].isVisited = false;
+    void bfs(String start) {
+        Vertex startVertex = vertexes.get(start), curVertex, nextVertex;
+        if (startVertex == null) {
+            System.out.printf("vertex %s not found\n", start);
+            return;
         }
-    }
-
-    public void mstB(int startVertex) {
-        VertexQueue<Integer> vertexQueue = new VertexQueue<>();
-        int[] distance = new int[vertexQuantity];
-        Map<String, Integer> dist = new HashMap<>();
-        List<String> mst = new ArrayList<>();
-        vertexes[startVertex].isVisited = true;
+        VertexQueue<Vertex> vertexQueue = new VertexQueue<>();
+        startVertex.isVisited = true;
         vertexQueue.offer(startVertex);
-        dist.put(vertexes[startVertex].label, 0);
-        int nextVertex;
-        while (!vertexQueue.isEmpty()) {
-            Integer currentVertex = vertexQueue.poll();
-            if (currentVertex == null) continue;
-            while ((nextVertex = getUnvisited(currentVertex)) != -1) {
-                vertexes[nextVertex].isVisited = true;
+        while(!vertexQueue.isEmpty()) {
+            curVertex = vertexQueue.poll();
+            if (curVertex == null) continue;
+            while((nextVertex = getUnvisted(curVertex)) != null) {
+                nextVertex.isVisited = true;
                 vertexQueue.offer(nextVertex);
-                mst.add(vertexes[currentVertex].label + vertexes[nextVertex].label);
-                distance[nextVertex] = distance[currentVertex] + 1;
-                dist.put(vertexes[nextVertex].label, dist.getOrDefault(vertexes[currentVertex].label, 0) + 1);
+                System.out.printf("%s->%s ", curVertex.label, nextVertex.label);
             }
         }
-//        System.out.println(mst);
-//        System.out.println(Arrays.toString(distance));
-        System.out.println(dist);
-        setVertexUnvisited();
+        setUnvisited();
     }
 
-    public void mstD(int startVertex) {
-        Stack<Integer> vertexStack = new Stack<>();
-        vertexes[startVertex].isVisited = true;
-        vertexStack.push(startVertex);
-        List<String> mst = new ArrayList<>();
-        while (!vertexStack.isEmpty()) {
-            int currentVertex = vertexStack.peek();
-            int nextVertex = getUnvisited(currentVertex);
-            if (nextVertex == -1) vertexStack.pop();
-            else {
-                vertexes[nextVertex].isVisited = true;
-                vertexStack.push(nextVertex);
-                mst.add(vertexes[currentVertex].label + vertexes[nextVertex].label);
-            }
+    private Vertex getUnvisted(Vertex curVertex) {
+        Map<String, Edge> cols = adjMatrix.getOrDefault(curVertex.label, new HashMap<>());
+        for (String nextLabel : cols.keySet()) {
+            Vertex nextVertex = vertexes.get(nextLabel);
+            if (!nextVertex.isVisited && cols.get(nextLabel).neighbors == 1) return nextVertex;
         }
-        System.out.printf("MST: %s\n", mst);
-        setVertexUnvisited();
+        return null;
     }
 
-    public void dfs(int startVertex) {
-        Stack<Integer> vertexStack = new Stack<>();
-        displayVertex(startVertex);
-        vertexes[startVertex].isVisited = true;
-        vertexStack.push(startVertex);
-        while (!vertexStack.isEmpty()) {
-            int nextVertex = getUnvisited(vertexStack.peek());
-            if (nextVertex == -1) vertexStack.pop();
-            else {
-                vertexes[nextVertex].isVisited = true;
-                vertexStack.push(nextVertex);
-                displayVertex(nextVertex);
-            }
+    private void setUnvisited() {
+        for (Vertex nextVertex : vertexes.values())
+            nextVertex.isVisited = false;
+    }
+
+    private static class Edge {
+        private final int neighbors;
+        private final int weight;
+
+        Edge(int neighbors, int weight) {
+            this.neighbors = neighbors;
+            this.weight = weight;
         }
-
-        setVertexUnvisited();
     }
-
-    public void bfs(int startVertex) {
-        VertexQueue<Integer> vertexesQueue = new VertexQueue<>();
-        vertexes[startVertex].isVisited = true;
-        vertexesQueue.offer(startVertex);
-        displayVertex(startVertex);
-        int nextVertex;
-        while (!vertexesQueue.isEmpty()) {
-            Integer currentVertes = vertexesQueue.poll();
-            if (currentVertes == null) continue;
-            while ((nextVertex = getUnvisited(currentVertes)) != -1) {
-                vertexes[nextVertex].isVisited = true;
-                vertexesQueue.offer(nextVertex);
-                displayVertex(nextVertex);
-            }
-        }
-        setVertexUnvisited();
-    }
-
 
     private static class Vertex {
-        private String label;
+        private final String label;
         private boolean isVisited;
 
         Vertex(String label) {

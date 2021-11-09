@@ -4,53 +4,52 @@ import java.util.*;
 import java.util.stream.*;
 
 public class BackPack {
-    private static int[][] solve(int weight, List<Pair> things) {
-        int count = things.size();
-        int[][] d = new int[count][weight + 1];
-        d[0][0] = 0;
-        for (int i = 1; i < count; i += 1) {
+    private static int[][] solve(int weight, List<Pair<Integer, Integer>> things) {
+        int len = things.size();
+        int[][] dp = new int[len][weight + 1];
+        for (int i = 1; i < len; i += 1) {
             for (int w = 1; w <= weight; w += 1) {
-                if (w - things.get(i).first >= 0 && d[i - 1][w] < d[i - 1][w - things.get(i).first] + things.get(i).second) {
-                    d[i][w] =d[i - 1][w - things.get(i).first] + things.get(i).second;
-                } else {
-                    d[i][w] = d[i - 1][w];
-                }
+                if (w - things.get(i).first >= 0 && dp[i - 1][w] < dp[i - 1][w - things.get(i).first] + things.get(i).second)
+                    dp[i][w] = dp[i - 1][w - things.get(i).first] + things.get(i).second;
+                else
+                    dp[i][w] = dp[i - 1][w];
             }
         }
-        return d;
+        return dp;
+    }
+
+    private static List<Pair<Integer, Integer>> getThings(int[][] dp, List<Pair<Integer, Integer>> things, int weight) {
+        List<Pair<Integer, Integer>> res = new ArrayList<>();
+        for (int i = things.size() - 1; i > 0; i -= 1) {
+            if (dp[i][weight] != dp[i - 1][weight]) {
+                res.add(things.get(i));
+                weight -= things.get(i).first;
+            }
+        }
+        return res;
     }
 
     public static void main(String[] args) {
-        Pair t0 = Pair.add(0, 0);
-        Pair t2 = Pair.add(4, 30);
-        Pair t3 = Pair.add(1, 15);
-        Pair t1 = Pair.add(3, 20);
-        Pair t4 = Pair.add(2, 9);
-        Pair t5 = Pair.add(1, 9);
-        List<Pair> things = List.of(t0, t1, t2, t3);
-        int w = 4;
-        int[][] res = solve(w, things);
-        List<Integer> seq = new ArrayList<>();
-        for (int i = things.size() - 1; i > 0; i -= 1) {
-            if (res[i][w] != res[i - 1][w]) {
-                seq.add(i);
-                w -= things.get(i).first;
-            }
-        }
+        int weight = 5;
+        List<Pair<Integer, Integer>> thing = new ArrayList<>();
+        thing.add(new Pair<>(0, 0));
+        thing.add(new Pair<>(1, 15));
+        thing.add(new Pair<>(2, 20));
+        thing.add(new Pair<>(3, 20));
+//        thing.add(new Pair<>(4, 30));
+
+        int[][] dp = solve(weight, thing);
+        List<Pair<Integer, Integer>> seq = getThings(dp, thing, weight);
         System.out.println(seq);
     }
 
-    private static class Pair {
-        int first;
-        int second;
+    private static class Pair<V, U> {
+        private final V first;
+        private final U second;
 
-        public static Pair add(int first, int second) {
-            return new Pair(first, second);
-        }
-
-        private Pair(int first, int second) {
-            this.first = first;
-            this.second = second;
+        Pair(V f, U s) {
+            this.first = f;
+            this.second = s;
         }
     }
 }

@@ -25,7 +25,7 @@ public class Sort {
 
     private static int[] selectSort(int[] arr) {
         for (int i = 0, len = arr.length; i < len; i += 1)
-            for(int j = i + 1; j < len; j += 1)
+            for (int j = i + 1; j < len; j += 1)
                 if (arr[i] - arr[j] > 0) swap(i, j, arr);
         return arr;
     }
@@ -41,9 +41,9 @@ public class Sort {
         int max = 1 << 16;
         List<List<Integer>> digits = IntStream.range(0, max).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
         List<List<Integer>> digits2 = IntStream.range(0, max).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
-        for (int el : arr)
-            digits.get(el % max).add(el);
-        for(List<Integer> eltList : digits)
+        for (int elt : arr)
+            digits.get(elt % max).add(elt);
+        for (List<Integer> eltList : digits)
             for (int elt : eltList)
                 digits2.get(elt / max).add(elt);
         return digits2.stream().flatMapToInt(list -> list.stream().mapToInt(elt -> elt)).toArray();
@@ -68,7 +68,7 @@ public class Sort {
                 it2 += 1;
             }
         }
-        while(l + it1 < mid) {
+        while (l + it1 < mid) {
             merge[it1 + it2] = arr[l + it1];
             it1 += 1;
         }

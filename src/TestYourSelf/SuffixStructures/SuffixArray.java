@@ -16,7 +16,6 @@ public class SuffixArray {
     }
 
     private static int[] sortCyclicStrings(String str) {
-        List<int[]> cl = new ArrayList<>();
         int len = str.length(), b = 8;
         int[] p = new int[len], c = new int[len], count = new int[1 << b];
         for (int i = 0; i < len; i += 1)
@@ -31,7 +30,6 @@ public class SuffixArray {
             if (str.charAt(p[i]) != str.charAt(p[i - 1])) classes += 1;
             c[p[i]] = classes - 1;
         }
-        cl.add(Arrays.copyOf(c, len));
         int[] pn = new int[len], cn = new int[len];
         for (int h = 0; (1 << h) < len; h += 1) {
             for (int i = 0; i < len; i += 1) {
@@ -53,7 +51,6 @@ public class SuffixArray {
                 cn[p[i]] = classes - 1;
             }
             System.arraycopy(cn, 0, c, 0, len);
-            cl.add(Arrays.copyOf(c, len));
         }
         return p;
     }

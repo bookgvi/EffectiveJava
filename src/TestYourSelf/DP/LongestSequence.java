@@ -10,17 +10,17 @@ public class LongestSequence {
     * */
     private static int[] solve(int[] nums) {
         int len = nums.length;
-        int[] d = new int[len];
-        d[0] = 1;
+        int[] dp = new int[len];
+        dp[0] = 1;
         for (int i = 1; i < len; i += 1) {
-            int maxI = 0;
+            int last = 0;
             for (int j = i - 1; j >= 0; j -= 1) {
-                if (d[j] > maxI && nums[j] < nums[i])
-                    maxI = d[j];
+                if (dp[j] > dp[last] && nums[j] < nums[i])
+                    last = dp[j];
             }
-            d[i] = maxI + 1;
+            dp[i] = dp[last] + 1;
         }
-        return d;
+        return dp;
     }
 
     public static void main(String[] args) {

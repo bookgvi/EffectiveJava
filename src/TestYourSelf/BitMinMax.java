@@ -3,7 +3,7 @@ package TestYourSelf;
 public class BitMinMax {
 
     public static void main(String[] args) {
-        final int x = -21, y = 10;
+        final int x = -21, y = -100;
         System.out.printf("%d < %d\n", min(x, y), max(x, y));
     }
 
@@ -12,6 +12,6 @@ public class BitMinMax {
     }
 
     private static int max(int x, int y) {
-        return y - ((y - x) & ((y - x) >> 31));
+        return x + ((y - x) & ((x - y) >> 31));
     }
 }

@@ -1,5 +1,7 @@
 package TestYourSelf;
 
+import java.util.*;
+
 public class NumberTheory {
     public static void main(String[] args) {
         int a = 3, b = 21;
@@ -7,6 +9,9 @@ public class NumberTheory {
 
         int evklid = extEvklid(a, b)[0];
         System.out.println(evklid);
+
+        List<Integer> primes = erat(20);
+        System.out.println(primes);
     }
 
     private static int[] extEvklid(int a, int b) {
@@ -38,5 +43,16 @@ public class NumberTheory {
     private static int gcd(int a, int b) {
         if (a == 0) return b;
         return gcd(b % a, a);
+    }
+
+    private static List<Integer> erat(int n) {
+        List<Integer> primes = new ArrayList<>();
+        boolean[] erat = new boolean[n + 1];
+        for (int i = 2; i <= n; i += 1) {
+            if (!erat[i]) primes.add(i);
+            for (int j = i * 2; j <= n; j += i)
+                erat[j] = true;
+        }
+        return primes;
     }
 }

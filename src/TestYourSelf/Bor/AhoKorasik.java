@@ -39,7 +39,7 @@ public class AhoKorasik {
 
     private Vertex delta(String ch, Vertex curVertex) {
         if (curVertex.toNext.get(ch) == null && curVertex.suffLink.toNext.get(ch) != null)
-           return curVertex.suffLink.toNext.get(ch);
+            return curVertex.suffLink.toNext.get(ch);
         else if (curVertex.toNext.get(ch) != null)
             return curVertex.toNext.get(ch);
         return root;
@@ -59,9 +59,9 @@ public class AhoKorasik {
     void initBor() {
         Vertex startVertex = root, curVertex, nextVertex;
         VertexQueue<Vertex> vertexQueue = new VertexQueue<>();
-        setRootSuffLink();
         startVertex.isVisited = true;
         vertexQueue.offer(startVertex);
+        setRootSuffLink();
         while (!vertexQueue.isEmpty()) {
             curVertex = vertexQueue.poll();
             if (curVertex == null) continue;
@@ -75,19 +75,6 @@ public class AhoKorasik {
         setUnvisited(root);
     }
 
-    private void setRootSuffLink() {
-        root.suffLink = root;
-        for (Vertex firstAfterRoot : root.toNext.values()) firstAfterRoot.suffLink = root;
-    }
-
-    private void setSuffLink(Vertex parentVertex, Vertex curVertex) {
-        Vertex parentSuffLink = parentVertex.suffLink;
-        if (curVertex.suffLink == null) {
-            curVertex.suffLink = parentSuffLink.toNext.get(curVertex.label);
-            if (curVertex.suffLink == null) curVertex.suffLink = root;
-        }
-    }
-
     private void setOutArr(Vertex curVertex) {
         for (Vertex nextVertex : curVertex.toNext.values()) {
             fillOutArr(nextVertex, nextVertex.outArr);
@@ -99,6 +86,19 @@ public class AhoKorasik {
         if (curVertex.isTerminal) outArr.add(curVertex);
         if (curVertex.suffLink == root) return;
         fillOutArr(curVertex.suffLink, outArr);
+    }
+
+    private void setRootSuffLink() {
+        root.suffLink = root;
+        for (Vertex firstAfterRoot : root.toNext.values()) firstAfterRoot.suffLink = root;
+    }
+
+    private void setSuffLink(Vertex parentVertex, Vertex curVertex) {
+        Vertex parentSuffLink = parentVertex.suffLink;
+        if (curVertex.suffLink == null) {
+            curVertex.suffLink = parentSuffLink.toNext.get(curVertex.label);
+            if (curVertex.suffLink == null) curVertex.suffLink = root;
+        }
     }
 
     private void setUnvisited(Vertex curVertex) {

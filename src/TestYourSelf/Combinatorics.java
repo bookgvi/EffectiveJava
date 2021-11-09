@@ -12,6 +12,9 @@ public class Combinatorics {
         String perm = getPermutation(4, 15);
         System.out.println(perm);
 
+        int[] tmpArr = {1, 2, 3, 4, 5};
+        reverse(1, tmpArr.length - 2, tmpArr);
+
         System.out.printf("%d)\t%s\n", 1, Arrays.toString(arr));
         int n = fact[arr.length];
         for (int i = 1; i < n; i += 1) {
@@ -23,16 +26,16 @@ public class Combinatorics {
     private static String getPermutation(int n, int k) {
         StringBuilder res = new StringBuilder();
         int[] digits = new int[n + 1];
-        for (int i = n -1 ; i >= 0; i -= 1) {
-            int pn = k % fact[i];
-            int d = k / fact[i];
-            if (pn == 0) pn = fact[i];
+        for (int i = n; i > 0; i -= 1) {
+            int pn = k % fact[i - 1];
+            int d = k / fact[i - 1];
+            if (pn == 0) pn = fact[i - 1];
             else d += 1;
             k = pn;
             int pos = 0;
             for (int j = 1; j <= n; j += 1) {
                 if (digits[j] == 0) pos += 1;
-                if(d == pos) {
+                if (pos == d) {
                     digits[j] = 1;
                     res.append(j);
                     break;
@@ -50,7 +53,7 @@ public class Combinatorics {
                 for (int j = min; j < len; j += 1)
                     if (arr[j] < arr[min] && arr[j] > arr[i])
                         min = j;
-                swap(min, i, arr);
+                swap(i, min, arr);
                 reverse(i + 1, len - 1, arr);
                 break;
             }
@@ -59,13 +62,13 @@ public class Combinatorics {
     }
 
     private static void reverse(int start, int end, int[] arr) {
-        for (int i = start; i <= (end + start) >> 1; i += 1) {
-            int tmp = end + start - i;
-            swap (tmp, i, arr);
+        for (int i = start; i <= (start + end) >> 1; i += 1) {
+            int t = end + start - i;
+            swap(i, t, arr);
         }
     }
 
-    private static void swap(int i, int  j, int[] arr) {
+    private static void swap(int i, int j, int[] arr) {
         int tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;

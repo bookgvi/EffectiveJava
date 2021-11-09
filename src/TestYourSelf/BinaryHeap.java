@@ -15,8 +15,8 @@ public class BinaryHeap {
 
     private static int[] sort(int[] arr) {
         int len = arr.length;
-        buildHeap(arr);
         int[] sorted = new int[len];
+        build(arr);
         for (int i = 0; i < len; i += 1) {
             sorted[i] = arr[0];
             arr[0] = Integer.MAX_VALUE;
@@ -25,13 +25,13 @@ public class BinaryHeap {
         return sorted;
     }
 
-    private static void buildHeap(int[] arr) {
+    private static void build(int[] arr) {
         for (int i = arr.length - 1; i >= 0; i -= 1)
             siftDown(i, arr);
     }
 
     private static void siftDown(int v, int[] arr) {
-        int len = arr.length, half = len >>> 1;
+        int len = arr.length, half = len >> 1;
         while(v < half) {
             int l = (v << 1) + 1;
             int r = l + 1;

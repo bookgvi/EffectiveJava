@@ -1,9 +1,5 @@
 package TestYourSelf;
 
-
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.PriorityQueue;
 import java.util.stream.IntStream;
 
 public class BracketSequence {
@@ -11,7 +7,7 @@ public class BracketSequence {
     private static final long[] fact = fact();
 
     public static void main(String[] args) {
-        final int n = 6;
+        final int n = 4 ;
         String startSeq = getFirstSequence(n);
         long catalan = catalan(n);
         System.out.printf("count = %d\n", catalan);
@@ -23,21 +19,21 @@ public class BracketSequence {
         }
     }
 
-    private static String nextSequence(String seq) {
-        StringBuilder res = new StringBuilder();
-        int len = seq.length(), depth = 0;
+    private static String nextSequence(String str) {
+        int len = str.length(), depth = 0;
+        StringBuilder seq = new StringBuilder();
         for (int i = len - 1; i >= 0; i -= 1) {
-            if (seq.charAt(i) == '(') depth -= 1;
+            if (str.charAt(i) == '(') depth -= 1;
             else depth += 1;
-            if (depth > 0 && seq.charAt(i) == '(') {
+            if (depth > 0 && str.charAt(i) == '(') {
                 depth -= 1;
                 int open = (len - i - 1 - depth) >> 1;
                 int close = len - i - 1 - open;
-                res.append(seq, 0, i).append(")").append(repeat("(", open)).append(repeat(")", close));
+                seq.append(str, 0, i).append(")").append(repeated("(", open)).append(repeated(")", close));
                 break;
             }
         }
-        return res.toString();
+        return seq.toString();
     }
 
     private static long catalan(int n) {
@@ -45,13 +41,13 @@ public class BracketSequence {
     }
 
     private static String getFirstSequence(int n) {
-        return repeat("(", n) + repeat(")", n);
+        return repeated("(", n) + repeated(")", n);
     }
 
-    private static String repeat(String ch, int count) {
-        StringBuilder res = new StringBuilder();
-        IntStream.range(0, count).forEach(i -> res.append(ch));
-        return res.toString();
+    private static String repeated(String ch, int count) {
+        StringBuilder seq = new StringBuilder();
+        IntStream.range(0, count).forEach(i -> seq.append(ch));
+        return seq.toString();
     }
 
     private static long[] fact() {
