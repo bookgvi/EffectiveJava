@@ -3,16 +3,21 @@ package TestYourSelf.SuffixStructures;
 import java.util.*;
 
 public class SuffixArray {
+    private static final List<int[]> pars = new ArrayList<>();
+
     public static void main(String[] args) {
-        String str = "aabaaca$";
+        String str = "aabaaca";
         long startTime = System.nanoTime();
         int[] p = sortCyclicStrings(str);
         long endTime = System.nanoTime();
 
         System.out.println(Arrays.toString(p));
         System.out.printf("%.8f\n", (endTime - startTime) / 1e9);
-        for (int i = 0; i < str.length(); i += 1)
-            System.out.println(str.substring(p[i]));
+        for (int[] par : pars) {
+            for (int i = 0; i < str.length(); i += 1)
+                System.out.printf("%s ", str.substring(par[i]));
+            System.out.println();
+        }
     }
 
     private static int[] sortCyclicStrings(String str) {
@@ -24,6 +29,7 @@ public class SuffixArray {
             count[i] += count[i - 1];
         for (int i = len - 1; i >= 0; i -= 1)
             p[--count[str.charAt(i)]] = i;
+        pars.add(Arrays.copyOf(p, p.length));
         c[p[0]] = 0;
         int classes = 1;
         for (int i = 1; i < len; i += 1) {
@@ -43,6 +49,7 @@ public class SuffixArray {
                 count[i] += count[i - 1];
             for (int i = len - 1; i >= 0; i -= 1)
                 p[--count[c[pn[i]]]] = pn[i];
+            pars.add(Arrays.copyOf(p, p.length));
             cn[p[0]] = 0;
             classes = 1;
             for (int i = 1; i < len; i += 1) {

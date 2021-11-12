@@ -4,17 +4,17 @@ import java.util.Arrays;
 
 public class FindSubStringTrivial {
     public static void main(String[] args) {
-        String findMe = "a";
+        String findMe = "bracadabra";
         String str = "abracadabra";
         System.out.printf("%s <- %s\n positions ", str, findMe);
         int[] p = suffixArray(str);
-        for (int i = 0, lenSS = findMe.length(); i < lenSS; i += 1) {
-            int l = binSearchL(findMe.charAt(i), p, i, str);
+        for (int i = 0, ssLen = findMe.length(); i < ssLen; i += 1) {
+            int l = binarySearchL(findMe.charAt(i), p, i, str);
             if (l == -1) {
-                System.out.println("no found...");
+                System.out.println("not found...");
                 return;
             }
-            int r = binSearchR(findMe.charAt(i), p, i, str);
+            int r = binarySearchR(findMe.charAt(i), p, i, str);
             int[] tmp = Arrays.copyOf(p, p.length);
             p = new int[r - l + 1];
             System.arraycopy(tmp, l, p, 0, r - l + 1);
@@ -22,20 +22,20 @@ public class FindSubStringTrivial {
         System.out.println(Arrays.toString(p));
     }
 
-    private static int binSearchL(int chCode, int[] arr, int offset, String str) {
+    private static int binarySearchL(int chCode, int[] arr, int off, String str) {
         int len = arr.length, k = len - 1;
         for (int i = len >> 1; i > 0; i >>= 1)
-            while (k - i >= 0 && str.substring(arr[k - i]).charAt(Math.min(str.substring(arr[k - i]).length() - 1, offset)) >= chCode)
+            while (k - i >= 0 && str.substring(arr[k - i]).charAt(Math.min(str.substring(arr[k - i]).length() - 1, off)) >= chCode)
                 k -= i;
-        if (str.substring(arr[k]).charAt(Math.min(str.substring(arr[k]).length() - 1, offset)) == chCode) return k;
+        if (str.substring(arr[k]).charAt(Math.min(str.substring(arr[k]).length() - 1, off)) == chCode) return k;
         return -1;
     }
 
-    private static int binSearchR(int chCode, int[] arr, int offset, String str) {
+    private static int binarySearchR(int chCode, int[] arr, int off, String str) {
         int len = arr.length, k = 0;
         for (int i = len >> 1; i > 0; i >>= 1)
-            while(k + i < len && str.substring(arr[k + i]).charAt(offset) <= chCode) k += i;
-        if (str.substring(arr[k]).charAt(offset) == chCode) return k;
+            while(k + i < len && str.substring(arr[k + i]).charAt(off) <= chCode) k += i;
+        if (str.substring(arr[k]).charAt(off) == chCode) return k;
         return -1;
     }
 
@@ -54,7 +54,7 @@ public class FindSubStringTrivial {
             if (str.charAt(p[i]) != str.charAt(p[i - 1])) classes += 1;
             c[p[i]] = classes - 1;
         }
-        int[] pn = new int[len], cn = new int[len];
+        int[] cn = new int[len], pn = new int[len];
         for (int h = 0; (1 << h) < len; h += 1) {
             for (int i = 0; i < len; i += 1) {
                 pn[i] = p[i] - (1 << h);

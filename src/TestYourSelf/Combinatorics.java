@@ -26,16 +26,16 @@ public class Combinatorics {
     private static String getPermutation(int n, int k) {
         StringBuilder res = new StringBuilder();
         int[] digits = new int[n + 1];
-        for (int i = n; i > 0; i -= 1) {
-            int pn = k % fact[i - 1];
-            int d = k / fact[i - 1];
-            if (pn == 0) pn = fact[i - 1];
+        for (int i = n - 1; i >= 0; i -= 1) {
+            int pn = k % fact[i];
+            int d = k / fact[i];
+            if (pn == 0) pn = fact[i];
             else d += 1;
             k = pn;
             int pos = 0;
             for (int j = 1; j <= n; j += 1) {
                 if (digits[j] == 0) pos += 1;
-                if (pos == d) {
+                if (d == pos) {
                     digits[j] = 1;
                     res.append(j);
                     break;
@@ -62,9 +62,9 @@ public class Combinatorics {
     }
 
     private static void reverse(int start, int end, int[] arr) {
-        for (int i = start; i <= (start + end) >> 1; i += 1) {
-            int t = end + start - i;
-            swap(i, t, arr);
+        for (int i = start; i <= (end + start) >> 1; i += 1) {
+            int tmp = end + start - i;
+            swap(i, tmp, arr);
         }
     }
 

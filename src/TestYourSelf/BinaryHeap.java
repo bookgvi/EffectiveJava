@@ -32,13 +32,13 @@ public class BinaryHeap {
 
     private static void siftDown(int v, int[] arr) {
         int len = arr.length, half = len >> 1;
-        while(v < half) {
+        while (v < half) {
             int l = (v << 1) + 1;
             int r = l + 1;
-            int t = r < len && arr[r] < arr[l] ? r : l;
-            if (arr[v] <= arr[t]) break;
-            swap(v, t, arr);
-            v = t;
+            int tmp = r < len && arr[r] < arr[l] ? r : l;
+            if (arr[v] <= arr[tmp]) break;
+            swap(v, tmp, arr);
+            v = tmp;
         }
     }
 

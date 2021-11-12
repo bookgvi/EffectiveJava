@@ -59,9 +59,9 @@ public class AhoKorasik {
     void initBor() {
         Vertex startVertex = root, curVertex, nextVertex;
         VertexQueue<Vertex> vertexQueue = new VertexQueue<>();
+        setRootSuffLink();
         startVertex.isVisited = true;
         vertexQueue.offer(startVertex);
-        setRootSuffLink();
         while (!vertexQueue.isEmpty()) {
             curVertex = vertexQueue.poll();
             if (curVertex == null) continue;
@@ -73,19 +73,6 @@ public class AhoKorasik {
         }
         setOutArr(root);
         setUnvisited(root);
-    }
-
-    private void setOutArr(Vertex curVertex) {
-        for (Vertex nextVertex : curVertex.toNext.values()) {
-            fillOutArr(nextVertex, nextVertex.outArr);
-            setOutArr(nextVertex);
-        }
-    }
-
-    private void fillOutArr(Vertex curVertex, List<Vertex> outArr) {
-        if (curVertex.isTerminal) outArr.add(curVertex);
-        if (curVertex.suffLink == root) return;
-        fillOutArr(curVertex.suffLink, outArr);
     }
 
     private void setRootSuffLink() {
@@ -101,15 +88,27 @@ public class AhoKorasik {
         }
     }
 
+    private void setOutArr(Vertex curVertex) {
+        for (Vertex nextVertex : curVertex.toNext.values()) {
+            fillOutArr(nextVertex, nextVertex.outArr);
+            setOutArr(nextVertex);
+        }
+    }
+
+    private void fillOutArr(Vertex curVertex, List<Vertex> outArr) {
+        if (curVertex.isTerminal) outArr.add(curVertex);
+        if (curVertex.suffLink == root) return;
+        fillOutArr(curVertex.suffLink, outArr);
+    }
+
     private void setUnvisited(Vertex curVertex) {
         curVertex.isVisited = false;
         for (Vertex nextVertex : curVertex.toNext.values()) setUnvisited(nextVertex);
     }
 
     private Vertex getUnvisited(Vertex curVertex) {
-        for (Vertex nextVertex : curVertex.toNext.values()) {
+        for (Vertex nextVertex : curVertex.toNext.values())
             if (!nextVertex.isVisited) return nextVertex;
-        }
         return null;
     }
 
@@ -133,7 +132,7 @@ public class AhoKorasik {
     }
 
     private static class VertexQueue<V> extends AbstractQueue<V> {
-        private final LinkedList<V> vList = new LinkedList<>();
+        LinkedList<V> vList = new LinkedList<>();
 
         @Override
         public Iterator<V> iterator() {
@@ -149,8 +148,7 @@ public class AhoKorasik {
         public boolean offer(V v) {
             boolean res = false;
             if (v != null) {
-                vList.offer(v);
-                res = true;
+                res = vList.offer(v);
             }
             return res;
         }

@@ -12,25 +12,24 @@ public class Fibbonachi {
     }
 
     private static int[][] getFibo(int n) {
-        int[][] FIBO = new int[][]{{0, 1}, {1, 1}};
+        int[][] FIBO = new int[][]{{0, 1}, {1 , 1}};
         return matrixPow(FIBO, n);
     }
 
     private static int[][] matrixPow(int[][] M, int pow) {
-        int[][] R = new int[][]{{1, 0}, {0, 1}};
+        int[][] E = new int[][]{{1, 0}, {0, 1}};
         while (pow > 0) {
-            if ((pow & 1) == 1) R = matrixMultiply(R, M);
+            if ((pow & 1) == 1) E = matrixMultiply(E, M);
             M = matrixMultiply(M, M);
             pow >>= 1;
         }
-        return R;
+        return E;
     }
 
     private static int[][] matrixMultiply(int[][] A, int[][] B) {
-        int lenA = A.length, lenB = B.length;
-        int[][] C = new int[lenA][lenB];
-        for (int i = 0; i < lenA; i += 1)
-            for (int j = 0; j < lenB; j += 1)
+        int[][] C = new int[A.length][B.length];
+        for (int i = 0, lenA = A.length; i < lenA; i += 1)
+            for (int j = 0, lenB = B.length; j < lenB; j += 1)
                 for (int k = 0; k < lenA; k += 1)
                     C[i][j] += A[i][k] * B[k][j];
         return C;
