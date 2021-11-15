@@ -9,30 +9,30 @@ public class CustomBigInteger {
     private static final int digits = 4;
 
     private static String listToString(List<Integer> nums) {
-        StringBuilder numStr = new StringBuilder();
-        int len = nums.size();
-        for (int i = len - 1; i >= 0; i -= 1) {
+        StringBuilder res = new StringBuilder();
+        for (int i = nums.size() - 1; i >= 0; i -= 1) {
             String tmp = String.valueOf(nums.get(i));
-            if (tmp.length() < digits) {
+            int tmpLen = tmp.length();
+            if (tmpLen < digits) {
                 StringBuilder zeros = new StringBuilder();
-                for (int j = 0, delta = digits - tmp.length(); j < delta; j += 1)
-                    zeros.append("0");
-                numStr.append(zeros);
+                IntStream.range(0, digits - tmpLen).forEach(k -> zeros.append(0));
+                res.append(zeros).append(tmp);
+            } else {
+                res.append(tmp);
             }
-            numStr.append(tmp);
         }
-        while (numStr.charAt(0) == '0') numStr.delete(0, 1);
-        if (numStr.length() == 0) return "0";
-        return numStr.toString();
+        while (res.charAt(0) == '0') res.delete(0, 1);
+        if (res.length() < 1) return "0";
+        return res.toString();
     }
 
-    private static List<Integer> strToList(String str) {
-        List<Integer> nums = new ArrayList<>();
-        for (int i = str.length(); i > 0; i -= digits) {
-            if (i < digits) nums.add(Integer.parseInt(str.substring(0, i), radix));
-            else nums.add(Integer.parseInt(str.substring(i - digits, i), radix));
+    private static List<Integer> strToList(String nums) {
+        List<Integer> num = new ArrayList<>();
+        for (int i = nums.length(); i > 0; i -= digits) {
+            if (i < digits) num.add(Integer.parseInt(nums.substring(0, i), radix));
+            else num.add(Integer.parseInt(nums.substring(i - digits, i), radix));
         }
-        return nums;
+        return num;
     }
 
     private static List<Integer> sum(String num1, String num2) {
@@ -40,7 +40,7 @@ public class CustomBigInteger {
         int len = Math.max(a.size(), b.size());
         for (int i = 0, carry = 0; i < len || carry != 0; i += 1) {
             if (i == a.size()) a.add(0);
-            int valB = i == b.size() ? 0 : b.get(i);
+            int valB = i < b.size() ? b.get(i) : 0;
             int valA = a.get(i);
             a.set(i, valA + valB + carry);
             carry = a.get(i) > base ? 1 : 0;
@@ -50,13 +50,13 @@ public class CustomBigInteger {
     }
 
     private static List<Integer> multiply(String num1, String num2) {
-        List<Integer> a= strToList(num1), b = strToList(num2),
+        List<Integer> a = strToList(num1), b = strToList(num2),
                 c = IntStream.range(0, a.size() + b.size()).mapToObj(i -> 0).collect(Collectors.toList());
         for (int i = 0, lenA = a.size(); i < lenA; i += 1) {
-            for (int j = 0, carry = 0, lenB = b.size(); j < lenB || carry != 0; j += 1) {
-                int valB = j == lenB ? 0 : b.get(j);
+            for (int j = 0, lenB = b.size(), carry = 0; j < lenB || carry != 0; j += 1) {
+                int valB = j < lenB ? b.get(j) : 0;
                 int valA = a.get(i);
-                int tmp = c.get(i + j) + valB * valA + carry;
+                int tmp = c.get(i + j) + valA * valB + carry;
                 c.set(i + j, tmp % base);
                 carry = tmp / base;
             }
@@ -66,7 +66,7 @@ public class CustomBigInteger {
 
     public static void main(String[] args) {
         String num1 = "2009";
-        String num2 = "00090003";
+        String num2 = "000900030";
         List<Integer> n1 = strToList(num1);
         List<Integer> n2 = strToList(num2);
         num1 = listToString(n1);

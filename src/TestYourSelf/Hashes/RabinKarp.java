@@ -22,19 +22,19 @@ public class RabinKarp {
     }
 
     private static List<Integer> rabinKarp(String str, String ss) {
-        List<Integer> index = new ArrayList<>();
+        List<Integer> indexes = new ArrayList<>();
+        int lenStr = str.length(), ssLen = ss.length();
         long strH = getHash(ss);
-        long[] phs = phs(str);
-        int lenS = str.length(), lenSS = ss.length();
-        for (int i = 0; i + lenSS - 1 < lenS; i += 1) {
-            long calcHash = hash(phs, i, lenSS - 1);
-            if (strH == calcHash) index.add(i);
+        long[] phs = prefixHash(str);
+        for (int i = 0; i + ssLen - 1 < lenStr; i += 1) {
+            long calcHash = hash(phs, i, ssLen - 1);
+            if (strH == calcHash) indexes.add(i);
         }
-        return index;
+        return indexes;
     }
 
     private static long getHash(String str) {
-        int len  = str.length();
+        int len = str.length();
         byte[] strBytes = str.getBytes();
         long hash = 0;
         for (int i = 0; i < len; i += 1)
@@ -42,14 +42,14 @@ public class RabinKarp {
         return hash;
     }
 
-    private static long hash(long[] phs, int pos, int offset) {
-        long strH = phs[pos + offset];
+    private static long hash(long[] phs, int pos, int off) {
+        long strH = phs[pos + off];
         long prefH = pos > 0 ? phs[pos - 1] : 0;
         strH = strH - prefH < 0 ? strH + mod : strH;
         return (strH - prefH) * invP[pos] % mod;
     }
 
-    private static long[] phs(String str) {
+    private static long[] prefixHash(String str) {
         int len = str.length();
         long[] hashes = new long[len];
         byte[] strBytes = str.getBytes();
@@ -60,7 +60,7 @@ public class RabinKarp {
     }
 
     private static long[] pows() {
-        int max = (int) 1e5 + 5;
+        int max = (int) 1e5;
         long[] pows = new long[max];
         pows[0] = 1;
         for (int i = 1; i < max; i += 1)

@@ -48,7 +48,7 @@ public class StringAl {
         int[] pi = new int[len];
         for (int i = 1; i < len; i += 1) {
             int j = pi[i - 1];
-            while(j > 0 && str.charAt(i) != str.charAt(j)) j = pi[j - 1];
+            while (j > 0 && str.charAt(i) != str.charAt(j)) j = pi[j - 1];
             if (str.charAt(i) == str.charAt(j)) pi[i] = j + 1;
         }
         return pi;
@@ -59,7 +59,7 @@ public class StringAl {
         int[] m = new int[len];
         for (int i = 1, l = 0, r = 0; i < len; i += 1) {
             if (i < r) m[i] = Math.min(m[l - i + r], r - i + 1);
-            while (i - m[i]>= 0 && i + m[i] < len && str.charAt(i - m[i]) == str.charAt(i + m[i])) m[i] += 1;
+            while (i - m[i] >= 0 && i + m[i] < len && str.charAt(i - m[i]) == str.charAt(i + m[i])) m[i] += 1;
             if (i + m[i] - 1 > r) {
                 l = i - m[i] + 1;
                 r = i + m[i] - 1;
@@ -69,8 +69,7 @@ public class StringAl {
     }
 
     private static int zipStr(String str) {
-        int[] pi = piFuncExt(str);
-        int len = str.length(), lastSuff = pi[len - 1];
+        int len = str.length(), lastSuff = piFuncExt(str)[len - 1];
         int pos = len - lastSuff;
         if (len % lastSuff == 0) return pos;
         return -1;

@@ -23,16 +23,16 @@ public class ReplaceSubStrWithDash {
     }
 
     private static String searchStr(long[] phAbc, long[] phStr, String str) {
+        int lenAbc = phAbc.length, lenStr = phStr.length, off = 2;
         StringBuilder res = new StringBuilder();
         Map<Integer, Integer> indexes = new HashMap<>();
-        int abcLen = phAbc.length, strLen = phStr.length, off = 2;
-        while (off < abcLen) {
+        while (off < lenAbc) {
             off += 1;
-            long[] abcHashes = new long[abcLen - off + 1];
-            for (int i = 0; i + off - 1 < abcLen; i += 1)
+            long[] abcHashes = new long[lenAbc - off + 1];
+            for (int i = 0; i + off - 1 < lenAbc; i += 1)
                 abcHashes[i] = hash(phAbc, i, off - 1);
             sort(abcHashes);
-            for (int i = 0; i + off - 1 < strLen; i += 1) {
+            for (int i = 0; i + off - 1 < lenStr; i += 1) {
                 if (binSearch(hash(phStr, i, off - 1), abcHashes) != -1) {
                     indexes.put(i, off);
                     for (int j = i + 1; j < i + off; j += 1)
@@ -40,19 +40,25 @@ public class ReplaceSubStrWithDash {
                 }
             }
         }
-        List<Integer> positions = new ArrayList<>(indexes.keySet()).stream().sorted().collect(Collectors.toList());
         int curPos = 0;
-        for (int startToConvert : positions) {
-            int endToConvert = startToConvert + indexes.get(startToConvert) - 1;
-            res.append(str, curPos, startToConvert).append(convert(startToConvert, endToConvert, str));
-            curPos = endToConvert + 1;
+        List<Integer> positions = indexes.keySet().stream().sorted().collect(Collectors.toList());
+        for (int pos : positions) {
+            int len = indexes.get(pos);
+            res.append(str, curPos, pos).append(convert(pos, len, str));
+            curPos = pos + len;
         }
-        if (curPos < strLen) res.append(str, curPos, strLen);
+        if (curPos < lenStr) res.append(str, curPos, lenStr);
         return res.toString();
     }
 
-    private static String convert(int start, int end, String str) {
-        return "[" + str.charAt(start) + "-" + str.charAt(end) + "]";
+    private static String getAbc() {
+        StringBuilder abc = new StringBuilder();
+        IntStream.range(31, 255).forEach(i -> abc.append(Character.toString(i)));
+        return abc.toString();
+    }
+
+    private static String convert(int start, int len, String str) {
+        return "[" + str.charAt(start) + "-" + str.charAt(start + len - 1) + "]";
     }
 
     private static int binSearch(long n, long[] arr) {
@@ -71,8 +77,8 @@ public class ReplaceSubStrWithDash {
         long[] t = new long[len];
         for (int p = 0; p < dw; p += 1) {
             int[] count = new int[1 << b];
-            for (long elt : arr)
-                count[(int) ((elt ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
+            for (int i = 0; i < len; i += 1)
+                count[(int) ((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
             for (int i = 1; i < 1 << b; i += 1)
                 count[i] += count[i - 1];
             for (int i = len - 1; i >= 0; i -= 1)
@@ -84,7 +90,7 @@ public class ReplaceSubStrWithDash {
     private static long hash(long[] phs, int pos, int off) {
         long strH = phs[pos + off];
         long prefH = pos > 0 ? phs[pos - 1] : 0;
-        strH = strH < prefH ? strH + mod : strH;
+        strH = strH - prefH < 0 ? strH + mod : strH;
         return (strH - prefH) * invP[pos] % mod;
     }
 
@@ -96,13 +102,6 @@ public class ReplaceSubStrWithDash {
         for (int i = 1; i < len; i += 1)
             hashes[i] = hashes[i - 1] + (strBytes[i] - firstCharByte + 1) * pows[i] % mod;
         return hashes;
-    }
-
-    private static String getAbc() {
-        StringBuilder abc = new StringBuilder();
-        for (int i = 31; i < 255; i += 1)
-            abc.append(Character.toString(i));
-        return abc.toString();
     }
 
     private static long[] pows() {
@@ -138,7 +137,7 @@ public class ReplaceSubStrWithDash {
     private static long modPow(long n, long pow, int mod) {
         long res = 1;
         while (pow > 0) {
-            if ((pow & 1) == 1) res = res * n % mod;
+            if ((pow & 1) == 1) res = n * res % mod;
             n = n * n % mod;
             pow >>= 1;
         }
