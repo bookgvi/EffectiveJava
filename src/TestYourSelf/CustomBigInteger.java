@@ -8,31 +8,28 @@ public class CustomBigInteger {
     private static final int radix = 10;
     private static final int digits = 4;
 
-    private static String listToString(List<Integer> nums) {
+    private static String listToString(List<Integer> num) {
         StringBuilder res = new StringBuilder();
-        for (int i = nums.size() - 1; i >= 0; i -= 1) {
-            String tmp = String.valueOf(nums.get(i));
-            int tmpLen = tmp.length();
-            if (tmpLen < digits) {
+        for (int i = num.size() - 1; i >= 0; i -= 1) {
+            String tmp = String.valueOf(num.get(i));
+            if (tmp.length() < digits) {
                 StringBuilder zeros = new StringBuilder();
-                IntStream.range(0, digits - tmpLen).forEach(k -> zeros.append(0));
+                IntStream.range(0, digits - tmp.length()).forEach(j -> zeros.append("0"));
                 res.append(zeros).append(tmp);
-            } else {
-                res.append(tmp);
-            }
+            } else res.append(tmp);
         }
         while (res.charAt(0) == '0') res.delete(0, 1);
         if (res.length() < 1) return "0";
         return res.toString();
     }
 
-    private static List<Integer> strToList(String nums) {
-        List<Integer> num = new ArrayList<>();
-        for (int i = nums.length(); i > 0; i -= digits) {
-            if (i < digits) num.add(Integer.parseInt(nums.substring(0, i), radix));
-            else num.add(Integer.parseInt(nums.substring(i - digits, i), radix));
+    private static List<Integer> strToList(String num) {
+        List<Integer> a = new ArrayList<>();
+        for (int i = num.length(); i > 0; i -= digits) {
+            if (i < digits) a.add(Integer.parseInt(num.substring(0, i), radix));
+            else a.add(Integer.parseInt(num.substring(i - digits, i), radix));
         }
-        return num;
+        return a;
     }
 
     private static List<Integer> sum(String num1, String num2) {
@@ -52,9 +49,9 @@ public class CustomBigInteger {
     private static List<Integer> multiply(String num1, String num2) {
         List<Integer> a = strToList(num1), b = strToList(num2),
                 c = IntStream.range(0, a.size() + b.size()).mapToObj(i -> 0).collect(Collectors.toList());
-        for (int i = 0, lenA = a.size(); i < lenA; i += 1) {
-            for (int j = 0, lenB = b.size(), carry = 0; j < lenB || carry != 0; j += 1) {
-                int valB = j < lenB ? b.get(j) : 0;
+        for (int i = 0; i < a.size(); i += 1) {
+            for (int j = 0, carry = 0; j < b.size() || carry != 0; j += 1) {
+                int valB = j < b.size() ? b.get(j) : 0;
                 int valA = a.get(i);
                 int tmp = c.get(i + j) + valA * valB + carry;
                 c.set(i + j, tmp % base);

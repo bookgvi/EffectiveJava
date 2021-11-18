@@ -1,7 +1,7 @@
 package Structures.SegmentTree;
 
 public class SegmentTree {
-    private static final int[] arr = {7,1,5,3,6,4};
+    private static final int[] arr = {1, 1, 2, 2, 3};
     private static final int n = arr.length;
     private static final int N = (int) 1e5;
     private static final int[] st = new int[2 * n];
@@ -14,21 +14,28 @@ public class SegmentTree {
 
     private static void modify(int p, int value) {
         for (st[p += n] = value; p > 1; p >>= 1)
-            st[p >> 1] = st[p] + st[p ^ 1];
+            st[p >> 1] = st[p] * st[p ^ 1];
     }
 
     private static int query(int l, int r) {
-        int res = 0;
+        int res = 1;
+//        r += 1;
         for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
-            if ((l & 1) == 1) res += st[l++];
-            if ((r & 1) == 1) res += st[--r];
+            if ((l & 1) == 1) res *= st[l++];
+            if ((r & 1) == 1) res *= st[--r];
         }
+        return res;
+    }
+
+    private static int query(int p) {
+        int res = 0;
+        for (p += n; p > 0; p >>= 1) res += st[p];
         return res;
     }
 
     public static void main(String[] args) {
         build(arr);
-        int res = query(1, 6);
+        int res = st[st.length - 8];
         modify(0, 0);
         res = query(0, 3);
         modify(0, -1);

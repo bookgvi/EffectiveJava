@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class StringAl {
     public static void main(String[] args) {
-        String str = "aabaab";
+        String str = "aabcaabaac";
         System.out.println(str);
         System.out.printf("\t\tZ-func: %s\n", Arrays.toString(zFunc(str)));
         System.out.printf("p-func trivial:\t%s\n", Arrays.toString(piFunc(str)));

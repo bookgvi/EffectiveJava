@@ -17,14 +17,14 @@ public class BracketSequence {
     }
 
     private static String nextSequence(String seq) {
+        int len = seq.length(), depth = 0;
         StringBuilder res = new StringBuilder();
-        int depth = 0, len = seq.length();
         for (int i = len - 1; i >= 0; i -= 1) {
             if (seq.charAt(i) == '(') depth -= 1;
             else depth += 1;
             if (depth > 0 && seq.charAt(i) == '(') {
                 depth -= 1;
-                int open = (len - i - 1 - depth) >> 1;
+                int open = (len - i - 1 - depth) >>> 1;
                 int close = len - i - 1 - open;
                 res.append(seq, 0, i).append(")").append(repeat("(", open)).append(repeat(")", close));
                 break;
@@ -44,12 +44,11 @@ public class BracketSequence {
     }
 
     private static long[] catalan() {
-        int max = 19;
-        long[] dp = new long[max + 1];
+        int max = (int) 1e3;
+        long[] dp = new long[max];
         dp[0] = 1;
         dp[1] = 1;
-        dp[2] = 2;
-        for (int i = 3; i <= max; i += 1) {
+        for (int i = 2; i < max; i += 1) {
             for (int j = 0; j < i; j += 1) {
                 dp[i] += dp[j] * dp[i - j - 1];
             }

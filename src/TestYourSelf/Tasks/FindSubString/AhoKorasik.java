@@ -3,56 +3,33 @@ package TestYourSelf.Tasks.FindSubString;
 import java.util.*;
 
 public class AhoKorasik {
-    private static final String rootLabel = "root";
-    private static final String rootSuffix = "";
-    private static final Vertex root = new Vertex(rootLabel, rootSuffix);
+
+    private static Vertex root = new Vertex("root", "");
 
     public static void main(String[] args) {
-        String str = "abracadabra";
+        String str = "abrakadabra";
         String ss = "bra";
 
-        List<Integer> index = searchSubStr(str, ss);
-        System.out.println(str);
-        System.out.println(ss);
-        System.out.println(index);
+        Map<String, List<Integer>> res = findSubString(str, ss);
+        System.out.println(res);
     }
 
-    private static void addKeyWord(String keyWord) {
-        Vertex curVertex = root;
-        StringBuilder suffix = new StringBuilder();
-        for (String ch : keyWord.split("")) {
-            suffix.append(ch);
-            curVertex.toNext.putIfAbsent(ch, new Vertex(ch, suffix.toString()));
-            curVertex = curVertex.toNext.get(ch);
-        }
-        curVertex.isTerminal = true;
-    }
-
-    private static List<Integer> searchSubStr(String str, String ss) {
-        List<Integer> indexes = new ArrayList<>();
-        Vertex curVertex = root;
-        int index = 0;
+    private static Map<String, List<Integer>> findSubString(String text, String ss) {
         addKeyWord(ss);
         init();
-        for (String ch : str.split("")) {
+        Map<String, List<Integer>> words = new HashMap<>();
+        Vertex curVertex = root;
+        int index = 0;
+        for (String ch : text.split("")) {
             index += 1;
             curVertex = delta(ch, curVertex);
             if (curVertex == root) {
                 if (curVertex.toNext.get(ch) == null) continue;
                 else curVertex = curVertex.toNext.get(ch);
             }
-            isOutArr(curVertex, indexes, index);
+            isOutArr(curVertex, words, index);
         }
-        return indexes;
-    }
-
-    private static void isOutArr(Vertex curVertex, List<Integer> indexes, int index) {
-        for (Vertex outVertex : curVertex.outArr) fillIndexes(outVertex, indexes, index);
-    }
-
-    private static void fillIndexes(Vertex outVertex, List<Integer> indexes, int index) {
-        int pos = index - outVertex.suffix.length();
-        indexes.add(pos);
+        return words;
     }
 
     private static Vertex delta(String ch, Vertex curVertex) {
@@ -63,16 +40,38 @@ public class AhoKorasik {
         return root;
     }
 
+    private static void isOutArr(Vertex curVertex, Map<String, List<Integer>> words, int index) {
+        for (Vertex outVertex : curVertex.outArr) fillWords(outVertex, words, index);
+    }
+
+    private static void fillWords(Vertex outVertex, Map<String, List<Integer>> words, int index) {
+        int pos = index - outVertex.suffix.length();
+        List<Integer> positions = words.getOrDefault(outVertex.suffix, new ArrayList<>());
+        positions.add(pos);
+        words.putIfAbsent(outVertex.suffix, positions);
+    }
+
+    private static void addKeyWord(String str) {
+        StringBuilder suffix = new StringBuilder();
+        Vertex curVertex = root;
+        for (String ch : str.split("")) {
+            suffix.append(ch);
+            curVertex.toNext.putIfAbsent(ch, new Vertex(ch, suffix.toString()));
+            curVertex = curVertex.toNext.get(ch);
+        }
+        curVertex.isTerminal = true;
+    }
+
     private static void init() {
         Vertex startVertex = root, curVertex, nextVertex;
         VertexQueue<Vertex> vertexQueue = new VertexQueue<>();
         setRootSuffLink();
         startVertex.isVisited = true;
         vertexQueue.offer(startVertex);
-        while(!vertexQueue.isEmpty()) {
+        while (!vertexQueue.isEmpty()) {
             curVertex = vertexQueue.poll();
             if (curVertex == null) continue;
-            while((nextVertex = getUnvisited(curVertex)) != null) {
+            while ((nextVertex = getUnvisited(curVertex)) != null) {
                 nextVertex.isVisited = true;
                 vertexQueue.offer(nextVertex);
                 setSuffLink(curVertex, nextVertex);
@@ -80,12 +79,6 @@ public class AhoKorasik {
         }
         setOutArr(root);
         setUnvisited(root);
-    }
-
-    private static void setUnvisited(Vertex curVertex) {
-        curVertex.isVisited = false;
-        for (Vertex nextVertex : curVertex.toNext.values())
-            setUnvisited(nextVertex);
     }
 
     private static void setOutArr(Vertex curVertex) {
@@ -111,7 +104,12 @@ public class AhoKorasik {
 
     private static void setRootSuffLink() {
         root.suffLink = root;
-        for(Vertex firstAfterRoot : root.toNext.values()) firstAfterRoot.suffLink = root;
+        for (Vertex firstAfterRoot : root.toNext.values()) firstAfterRoot.suffLink = root;
+    }
+
+    private static void setUnvisited(Vertex curVertex) {
+        curVertex.isVisited = false;
+        for (Vertex nextVertex : curVertex.toNext.values()) setUnvisited(nextVertex);
     }
 
     private static Vertex getUnvisited(Vertex curVertex) {

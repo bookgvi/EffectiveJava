@@ -35,7 +35,7 @@ public class Combinatorics {
             int pos = 0;
             for (int j = 1; j <= n; j += 1) {
                 if (digits[j] == 0) pos += 1;
-                if (d == pos) {
+                if (pos == d) {
                     digits[j] = 1;
                     res.append(j);
                     break;
@@ -46,15 +46,14 @@ public class Combinatorics {
     }
 
     private static int[] nextPermutation(int[] arr) {
-        int len = arr.length;
-        for (int i = len - 2; i >= 0; i -= 1) {
+        for (int i = arr.length - 2; i >= 0; i -= 1) {
             if (arr[i] < arr[i + 1]) {
                 int min = i + 1;
-                for (int j = min; j < len; j += 1)
+                for (int j = min; j < arr.length; j += 1)
                     if (arr[j] < arr[min] && arr[j] > arr[i])
                         min = j;
-                swap(i, min, arr);
-                reverse(i + 1, len - 1, arr);
+                swap(min, i, arr);
+                reverse(i + 1, arr.length - 1, arr);
                 break;
             }
         }
@@ -62,9 +61,9 @@ public class Combinatorics {
     }
 
     private static void reverse(int start, int end, int[] arr) {
-        for (int i = start; i <= (end + start) >> 1; i += 1) {
+        for (int i = start; i <= (end + start) >>> 1; i += 1) {
             int tmp = end + start - i;
-            swap(i, tmp, arr);
+            swap(tmp, i, arr);
         }
     }
 

@@ -8,32 +8,31 @@ import java.util.stream.Collectors;
 public class SuffixArrayTrivial {
     public static void main(String[] args) {
         String str = "abracadabra";
-        String ss = "bra";
+        String ss = "abracadabr";
 
-        List<Integer> index = searchSubStr(str, ss);
+        int[] index = searchSubStr(str, ss);
         System.out.println(str);
         System.out.println(ss);
-        System.out.println(index);
+        System.out.println(Arrays.toString(index));
     }
 
-    private static List<Integer> searchSubStr(String str, String ss) {
-        List<Integer> index = new ArrayList<>();
-        int[] p = suffixArray(str);
+    private static int[] searchSubStr(String str, String ss) {
+        int[] p = suffixArr(str);
         for (int i = 0, lenSS = ss.length(); i < lenSS; i += 1) {
             int l = binSearchL(ss.charAt(i), p, i, str);
             if (l == -1) {
-                System.out.println("not found");
-                return index;
+                System.out.println("not found...");
+                return new int[]{};
             }
             int r = binSearchR(ss.charAt(i), p, i, str);
             int[] tmp = Arrays.copyOf(p, p.length);
             p = new int[r - l + 1];
             System.arraycopy(tmp, l, p, 0, r - l + 1);
         }
-        return Arrays.stream(p).boxed().collect(Collectors.toList());
+        return p;
     }
 
-    private static int[] suffixArray(String str) {
+    private static int[] suffixArr(String str) {
         int len = str.length(), b = 8;
         int[] p = new int[len], c = new int[len], count = new int[1 << b];
         for (int i = 0; i < len; i += 1)
@@ -45,7 +44,7 @@ public class SuffixArrayTrivial {
         c[p[0]] = 0;
         int classes = 1;
         for (int i = 1; i < len; i += 1) {
-            if (str.charAt(p[i]) !=  str.charAt(p[i - 1])) classes += 1;
+            if (str.charAt(p[i]) != str.charAt(p[i - 1])) classes += 1;
             c[p[i]] = classes - 1;
         }
         int[] pn = new int[len], cn = new int[len];
@@ -73,19 +72,20 @@ public class SuffixArrayTrivial {
         return p;
     }
 
-    private static int binSearchL(int chCode, int[] arr, int offset, String str) {
+    private static int binSearchL(int chCode, int[] arr, int off, String str) {
         int len = arr.length, k = len - 1;
-        for (int i = len >>> 1; i > 0; i >>>= 1)
-            while(k - i >= 0 && str.substring(arr[k - i]).charAt(Math.min(offset, str.substring(arr[k - i]).length() - 1)) >= chCode) k -= i;
-        if (str.substring(arr[k]).charAt(Math.min(offset, str.substring(arr[k]).length() - 1)) == chCode) return k;
+        for (int i = len >> 1; i > 0; i >>= 1)
+            while (k - i >= 0 && str.substring(arr[k - i]).charAt(Math.min(str.substring(arr[k - i]).length() - 1, off)) >= chCode)
+                k -= i;
+        if (str.substring(arr[k]).charAt(Math.min(str.substring(arr[k]).length() - 1, off)) == chCode) return k;
         return -1;
     }
 
-    private static int binSearchR(int chCode, int[] arr, int offset, String str) {
+    private static int binSearchR(int chCode, int[] arr, int off, String str) {
         int len = arr.length, k = 0;
-        for (int i = len >>> 1; i > 0; i >>>= 1)
-            while(i + k < len && str.substring(arr[k + i]).charAt(offset) <= chCode) k += i;
-        if (str.substring(arr[k]).charAt(offset) == chCode) return k;
+        for (int i = len >> 1; i > 0; i >>= 1)
+            while (k + i < len && str.substring(arr[k + i]).charAt(off) <= chCode) k += i;
+        if (str.substring(arr[k]).charAt(off) == chCode) return k;
         return -1;
     }
 }

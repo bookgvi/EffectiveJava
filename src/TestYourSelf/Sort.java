@@ -19,7 +19,7 @@ public class Sort {
     private static int[] bubbleSort(int[] arr) {
         for (int i = 0, len = arr.length; i < len; i += 1)
             for (int j = 0; j < len - 1; j += 1)
-                if (arr[j] > arr[j + 1]) swap(j, j + 1, arr);
+                if (arr[j] - arr[j + 1] > 0) swap(j, j + 1, arr);
         return arr;
     }
 
@@ -41,15 +41,18 @@ public class Sort {
         int max = 1 << 16;
         List<List<Integer>> digits = IntStream.range(0, max).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
         List<List<Integer>> digits2 = IntStream.range(0, max).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
-        Arrays.stream(arr).forEach(elt -> digits.get(elt % max).add(elt));
-        digits.forEach(list -> list.forEach(elt -> digits2.get(elt / max).add(elt)));
-        return digits2.stream().flatMapToInt(list -> list.stream().mapToInt(elt -> elt)).toArray();
+        for (int elt : arr)
+            digits.get(elt % max).add(elt);
+        for (List<Integer> list : digits)
+            for (int elt : list)
+                digits2.get(elt / max).add(elt);
+        return digits2.stream().flatMapToInt(list -> list.stream().mapToInt(i -> i)).toArray();
     }
 
     private static int[] mergeSort(int[] arr) {
         for (int i = 1, len = arr.length; i < len; i <<= 1)
             for (int j = 0; j < len - i; j += i << 1)
-                merge(j, i + j, Math.min(len, j + (i << 1)), arr);
+                merge(j, j + i, Math.min(len, j + (i << 1)), arr);
         return arr;
     }
 
