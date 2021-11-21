@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 public class SuffixArrayTrivial {
     public static void main(String[] args) {
         String str = "abracadabra";
-        String ss = "abracadabr";
+        String ss = "a";
 
         int[] index = searchSubStr(str, ss);
         System.out.println(str);
@@ -33,14 +33,14 @@ public class SuffixArrayTrivial {
     }
 
     private static int[] suffixArr(String str) {
-        int len = str.length(), b = 8;
+        int len = str.length(), b = 5;
         int[] p = new int[len], c = new int[len], count = new int[1 << b];
         for (int i = 0; i < len; i += 1)
-            count[str.charAt(i)] += 1;
+            count[str.charAt(i) - "a".getBytes()[0] + 1] += 1;
         for (int i = 1; i < 1 << b; i += 1)
             count[i] += count[i - 1];
         for (int i = len - 1; i >= 0; i -= 1)
-            p[--count[str.charAt(i)]] = i;
+            p[--count[str.charAt(i) - "a".getBytes()[0] + 1]] = i;
         c[p[0]] = 0;
         int classes = 1;
         for (int i = 1; i < len; i += 1) {

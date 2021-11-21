@@ -12,25 +12,18 @@ public class SegmentTree {
             st[i] = st[i << 1] + st[i << 1 | 1];
     }
 
-    private static void modify(int p, int value) {
-        for (st[p += n] = value; p > 1; p >>= 1)
-            st[p >> 1] = st[p] * st[p ^ 1];
-    }
-
     private static int query(int l, int r) {
-        int res = 1;
-//        r += 1;
+        int res = 0;
         for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
-            if ((l & 1) == 1) res *= st[l++];
-            if ((r & 1) == 1) res *= st[--r];
+            if ((l & 1) == 1) res += st[l++];
+            if ((r & 1) == 1) res += st[--r];
         }
         return res;
     }
 
-    private static int query(int p) {
-        int res = 0;
-        for (p += n; p > 0; p >>= 1) res += st[p];
-        return res;
+    private static void modify(int p, int val) {
+        for (st[p += n] = val; p > 1; p >>= 1)
+            st[p >> 1] = st[p] + st[p ^ 1];
     }
 
     public static void main(String[] args) {

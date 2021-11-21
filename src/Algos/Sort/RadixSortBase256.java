@@ -14,29 +14,24 @@ public class RadixSortBase256 {
         int[] arr2 = {1,1,0,-2147483648};
         System.out.println(Arrays.toString(arr));
         long startTime = System.nanoTime();
-        radixSort(arr2);
+        radixSort(arr);
         long endTime = System.nanoTime();
         System.out.printf("%.8f\n", (endTime - startTime) / 1e9);
-        System.out.println(Arrays.toString(arr2));
+        System.out.println(Arrays.toString(arr));
     }
 
     public static void radixSort(int[] a) {
-        final int d = 8;
-        final int w = 32;
-        int[] t = new int[a.length];
-        for (int p = 0; p < w / d; p++) {
-            // counting-sort
-            int[] cnt = new int[1 << d];
-            for (int i = 0; i < a.length; i++) {
-                ++cnt[((a[i] ^ Integer.MIN_VALUE) >>> (d * p)) & ((1 << d) - 1)];
-            }
-            for (int i = 1; i < cnt.length; i++)
-                cnt[i] += cnt[i - 1];
-            for (int i = a.length - 1; i >= 0; i--) {
-                int index = --cnt[((a[i] ^ Integer.MIN_VALUE) >>> (d * p)) & ((1 << d) - 1)];
-                t[index] = a[i];
-            }
-            System.arraycopy(t, 0, a, 0, a.length);
+        int len = a.length, b= 8, dw = 4;
+        int[] t = new int[len];
+        for (int p = 0; p < dw; p += 1) {
+            int[] count = new int[1 << b];
+            for (int elt : a)
+                count[((elt ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
+            for (int i = 1; i < 1 << b; i += 1)
+                count[i] += count[i - 1];
+            for (int i = len - 1; i >= 0; i -= 1)
+                t[--count[((a[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = a[i];
+            System.arraycopy(t, 0, a, 0, len);
         }
     }
 

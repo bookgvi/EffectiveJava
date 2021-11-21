@@ -18,15 +18,16 @@ public class Sort {
 
     private static int[] bubbleSort(int[] arr) {
         for (int i = 0, len = arr.length; i < len; i += 1)
-            for (int j = 0; j < len - 1; j += 1)
+            for (int j = 0; j < len - 1; j += 1) {
                 if (arr[j] - arr[j + 1] > 0) swap(j, j + 1, arr);
+            }
         return arr;
     }
 
     private static int[] selectSort(int[] arr) {
         for (int i = 0, len = arr.length; i < len; i += 1)
             for (int j = i + 1; j < len; j += 1)
-                if (arr[i] - arr[j] > 0) swap(i, j, arr);
+                if (arr[j] - arr[i] > 0) swap(j, i, arr);
         return arr;
     }
 
@@ -43,10 +44,10 @@ public class Sort {
         List<List<Integer>> digits2 = IntStream.range(0, max).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
         for (int elt : arr)
             digits.get(elt % max).add(elt);
-        for (List<Integer> list : digits)
-            for (int elt : list)
+        for (List<Integer> eltList : digits)
+            for (int elt : eltList)
                 digits2.get(elt / max).add(elt);
-        return digits2.stream().flatMapToInt(list -> list.stream().mapToInt(i -> i)).toArray();
+        return digits2.stream().flatMapToInt(list -> list.stream().mapToInt(elt -> elt)).toArray();
     }
 
     private static int[] mergeSort(int[] arr) {
@@ -68,11 +69,11 @@ public class Sort {
                 it2 += 1;
             }
         }
-        while (l + it1 < mid) {
+        while(l + it1 < mid) {
             merge[it1 + it2] = arr[l + it1];
             it1 += 1;
         }
-        while (mid + it2 < r) {
+        while(mid + it2 < r) {
             merge[it1 + it2] = arr[mid + it2];
             it2 += 1;
         }

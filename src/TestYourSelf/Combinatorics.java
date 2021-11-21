@@ -35,7 +35,7 @@ public class Combinatorics {
             int pos = 0;
             for (int j = 1; j <= n; j += 1) {
                 if (digits[j] == 0) pos += 1;
-                if (pos == d) {
+                if (d == pos) {
                     digits[j] = 1;
                     res.append(j);
                     break;
@@ -61,8 +61,8 @@ public class Combinatorics {
     }
 
     private static void reverse(int start, int end, int[] arr) {
-        for (int i = start; i <= (end + start) >>> 1; i += 1) {
-            int tmp = end + start - i;
+        for (int i = start; i <= (end + start) >> 1; i += 1) {
+            int tmp = start + end - i;
             swap(tmp, i, arr);
         }
     }

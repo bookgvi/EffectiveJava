@@ -6,29 +6,27 @@ import java.util.List;
 public class BackPack {
     private static int[][] solve(int weight, List<Pair> things) {
         int count = things.size();
-        int[][] d = new int[count][weight + 1];
-        d[0][0] = 0;
+        int[][] dp = new int[count][weight + 1];
+        dp[0][0] = 0;
         for (int i = 1; i < count; i += 1) {
             for (int w = 1; w <= weight; w += 1) {
-                if (w - things.get(i).first >= 0 && d[i - 1][w] < d[i - 1][w - things.get(i).first] + things.get(i).second) {
-                    d[i][w] =d[i - 1][w - things.get(i).first] + things.get(i).second;
-                } else {
-                    d[i][w] = d[i - 1][w];
-                }
+                if (w - things.get(i).first >= 0 && dp[i - 1][w] < dp[i - 1][w - things.get(i).first] + things.get(i).second)
+                    dp[i][w] = dp[i - 1][w - things.get(i).first] + things.get(i).second;
+                else
+                    dp[i][w] = dp[i - 1][w];
             }
         }
-        return d;
+        return dp;
     }
 
     public static void main(String[] args) {
         Pair t0 = Pair.add(0, 0);
-        Pair t2 = Pair.add(4, 30);
-        Pair t3 = Pair.add(1, 15);
-        Pair t1 = Pair.add(3, 20);
+        Pair t1 = Pair.add(4, 16);
+        Pair t2 = Pair.add(6, 30);
+        Pair t3 = Pair.add(3, 14);
         Pair t4 = Pair.add(2, 9);
-        Pair t5 = Pair.add(1, 9);
-        List<Pair> things = List.of(t0, t1, t2, t3);
-        int w = 4;
+        List<Pair> things = List.of(t0, t1, t2, t3, t4);
+        int w = 10;
         int[][] res = solve(w, things);
         List<Integer> seq = new ArrayList<>();
         for (int i = things.size() - 1; i > 0; i -= 1) {

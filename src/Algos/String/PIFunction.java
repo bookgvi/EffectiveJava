@@ -35,11 +35,9 @@ public class PIFunction {
         int[] pi = new int[len];
         for (int i = 0; i < len; i += 1) {
             for (int j = 0; j < i; j += 1) {
-                String ss = str.substring(0, j + 1).intern();
-                String ss1 = str.substring(i - j, i + 1).intern();
-                if (ss == ss1) {
-                    pi[i] = j + 1;
-                }
+                String ss1 = str.substring(0, j + 1).intern();
+                String ss2 = str.substring(i - j, i + 1).intern();
+                if (ss1 == ss2) pi[i] = j + 1;
             }
         }
         return pi;

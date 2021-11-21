@@ -1,74 +1,61 @@
+import java.util.*;
+
 public class Tmp {
-    private static long fact[] = fact();
-    private static String nextPermutation(String str) {
-        int len = str.length();
-        for (int i = len - 2; i >= 0 ; i -= 1) {
-            if (str.charAt(i) < str.charAt(i + 1)) {
-                int min = i + 1;
-                for (int j = min; j < len; j += 1)
-                    if (str.charAt(j) < str.charAt(min) && str.charAt(j) > str.charAt(i))
-                        min = j;
-                str = swap(i, min, str);
-                str = reverse(i + 1, str);
-                break;
+    private static int phi(int n) {
+        int res = n;
+        for (int i = 2; i <= n; i += 1) {
+            if (n % i == 0) {
+                while (n % i == 0) n /= i;
+                res -= res / i;
             }
         }
-        return str;
+        if (n > 1) res -= res / n;
+        return res;
     }
 
-    private static String swap(int pos1, int pos2, String str) {
-        StringBuilder tmpStr = new StringBuilder(str);
-        tmpStr.replace(pos1, pos1 + 1, Character.toString(str.charAt(pos2)));
-        tmpStr.replace(pos2, pos2 + 1, Character.toString(str.charAt(pos1)));
-        return tmpStr.toString();
-    }
-
-    private static String reverse(int start, String str) {
-        StringBuilder tmpStr = new StringBuilder();
-        StringBuilder tmpStr2 = new StringBuilder();
-        tmpStr.append(str, 0, start);
-        tmpStr2.append(str, start, str.length()).reverse();
-        tmpStr.append(tmpStr2);
-        return tmpStr.toString();
-    }
-
-    private static String sort(String strOrig) {
-        int len = strOrig.length(), b = 8, dw = 4;
-        StringBuilder str = new StringBuilder(strOrig);
-        int[] t = new int[len];
-        for (int p = 0; p < dw; p += 1) {
-            int[] count = new int[1 << b];
-            for (int i = 0; i < len; i += 1)
-                count[((str.charAt(i) ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
-            for (int i = 1; i < 1 << b; i += 1)
-                count[i] += count[i - 1];
-            for (int i = len - 1; i >= 0; i -= 1)
-                t[--count[((str.charAt(i) ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = str.charAt(i);
-            str = new StringBuilder();
-            for (int i = 0; i < len; i += 1) {
-                str.append(Character.toString(t[i]));
-            }
+    private static int pow(int n, int pow) {
+        int res = 1;
+        while(pow > 0) {
+            if ((pow & 1) == 1) res *= n;
+            n *= n;
+            pow >>= 1;
         }
-        return str.toString();
+        return res;
     }
 
-    private static long[] fact() {
-        int max = 19;
-        long[] fact = new long[max];
-        fact[0] = 1;
-        fact[1] = 1;
-        fact[2] = 2;
-        for(int i = 3; i < max; i += 1)
-            fact[i] = fact[i - 1] * i;
-        return fact;
+    private static int gcd(int a, int b) {
+        if (a == 0) return b;
+        return gcd(b % a, a);
+    }
+
+    private static List<Integer> erat(int n) {
+        boolean[] erat = new boolean[n + 1];
+        List<Integer> primes = new ArrayList<>();
+        for (int i = 2; i <= n; i += 1) {
+            if (erat[i]) continue;
+            primes.add(i);
+            for (int j = i; j <= n; j += i)
+                erat[j] = true;
+        }
+        return primes;
+    }
+
+    private static int[] evklidExt(int a, int b) {
+        int[] res = new int[3];
+        if (a == 0) {
+            res[0] = b;
+            res[2] = 1;
+            return res;
+        }
+        res = evklidExt(b % a, a);
+        int tmp = res[1];
+        res[1] = res[2] - (b / a) * res[1];
+        res[2] = tmp;
+        return res;
     }
 
     public static void main(String[] args) {
-        String str = "uckf";
-        str = sort(str);
-        for (int i = 0; i < fact[str.length()]; i += 1) {
-            System.out.println(str);
-            str = nextPermutation(str);
-        }
+        int a = 41, b = 6;
+        int[] res = evklidExt((int) 1e9 + 7, (int) 1e5);
     }
 }

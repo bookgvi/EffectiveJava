@@ -71,7 +71,7 @@ public class StringAl {
     private static int zipStr(String str) {
         int len = str.length(), lastSuff = piFuncExt(str)[len - 1];
         int pos = len - lastSuff;
-        if (len % lastSuff == 0) return pos;
+        if (lastSuff > 0 && len % lastSuff == 0) return pos;
         return -1;
     }
 }

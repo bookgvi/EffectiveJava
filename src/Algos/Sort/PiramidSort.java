@@ -18,30 +18,30 @@ public class PiramidSort {
 
     private static int[] sort(int[] arr) {
         int len = arr.length;
-        int[] sortedArr = new int[len];
-        buildHeap(arr);
+        int[] tmpArr = Arrays.copyOf(arr, len), sorted = new int[len];
+        build(tmpArr);
         for (int i = 0; i < len; i += 1) {
-            sortedArr[i] = arr[0];
-            arr[0] = Integer.MAX_VALUE;
-            siftDown(0, arr);
+            sorted[i] = tmpArr[0];
+            tmpArr[0] = Integer.MAX_VALUE;
+            siftDown(0, tmpArr);
         }
-        return sortedArr;
+        return sorted;
     }
 
-    private static void buildHeap(int[] arr) {
+    private static void build(int[] arr) {
         for (int i = arr.length; i >= 0; i -= 1)
             siftDown(i, arr);
     }
 
     private static void siftDown(int v, int[] arr) {
-        int len = arr.length, half = len >>> 1;
+        int len = arr.length, half = len >> 1;
         while (v < half) {
             int l = (v << 1) + 1;
             int r = l + 1;
-            int t = r < len && arr[r] < arr[l] ? r : l;
-            if (arr[v] <= arr[t]) break;
-            swap(v, t, arr);
-            v = t;
+            int tmp = r < len && arr[r] < arr[l] ? r : l;
+            if (arr[v] <= arr[tmp]) break;
+            swap(v, tmp, arr);
+            v = tmp;
         }
     }
 
