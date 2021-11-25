@@ -18,24 +18,6 @@ public class SuffixArrayViaKarasik {
         curVertex.isTerminal = true;
     }
 
-    void initBor() {
-        Vertex startVertex = root, curVertex, nextVertex;
-        VertexQueue<Vertex> vertexQueue = new VertexQueue<>();
-        setRootSuffLink();
-        startVertex.isVisited = true;
-        vertexQueue.offer(startVertex);
-        while (!vertexQueue.isEmpty()) {
-            curVertex = vertexQueue.poll();
-            if (curVertex == null) continue;
-            while ((nextVertex = getUnvisited(curVertex)) != null) {
-                nextVertex.isVisited = true;
-                vertexQueue.offer(nextVertex);
-                setSuffLink(curVertex, nextVertex);
-            }
-        }
-        setUnvisited(root);
-    }
-
     void dfs() {
         Vertex startVertex = root, curVertex, nextVertex;
         Stack<Vertex> vertexStack = new Stack<>();
@@ -53,6 +35,30 @@ public class SuffixArrayViaKarasik {
         setUnvisited(root);
     }
 
+    void initBor() {
+        Vertex startVertex = root, curVertex, nextVertex;
+        VertexQueue<Vertex> vertexQueue = new VertexQueue<>();
+        setRootSuffLink();
+        startVertex.isVisited = true;
+        vertexQueue.offer(startVertex);
+        while(!vertexQueue.isEmpty()) {
+            curVertex = vertexQueue.poll();
+            if (curVertex == null) continue;
+            while((nextVertex = getUnvisited(curVertex)) != null) {
+                nextVertex.isVisited = true;
+                vertexQueue.offer(nextVertex);
+                setSuffLink(curVertex, nextVertex);
+            }
+        }
+//        setOutArr(root);
+        setUnvisited(root);
+    }
+
+    private void setRootSuffLink() {
+        root.suffLink = root;
+        for (Vertex firstAfterRoot : root.toNext.values()) firstAfterRoot.suffLink = root;
+    }
+
     private void setSuffLink(Vertex parentVertex, Vertex curVertex) {
         Vertex parentSuffLink = parentVertex.suffLink;
         if (curVertex.suffLink == null) {
@@ -61,52 +67,48 @@ public class SuffixArrayViaKarasik {
         }
     }
 
-    private void setRootSuffLink() {
-        root.suffLink = root;
-        for (Vertex firstAfterRoot : root.toNext.values()) firstAfterRoot.suffLink = root;
-    }
-
     private void setUnvisited(Vertex curVertex) {
         curVertex.isVisited = false;
         for (Vertex nextVertex : curVertex.toNext.values()) setUnvisited(nextVertex);
     }
 
     private Vertex getUnvisited(Vertex curVertex) {
-        curVertex.sortedNextLabels = curVertex.sortedNextLabels.isEmpty() ? fillSeortedNextLabels(curVertex) : curVertex.sortedNextLabels;
-        for (String nextLabel : curVertex.sortedNextLabels) {
+        curVertex.sortedLabels = curVertex.sortedLabels.isEmpty() ? sort(curVertex) : curVertex.sortedLabels;
+        for (String nextLabel : curVertex.sortedLabels) {
             Vertex nextVertex = curVertex.toNext.get(nextLabel);
             if (!nextVertex.isVisited) return nextVertex;
         }
         return null;
     }
 
-    private List<String> fillSeortedNextLabels(Vertex curVertex) {
-        int[] codes = new ArrayList<>(curVertex.toNext.keySet()).stream().mapToInt(ch -> ch.getBytes()[0]).toArray();
-        sort(codes);
-        return Arrays.stream(codes).mapToObj(Character::toString).collect(Collectors.toList());
+    private List<String> sort(Vertex curVertex) {
+        List<String> labels = new ArrayList<>(curVertex.toNext.keySet());
+        return sort(labels);
     }
 
-    private void sort(int[] arr) {
-        int len = arr.length, b = 8, dw = 4;
-        int[] t = new int[len];
+    private List<String> sort(List<String> labels) {
+        int len = labels.size(), b = 8, dw = 4;
+        int[] codes = labels.stream().mapToInt(ch -> ch.getBytes()[0] - "a".getBytes()[0]).toArray(), t = new int[len];
         for (int p = 0; p < dw; p += 1) {
             int[] count = new int[1 << b];
-            for (int elt : arr)
-                count[((elt ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
+            for (int code : codes)
+                count[((code ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
             for (int i = 1; i < 1 << b; i += 1)
                 count[i] += count[i - 1];
             for (int i = len - 1; i >= 0; i -= 1)
-                t[--count[((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr[i];
-            System.arraycopy(t, 0, arr, 0, len);
+                t[--count[((codes[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = codes[i];
+            System.arraycopy(t, 0, codes, 0, len);
         }
+        return Arrays.stream(codes).mapToObj(code -> Character.toString(code + "a".getBytes()[0])).collect(Collectors.toList());
     }
 
     private static class Vertex {
         private final String label;
         private final String suffix;
         private final Map<String, Vertex> toNext;
+        private final List<Vertex> outArr;
+        private List<String> sortedLabels;
         private Vertex suffLink;
-        private List<String> sortedNextLabels;
         private boolean isVisited;
         private boolean isTerminal;
 
@@ -114,7 +116,8 @@ public class SuffixArrayViaKarasik {
             this.label = label;
             this.suffix = suffix;
             this.toNext = new HashMap<>();
-            this.sortedNextLabels = new ArrayList<>();
+            this.outArr = new ArrayList<>();
+            this.sortedLabels = new ArrayList<>();
             this.isVisited = false;
             this.isTerminal = false;
         }

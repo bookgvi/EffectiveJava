@@ -6,7 +6,7 @@ public class SuffixArray {
     private static final List<int[]> pars = new ArrayList<>();
 
     public static void main(String[] args) {
-        String str = "cba#";
+        String str = "abracadabra#";
         long startTime = System.nanoTime();
         int[] p = sortCyclicStrings(str);
         long endTime = System.nanoTime();
@@ -15,7 +15,7 @@ public class SuffixArray {
         System.out.println(Arrays.toString(p));
         System.out.printf("%.8f\n", (endTime - startTime) / 1e9);
         for (int par : p) {
-                System.out.printf("%s ", str.substring(par));
+            System.out.printf("%s ", str.substring(par));
             System.out.println();
         }
     }
@@ -52,7 +52,7 @@ public class SuffixArray {
             classes = 1;
             for (int i = 1; i < len; i += 1) {
                 int mid1 = (p[i] + (1 << h)) % len, mid2 = (p[i - 1] + (1 << h)) % len;
-                if (c[p[i]] != c[p[i - 1]] || c[mid1] != c[mid2]) classes +=1;
+                if (c[p[i]] != c[p[i - 1]] || c[mid1] != c[mid2]) classes += 1;
                 cn[p[i]] = classes - 1;
             }
             System.arraycopy(cn, 0, c, 0, len);

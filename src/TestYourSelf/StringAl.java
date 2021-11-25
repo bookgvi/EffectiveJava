@@ -33,13 +33,12 @@ public class StringAl {
     private static int[] piFunc(String str) {
         int len = str.length();
         int[] pi = new int[len];
-        for (int i = 0; i < len; i += 1) {
+        for (int i = 0; i < len; i += 1)
             for (int j = 0; j < i; j += 1) {
                 String ss1 = str.substring(0, j + 1).intern();
                 String ss2 = str.substring(i - j, i + 1).intern();
                 if (ss1 == ss2) pi[i] = j + 1;
             }
-        }
         return pi;
     }
 
@@ -69,9 +68,9 @@ public class StringAl {
     }
 
     private static int zipStr(String str) {
-        int len = str.length(), lastSuff = piFuncExt(str)[len - 1];
-        int pos = len - lastSuff;
-        if (lastSuff > 0 && len % lastSuff == 0) return pos;
+        int len = str.length(), lastSuffix = piFuncExt(str)[len - 1];
+        int pos = len - lastSuffix;
+        if (lastSuffix > 0 && len % lastSuffix == 0) return pos;
         return -1;
     }
 }

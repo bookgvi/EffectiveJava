@@ -10,7 +10,7 @@ public class MostCommonString {
     private static final byte firstCharByte = firstChar.getBytes()[0];
 
     private static final String str1 = "VOTEFORTHEGREATALBANIAFORYOU";
-    private static final String str2 = "OU";
+    private static final String str2 = "VOYOU";
     //    private static final String str1 = "for the horde!!";
 //    private static final String str2 = "for the alliance!";
     private static final long[] pows = pows();
@@ -28,16 +28,17 @@ public class MostCommonString {
     }
 
     private static String searchString(long[] phs1, long[] phs2) {
-        int lenA = phs1.length, lenB = phs2.length, pos = -1, l = 0, r = lenA - 1;
+        StringBuilder res = new StringBuilder();
+        int len1 = phs1.length, len2 = phs2.length, pos = -1, l = 0, r = Math.min(len1, len2) - 1;
         while (r - l >= 0) {
-            int mid = (r + l) >> 1;
-            long[] str1hashes = new long[lenA - mid + 1];
-            for (int i = 0; i + mid < lenA; i += 1)
-                str1hashes[i] = hash(phs1, i, Math.max(mid - 1, 0));
-            sort(str1hashes);
+            int mid = (r + l) >>> 1;
+            long[] str1Hash = new long[len1 - mid];
+            for (int i = 0; i + mid < len1; i += 1)
+                str1Hash[i] = hash(phs1, i, mid);
+            sort(str1Hash);
             int p = -1;
-            for (int i = 0; i + mid < lenB; i += 1) {
-                if (binSearch(hash(phs2, i, Math.max(mid - 1, 0)), str1hashes) != -1) {
+            for (int i = 0; i + mid < len2; i += 1) {
+                if (binSearch(hash(phs2, i, mid), str1Hash) != -1) {
                     p = i;
                     break;
                 }
@@ -48,7 +49,11 @@ public class MostCommonString {
             } else r = mid - 1;
         }
         if (pos == -1) return "";
-        return str2.substring(pos, pos + l);
+        for (int it = pos; it < pos + l; it += 1) {
+            res.append(str2.charAt(it));
+        }
+        if (l >= (len2 >>> 1)) res.append(str2.charAt(pos + l));
+        return res.toString();
     }
 
     private static int binSearch(long n, long[] arr) {

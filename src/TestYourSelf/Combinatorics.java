@@ -5,11 +5,12 @@ import java.util.Arrays;
 public class Combinatorics {
     private static final int maxF = (int) 1e2;
     private static final int[] fact = facts();
+    private static final int[][] comb = comb();
     private static int[] arr = {1, 2, 3, 4};
 
     public static void main(String[] args) {
 
-        String perm = getPermutation(4, 15);
+        String perm = getPermutation(4, 19);
         System.out.println(perm);
 
         int[] tmpArr = {1, 2, 3, 4, 5};
@@ -35,7 +36,7 @@ public class Combinatorics {
             int pos = 0;
             for (int j = 1; j <= n; j += 1) {
                 if (digits[j] == 0) pos += 1;
-                if (d == pos) {
+                if (pos == d) {
                     digits[j] = 1;
                     res.append(j);
                     break;
@@ -46,25 +47,19 @@ public class Combinatorics {
     }
 
     private static int[] nextPermutation(int[] arr) {
-        for (int i = arr.length - 2; i >= 0; i -= 1) {
+        int len = arr.length;
+        for (int i = len - 2; i >= 0; i -= 1) {
             if (arr[i] < arr[i + 1]) {
                 int min = i + 1;
-                for (int j = min; j < arr.length; j += 1)
+                for (int j = min; j < len; j += 1)
                     if (arr[j] < arr[min] && arr[j] > arr[i])
                         min = j;
-                swap(min, i, arr);
-                reverse(i + 1, arr.length - 1, arr);
+                swap(i, min, arr);
+                reverse(i + 1, len - 1, arr);
                 break;
             }
         }
         return arr;
-    }
-
-    private static void reverse(int start, int end, int[] arr) {
-        for (int i = start; i <= (end + start) >> 1; i += 1) {
-            int tmp = start + end - i;
-            swap(tmp, i, arr);
-        }
     }
 
     private static void swap(int i, int j, int[] arr) {
@@ -73,11 +68,31 @@ public class Combinatorics {
         arr[j] = tmp;
     }
 
+    private static void reverse(int start, int end, int[] arr) {
+        for (int i = start; i <= (start + end) >> 1; i += 1) {
+            int tmp = start + end - i;
+            swap(tmp, i, arr);
+        }
+    }
+
+    private static int[][] comb() {
+        int[][] dp = new int[maxF][maxF];
+        dp[0][0] = 1;
+        for (int i = 1; i < maxF; i += 1) {
+            dp[i][i] = 1;
+            dp[i][0] = 1;
+            for (int j = 1; j < i; j += 1) {
+                dp[i][j] = dp[i - 1][j] + dp[i - 1][j - 1];
+            }
+        }
+        return dp;
+    }
+
     private static int[] facts() {
-        int[] fact = new int[maxF];
-        fact[0] = 1;
+        int[] facts = new int[maxF];
+        facts[0] = 1;
         for (int i = 1; i < maxF; i += 1)
-            fact[i] = fact[i - 1] * i;
-        return fact;
+            facts[i] = facts[i - 1] * i;
+        return facts;
     }
 }

@@ -8,14 +8,14 @@ public class CustomBigInteger {
     private static final int radix = 10;
     private static final int digits = 4;
 
-    private static String listToString(List<Integer> num) {
+    private static String listToString(List<Integer> nums) {
+        int len = nums.size();
         StringBuilder res = new StringBuilder();
-        for (int i = num.size() - 1; i >= 0; i -= 1) {
-            String tmp = String.valueOf(num.get(i));
+        for (int i = len - 1; i >= 0; i -= 1) {
+            String tmp = String.valueOf(nums.get(i));
             if (tmp.length() < digits) {
                 StringBuilder zeros = new StringBuilder();
-                for (int j = 0; j < digits - tmp.length(); j += 1)
-                    zeros.append("0");
+                IntStream.range(0, digits - tmp.length()).forEach(k -> zeros.append("0"));
                 res.append(zeros).append(tmp);
             } else res.append(tmp);
         }
@@ -35,10 +35,10 @@ public class CustomBigInteger {
 
     private static List<Integer> sum(String num1, String num2) {
         List<Integer> a = strToList(num1), b = strToList(num2);
-        int len = Math.max(a.size(), b.size());
+        int len = Math.min(a.size(), b.size());
         for (int i = 0, carry = 0; i < len || carry != 0; i += 1) {
-            if (a.size() == i) a.add(0);
-            int valB = b.size() > i ? b.get(i) : 0;
+            if (i == a.size()) a.add(0);
+            int valB = i < b.size() ? b.get(i) : 0;
             int valA = a.get(i);
             a.set(i, valA + valB + carry);
             carry = a.get(i) > base ? 1 : 0;

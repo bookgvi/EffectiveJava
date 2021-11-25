@@ -17,14 +17,14 @@ public class BracketSequence {
     }
 
     private static String nextSequence(String seq) {
-        int len = seq.length(), depth = 0;
         StringBuilder res = new StringBuilder();
+        int len = seq.length(), depth = 0;
         for (int i = len - 1; i >= 0; i -= 1) {
-            if (seq.charAt(i) == '(') depth -= 1;
+            if (seq.charAt(i) == ')') depth -= 1;
             else depth += 1;
             if (depth > 0 && seq.charAt(i) == '(') {
                 depth -= 1;
-                int open = (len - i - 1 - depth) >>> 1;
+                int open = (len - i - 1 - depth) >> 1;
                 int close = len - i - 1 - open;
                 res.append(seq, 0, i).append(")").append(repeat("(", open)).append(repeat(")", close));
                 break;
@@ -38,21 +38,19 @@ public class BracketSequence {
     }
 
     private static String repeat(String ch, int count) {
-        StringBuilder res = new StringBuilder();
-        IntStream.range(0, count).forEach(i -> res.append(ch));
-        return res.toString();
+        StringBuilder seq = new StringBuilder();
+        IntStream.range(0, count).forEach(i -> seq.append(ch));
+        return seq.toString();
     }
 
     private static long[] catalan() {
-        int max = (int) 1e3;
-        long[] dp = new long[max];
-        dp[0] = 1;
-        dp[1] = 1;
-        for (int i = 2; i < max; i += 1) {
-            for (int j = 0; j < i; j += 1) {
-                dp[i] += dp[j] * dp[i - j - 1];
-            }
-        }
-        return dp;
+        int max = 19;
+        long[] catalan = new long[max + 1];
+        catalan[0] = 1;
+        catalan[1] = 1;
+        for (int i = 2; i <= max; i += 1)
+            for (int j = 0; j < i; j += 1)
+                catalan[i] += catalan[j] * catalan[i - j - 1];
+        return catalan;
     }
 }
