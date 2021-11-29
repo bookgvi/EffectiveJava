@@ -8,14 +8,14 @@ public class CustomBigInteger {
     private static final int radix = 10;
     private static final int digits = 4;
 
-    private static String listToString(List<Integer> nums) {
-        int len = nums.size();
+    private static String listToString(List<Integer> num) {
         StringBuilder res = new StringBuilder();
-        for (int i = len - 1; i >= 0; i -= 1) {
-            String tmp = String.valueOf(nums.get(i));
+        for (int i = num.size() - 1; i >= 0; i -= 1) {
+            String tmp = String.valueOf(num.get(i));
             if (tmp.length() < digits) {
                 StringBuilder zeros = new StringBuilder();
-                IntStream.range(0, digits - tmp.length()).forEach(k -> zeros.append("0"));
+                for (int j = 0; j < digits - tmp.length(); j += 1)
+                    zeros.append("0");
                 res.append(zeros).append(tmp);
             } else res.append(tmp);
         }
@@ -25,12 +25,12 @@ public class CustomBigInteger {
     }
 
     private static List<Integer> strToList(String num) {
-        List<Integer> a = new ArrayList<>();
+        List<Integer> res = new ArrayList<>();
         for (int i = num.length(); i > 0; i -= digits) {
-            if (i < digits) a.add(Integer.parseInt(num.substring(0, i), radix));
-            else a.add(Integer.parseInt(num.substring(i - digits, i), radix));
+            if (i < digits) res.add(Integer.parseInt(num.substring(0, i), radix));
+            else res.add(Integer.parseInt(num.substring(i - digits, i), radix));
         }
-        return a;
+        return res;
     }
 
     private static List<Integer> sum(String num1, String num2) {
@@ -42,7 +42,7 @@ public class CustomBigInteger {
             int valA = a.get(i);
             a.set(i, valA + valB + carry);
             carry = a.get(i) > base ? 1 : 0;
-            if (carry == 1) a.set(i, a.get(i) - base);
+            if (carry != 0) a.set(i, a.get(i) - base);
         }
         return a;
     }
@@ -52,8 +52,8 @@ public class CustomBigInteger {
                 c = IntStream.range(0, a.size() + b.size()).mapToObj(i -> 0).collect(Collectors.toList());
         for (int i = 0; i < a.size(); i += 1) {
             for (int j = 0, carry = 0; j < b.size() || carry != 0; j += 1) {
-                int valB = j < b.size() ? b.get(j) : 0;
                 int valA = a.get(i);
+                int valB = j < b.size() ? b.get(j) : 0;
                 int tmp = c.get(i + j) + valA * valB + carry;
                 c.set(i + j, tmp % base);
                 carry = tmp / base;
@@ -64,7 +64,7 @@ public class CustomBigInteger {
 
     public static void main(String[] args) {
         String num1 = "2009";
-        String num2 = "000900030";
+        String num2 = "2029";
         List<Integer> n1 = strToList(num1);
         List<Integer> n2 = strToList(num2);
         num1 = listToString(n1);

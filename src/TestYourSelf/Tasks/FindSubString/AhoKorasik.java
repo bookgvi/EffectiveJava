@@ -14,10 +14,10 @@ public class AhoKorasik {
         System.out.println(res);
     }
 
-    private static Map<String, List<Integer>> findSubString(String text, String ss) {
-        addKeyWord(ss);
-        init();
+    private static Map<String, List<Integer>> findSubString(String text, String str) {
         Map<String, List<Integer>> words = new HashMap<>();
+        addKeyWord(str);
+        init();
         Vertex curVertex = root;
         int index = 0;
         for (String ch : text.split("")) {
@@ -27,7 +27,7 @@ public class AhoKorasik {
                 if (curVertex.toNext.get(ch) == null) continue;
                 else curVertex = curVertex.toNext.get(ch);
             }
-            isOutArr(curVertex, words, index);
+            isOut(curVertex, words, index);
         }
         return words;
     }
@@ -40,7 +40,7 @@ public class AhoKorasik {
         return root;
     }
 
-    private static void isOutArr(Vertex curVertex, Map<String, List<Integer>> words, int index) {
+    private static void isOut(Vertex curVertex, Map<String, List<Integer>> words, int index) {
         for (Vertex outVertex : curVertex.outArr) fillWords(outVertex, words, index);
     }
 
@@ -51,10 +51,10 @@ public class AhoKorasik {
         words.putIfAbsent(outVertex.suffix, positions);
     }
 
-    private static void addKeyWord(String str) {
-        StringBuilder suffix = new StringBuilder();
+    private static void addKeyWord(String keyWord) {
         Vertex curVertex = root;
-        for (String ch : str.split("")) {
+        StringBuilder suffix = new StringBuilder();
+        for (String ch : keyWord.split("")) {
             suffix.append(ch);
             curVertex.toNext.putIfAbsent(ch, new Vertex(ch, suffix.toString()));
             curVertex = curVertex.toNext.get(ch);
@@ -113,8 +113,9 @@ public class AhoKorasik {
     }
 
     private static Vertex getUnvisited(Vertex curVertex) {
-        for (Vertex nextVertex : curVertex.toNext.values())
+        for (Vertex nextVertex : curVertex.toNext.values()) {
             if (!nextVertex.isVisited) return nextVertex;
+        }
         return null;
     }
 
@@ -154,17 +155,18 @@ public class AhoKorasik {
         public boolean offer(V v) {
             boolean res = false;
             if (v != null) {
-                vList.offer(v);
-                res = true;
+                vList.add(v);
+                return true;
             }
-            return res;
+            return false;
         }
 
         @Override
         public V poll() {
-            if (iterator().hasNext()) {
-                V v = iterator().next();
-                vList.poll();
+            Iterator<V> iter = iterator();
+            V v = iter.next();
+            if (v != null) {
+                iter.remove();
                 return v;
             }
             return null;

@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class FindSubStringTrivial {
     public static void main(String[] args) {
-        String findMe = "abracadabra";
+        String findMe = "abraca";
         String str = "abracadabra";
         System.out.printf("%s <- %s\n positions ", str, findMe);
         int[] p = suffixArray(str);
@@ -25,17 +25,22 @@ public class FindSubStringTrivial {
     private static int binSearchL(int chCode, int[] arr, int off, String str) {
         int len = arr.length, k = len - 1;
         for (int i = len >> 1; i > 0; i >>= 1)
-            while (k - i >= 0 && str.substring(arr[k - i]).charAt(Math.min(str.substring(arr[k - i]).length() - 1, off)) >= chCode)
+            while (k - i >= 0
+                    && off < str.substring(arr[k - i]).length()
+                    && str.substring(arr[k - i]).charAt(off) >= chCode)
                 k -= i;
-        if (str.substring(arr[k]).charAt(Math.min(str.substring(arr[k]).length() - 1, off)) == chCode) return k;
+        if (off < str.substring(arr[k]).length() && str.substring(arr[k]).charAt(off) == chCode) return k;
         return -1;
     }
 
     private static int binSearchR(int chCode, int[] arr, int off, String str) {
         int len = arr.length, k = 0;
         for (int i = len >> 1; i > 0; i >>= 1)
-            while (k + i < len && str.substring(arr[k + i]).charAt(off) <= chCode) k += i;
-        if (str.substring(arr[k]).charAt(off) == chCode) return k;
+            while (k + i < len
+                    && off < str.substring(arr[k + i]).length()
+                    && str.substring(arr[k + i]).charAt(off) <= chCode)
+                k += i;
+        if (off < str.substring(arr[k]).length() && str.substring(arr[k]).charAt(off) == chCode) return k;
         return -1;
     }
 

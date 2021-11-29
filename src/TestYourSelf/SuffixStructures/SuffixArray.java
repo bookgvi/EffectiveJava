@@ -6,7 +6,7 @@ public class SuffixArray {
     private static final List<int[]> pars = new ArrayList<>();
 
     public static void main(String[] args) {
-        String str = "abracadabra#";
+        String str = "abracadabra";
         long startTime = System.nanoTime();
         int[] p = sortCyclicStrings(str);
         long endTime = System.nanoTime();

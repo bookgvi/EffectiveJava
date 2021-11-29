@@ -12,7 +12,7 @@ public class RabinKarp {
 
     public static void main(String[] args) {
         String str = "abracadabra";
-        String ss = "abracadabra";
+        String ss = "a";
 
         List<Integer> index = searchSubStr(str, ss);
         System.out.println(str);
@@ -22,12 +22,12 @@ public class RabinKarp {
 
     private static List<Integer> searchSubStr(String str, String ss) {
         List<Integer> indexes = new ArrayList<>();
-        long hashStr = getHash(ss);
+        int len = str.length(), lenSS = ss.length();
         long[] phs = prefixHash(str);
-        int lenSS = ss.length(), lenStr = str.length();
-        for (int i = 0; i + lenSS - 1 < lenStr; i += 1) {
+        long hashSS = getHash(ss);
+        for (int i = 0; i + lenSS - 1 < len; i += 1) {
             long calcHash = hash(phs, i, lenSS - 1);
-            if (hashStr == calcHash) indexes.add(i);
+            if (hashSS == calcHash) indexes.add(i);
         }
         return indexes;
     }
@@ -41,10 +41,10 @@ public class RabinKarp {
         return hash;
     }
 
-    private static long hash(long[] phs, int pos, int offset) {
-        long strH = phs[pos + offset];
+    private static long hash(long[] phs, int pos, int off) {
+        long strH = phs[pos + off];
         long prefH = pos > 0 ? phs[pos - 1] : 0;
-        strH = strH - prefH < 0 ? strH + mod : strH;
+        strH = strH < prefH ? strH + mod : strH;
         return (strH - prefH) * invP[pos] % mod;
     }
 
@@ -54,7 +54,7 @@ public class RabinKarp {
         byte[] strBytes = str.getBytes();
         hash[0] = (strBytes[0] - "a".getBytes()[0] + 1) * pows[0] % mod;
         for (int i = 1; i < len; i += 1)
-            hash[i] = hash[i - 1] + ((strBytes[i] - "a".getBytes()[0] + 1) * pows[i]) % mod;
+            hash[i] = hash[i - 1] + (strBytes[i] - "a".getBytes()[0] + 1) * pows[i] % mod;
         return hash;
     }
 

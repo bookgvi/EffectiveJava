@@ -24,6 +24,7 @@ public class Combinatorics {
         }
     }
 
+
     private static String getPermutation(int n, int k) {
         StringBuilder res = new StringBuilder();
         int[] digits = new int[n + 1];
@@ -47,15 +48,14 @@ public class Combinatorics {
     }
 
     private static int[] nextPermutation(int[] arr) {
-        int len = arr.length;
-        for (int i = len - 2; i >= 0; i -= 1) {
+        for (int i = arr.length - 2; i >= 0; i -= 1) {
             if (arr[i] < arr[i + 1]) {
                 int min = i + 1;
-                for (int j = min; j < len; j += 1)
+                for (int j = min; j < arr.length; j += 1)
                     if (arr[j] < arr[min] && arr[j] > arr[i])
                         min = j;
                 swap(i, min, arr);
-                reverse(i + 1, len - 1, arr);
+                reverse(i + 1, arr.length - 1, arr);
                 break;
             }
         }
@@ -76,16 +76,16 @@ public class Combinatorics {
     }
 
     private static int[][] comb() {
-        int[][] dp = new int[maxF][maxF];
-        dp[0][0] = 1;
-        for (int i = 1; i < maxF; i += 1) {
-            dp[i][i] = 1;
-            dp[i][0] = 1;
+        int[][] comb = new int[maxF + 1][maxF + 1];
+        comb[0][0] = 1;
+        for (int i = 1; i <= maxF; i += 1) {
+            comb[i][0] = 1;
+            comb[i][i] = 1;
             for (int j = 1; j < i; j += 1) {
-                dp[i][j] = dp[i - 1][j] + dp[i - 1][j - 1];
+                comb[i][j] = comb[i - 1][j] + comb[i - 1][j - 1];
             }
         }
-        return dp;
+        return comb;
     }
 
     private static int[] facts() {

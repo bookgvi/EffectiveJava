@@ -49,7 +49,7 @@ public class Sort {
     private static int[] mergeSort(int[] arr) {
         for (int i = 1, len = arr.length; i < len; i <<= 1)
             for (int j = 0; j < len - i; j += i << 1)
-                merge(j, i + j, Math.min(len, j + (i << 1)), arr);
+                merge(j, j + i, Math.min(len, j + (i << 1)), arr);
         return arr;
     }
 
@@ -69,12 +69,11 @@ public class Sort {
             merge[it1 + it2] = arr[l + it1];
             it1 += 1;
         }
-        while(mid + it2 < r) {
+        while (mid + it2 < r) {
             merge[it1 + it2] = arr[mid + it2];
             it2 += 1;
         }
-        for (int i = 0; i < it1 + it2; i += 1)
-            arr[l + i] = merge[i];
+        System.arraycopy(merge, 0, arr, l, it1 + it2);
     }
 
     private static void swap(int j, int i, int[] arr) {
