@@ -8,14 +8,13 @@ public class SegmentTree {
 
     private static void build(int[] arr) {
         System.arraycopy(arr, 0, st, n, n);
-        for (int v = n - 1; v > 0; v -= 1)
-            st[v] = st[v << 1] + st[v << 1 | 1];
+        for (int i = n - 1; i > 0; i -= 1)
+            st[i] = st[i << 1] + st[i << 1 | 1];
     }
 
     private static void modify(int v, int value) {
-        for (st[v += n] = value; v > 1; v >>= 1) {
+        for (st[v += n] = value; v > 1; v >>= 1)
             st[v >> 1] = st[v] + st[v ^ 1];
-        }
     }
 
     private static int query(int l, int r) {

@@ -8,19 +8,19 @@ public class AhoKorasik {
 
     public static void main(String[] args) {
         String str = "abrakadabra";
-        String ss = "bra";
+        String ss = "";
 
         Map<String, List<Integer>> res = findSubString(str, ss);
         System.out.println(res);
     }
 
-    private static Map<String, List<Integer>> findSubString(String text, String str) {
+    private static Map<String, List<Integer>> findSubString(String str, String ss) {
         Map<String, List<Integer>> words = new HashMap<>();
-        addKeyWord(str);
+        addKeyWord(ss);
         init();
         Vertex curVertex = root;
         int index = 0;
-        for (String ch : text.split("")) {
+        for (String ch : str.split("")) {
             index += 1;
             curVertex = delta(ch, curVertex);
             if (curVertex == root) {
@@ -113,9 +113,8 @@ public class AhoKorasik {
     }
 
     private static Vertex getUnvisited(Vertex curVertex) {
-        for (Vertex nextVertex : curVertex.toNext.values()) {
+        for (Vertex nextVertex : curVertex.toNext.values())
             if (!nextVertex.isVisited) return nextVertex;
-        }
         return null;
     }
 

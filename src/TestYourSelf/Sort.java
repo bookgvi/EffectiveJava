@@ -7,12 +7,13 @@ import java.util.stream.*;
 
 public class Sort {
     public static void main(String[] args) {
-        int size = 10, maxVal = 10;
+        int size = 10, maxVal = 100;
         Supplier<int[]> arr = () -> fillArr(size, maxVal);
         System.out.printf("Bubble: %s\n", Arrays.toString(bubbleSort(arr.get())));
         System.out.printf("Select: %s\n", Arrays.toString(selectSort(arr.get())));
         System.out.printf("Insert: %s\n", Arrays.toString(insertSort(arr.get())));
         System.out.printf("Radix: %s\n", Arrays.toString(radixSort(arr.get())));
+        System.out.printf("Count: %s\n", Arrays.toString(countSort(arr.get())));
         System.out.printf("Merge: %s\n", Arrays.toString(mergeSort(arr.get())));
     }
 
@@ -42,21 +43,21 @@ public class Sort {
         List<List<Integer>> digits = IntStream.range(0, max).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
         List<List<Integer>> digits2 = IntStream.range(0, max).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
         Arrays.stream(arr).forEach(elt -> digits.get(elt % max).add(elt));
-        digits.forEach(list -> list.forEach(elt -> digits2.get(elt / max).add(elt)));
+        digits.forEach(eltList -> eltList.forEach(elt -> digits2.get(elt / max).add(elt)));
         return digits2.stream().flatMapToInt(list -> list.stream().mapToInt(i -> i)).toArray();
     }
 
     private static int[] mergeSort(int[] arr) {
         for (int i = 1, len = arr.length; i < len; i <<= 1)
             for (int j = 0; j < len - i; j += i << 1)
-                merge(j, j + i, Math.min(len, j + (i << 1)), arr);
+                merge(j, i + j, Math.min(len, j + (i << 1)), arr);
         return arr;
     }
 
     private static void merge(int l, int mid, int r, int[] arr) {
         int it1 = 0, it2 = 0;
         int[] merge = new int[r - l];
-        while(l + it1 < mid && mid + it2 < r) {
+        while (l + it1 < mid && mid + it2 < r) {
             if (arr[l + it1] < arr[mid + it2]) {
                 merge[it1 + it2] = arr[l + it1];
                 it1 += 1;
@@ -65,7 +66,7 @@ public class Sort {
                 it2 += 1;
             }
         }
-        while(l + it1 < mid) {
+        while (l + it1 < mid) {
             merge[it1 + it2] = arr[l + it1];
             it1 += 1;
         }
@@ -74,6 +75,22 @@ public class Sort {
             it2 += 1;
         }
         System.arraycopy(merge, 0, arr, l, it1 + it2);
+    }
+
+    private static int[] countSort(int[] arr) {
+        int len = arr.length, b = 8, dw = 4;
+        int[] t = new int[len];
+        for (int p = 0; p < dw; p += 1) {
+            int[] count = new int[1 << b];
+            for (int elt : arr)
+                count[((elt ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
+            for (int i = 1; i < 1 << b; i += 1)
+                count[i] += count[i - 1];
+            for (int  i = len - 1; i >= 0; i -= 1)
+                t[--count[((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)]] = arr[i];
+            System.arraycopy(t, 0, arr, 0 , len);
+        }
+        return arr;
     }
 
     private static void swap(int j, int i, int[] arr) {

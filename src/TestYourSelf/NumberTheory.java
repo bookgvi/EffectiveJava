@@ -35,11 +35,12 @@ public class NumberTheory {
 
     private static List<Integer> erat(int n) {
         List<Integer> primes = new ArrayList<>();
-        boolean[] erat = new boolean[n + 1];
+        int[] erat = new int[n + 1];
         for (int i = 2; i <= n; i += 1) {
-            if (!erat[i]) primes.add(i);
+            if (erat[i] == 0)
+                primes.add(i);
             for (int j = i; j <= n; j += i)
-                erat[j] = true;
+                erat[j] = 1;
         }
         return primes;
     }

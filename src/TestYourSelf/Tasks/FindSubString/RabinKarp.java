@@ -22,20 +22,20 @@ public class RabinKarp {
 
     private static List<Integer> searchSubStr(String str, String ss) {
         List<Integer> indexes = new ArrayList<>();
-        int len = str.length(), lenSS = ss.length();
-        long[] phs = prefixHash(str);
-        long hashSS = getHash(ss);
-        for (int i = 0; i + lenSS - 1 < len; i += 1) {
+        int lenStr = str.length(), lenSS = ss.length();
+        long[] phs = prefixHashes(str);
+        long hashStr = getHash(ss);
+        for (int i = 0; i + lenSS  - 1< lenStr; i += 1) {
             long calcHash = hash(phs, i, lenSS - 1);
-            if (hashSS == calcHash) indexes.add(i);
+            if (calcHash == hashStr) indexes.add(i);
         }
         return indexes;
     }
 
     private static long getHash(String str) {
         int len = str.length();
-        byte[] strBytes = str.getBytes();
         long hash = 0;
+        byte[] strBytes = str.getBytes();
         for (int i = 0; i < len; i += 1)
             hash = (hash + (strBytes[i] - "a".getBytes()[0] + 1) * pows[i]) % mod;
         return hash;
@@ -44,18 +44,18 @@ public class RabinKarp {
     private static long hash(long[] phs, int pos, int off) {
         long strH = phs[pos + off];
         long prefH = pos > 0 ? phs[pos - 1] : 0;
-        strH = strH < prefH ? strH + mod : strH;
+        strH = strH - prefH < 0 ? strH + mod : strH;
         return (strH - prefH) * invP[pos] % mod;
     }
 
-    private static long[] prefixHash(String str) {
+    private static long[] prefixHashes(String str) {
         int len = str.length();
-        long[] hash = new long[len];
+        long[] hashes = new long[len];
         byte[] strBytes = str.getBytes();
-        hash[0] = (strBytes[0] - "a".getBytes()[0] + 1) * pows[0] % mod;
+        hashes[0] = (strBytes[0] - "a".getBytes()[0] + 1) * pows[0] % mod;
         for (int i = 1; i < len; i += 1)
-            hash[i] = hash[i - 1] + (strBytes[i] - "a".getBytes()[0] + 1) * pows[i] % mod;
-        return hash;
+            hashes[i] = hashes[i - 1] + (strBytes[i] - "a".getBytes()[0] + 1) * pows[i] % mod;
+        return hashes;
     }
 
     private static long[] pows() {

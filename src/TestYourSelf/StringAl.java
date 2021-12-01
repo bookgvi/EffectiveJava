@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class StringAl {
     public static void main(String[] args) {
-        String str = "a#b#b#a#d";
+        String str = "abcabcabcabc";
         System.out.println(str);
         System.out.printf("\t\tZ-func: %s\n", Arrays.toString(zFunc(str)));
         System.out.printf("p-func trivial:\t%s\n", Arrays.toString(piFunc(str)));
@@ -21,10 +21,10 @@ public class StringAl {
         int[] z = new int[len];
         for (int i = 1, l = 0, r = 0; i < len; i += 1) {
             if (i <= r) z[i] = Math.min(z[i - l], r - i + 1);
-            while(i + z[i] < len && str.charAt(i + z[i]) == str.charAt(z[i])) z[i] += 1;
+            while (i + z[i] < len && str.charAt(i + z[i]) == str.charAt(z[i])) z[i] += 1;
             if (i + z[i] - 1 > r) {
                 l = i;
-                r = i + z[i] - 1;
+                r = z[i] + i - 1;
             }
         }
         return z;
@@ -70,7 +70,7 @@ public class StringAl {
     private static int zipStr(String str) {
         int len = str.length(), lastSuff = piFuncExt(str)[len - 1];
         int pos = len - lastSuff;
-        if (lastSuff > 0 && len % pos == 0) return pos;
+        if (len % pos == 0) return pos;
         return -1;
     }
 }

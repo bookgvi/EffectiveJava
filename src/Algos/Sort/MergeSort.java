@@ -7,7 +7,7 @@ import java.util.stream.IntStream;
 
 public class MergeSort {
     public static void main(String[] args) {
-        int count = 10, max = 10;
+        int count = 3, max = 10;
         Supplier<int[]> arr = () -> fillArr(count, max);
         int[] arr2 = arr.get();
         System.out.println(Arrays.toString(arr2));

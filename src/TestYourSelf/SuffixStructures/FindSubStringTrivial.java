@@ -4,11 +4,11 @@ import java.util.Arrays;
 
 public class FindSubStringTrivial {
     public static void main(String[] args) {
-        String findMe = "abraca";
+        String findMe = "ab";
         String str = "abracadabra";
         System.out.printf("%s <- %s\n positions ", str, findMe);
         int[] p = suffixArray(str);
-        for (int i = 0, lenSS = findMe.length(); i < lenSS; i += 1) {
+        for (int i = 0; i < findMe.length(); i += 1) {
             int l = binSearchL(findMe.charAt(i), p, i, str);
             if (l == -1) {
                 System.out.println("not found...");

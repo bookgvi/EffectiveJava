@@ -8,16 +8,17 @@ public class CustomBigInteger {
     private static final int radix = 10;
     private static final int digits = 4;
 
-    private static String listToString(List<Integer> num) {
+    private static String listToString(List<Integer> nums) {
         StringBuilder res = new StringBuilder();
-        for (int i = num.size() - 1; i >= 0; i -= 1) {
-            String tmp = String.valueOf(num.get(i));
+        for (int i = nums.size() - 1; i >= 0; i -= 1) {
+            String tmp = String.valueOf(nums.get(i));
             if (tmp.length() < digits) {
                 StringBuilder zeros = new StringBuilder();
                 for (int j = 0; j < digits - tmp.length(); j += 1)
                     zeros.append("0");
-                res.append(zeros).append(tmp);
-            } else res.append(tmp);
+                res.append(zeros);
+            }
+            res.append(tmp);
         }
         while (res.charAt(0) == '0') res.delete(0, 1);
         if (res.length() < 1) return "0";
