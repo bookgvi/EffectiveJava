@@ -14,8 +14,7 @@ public class CustomBigInteger {
             String tmp = String.valueOf(nums.get(i));
             if (tmp.length() < digits) {
                 StringBuilder zeros = new StringBuilder();
-                for (int j = 0; j < digits - tmp.length(); j += 1)
-                    zeros.append("0");
+                IntStream.range(0, tmp.length() - digits).forEach(j -> zeros.append("0"));
                 res.append(zeros);
             }
             res.append(tmp);

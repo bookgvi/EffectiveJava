@@ -54,7 +54,7 @@ public class Combinatorics {
                 for (int j = min; j < len; j += 1)
                     if (arr[j] < arr[min] && arr[j] > arr[i])
                         min = j;
-                swap(min, i, arr);
+                swap(i, min, arr);
                 reverse(i + 1, len - 1, arr);
                 break;
             }
@@ -82,16 +82,16 @@ public class Combinatorics {
             dp[i][0] = 1;
             dp[i][i] = 1;
             for (int j = 1; j < i; j += 1)
-                dp[i][j] = dp[i - 1][j] + dp[i - 1][j - 1];
+                dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
         }
         return dp;
     }
 
     private static int[] facts() {
-        int[] fact = new int[maxF];
-        fact[0] = 1;
+        int[] facts = new int[maxF];
+        facts[0] = 1;
         for (int i = 1; i < maxF; i += 1)
-            fact[i] = fact[i - 1] * i;
-        return fact;
+            facts[i] = facts[i - 1] * i;
+        return facts;
     }
 }

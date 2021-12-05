@@ -24,7 +24,7 @@ public class StringAl {
             while (i + z[i] < len && str.charAt(i + z[i]) == str.charAt(z[i])) z[i] += 1;
             if (i + z[i] - 1 > r) {
                 l = i;
-                r = z[i] + i - 1;
+                r = i + z[i] - 1;
             }
         }
         return z;
@@ -47,7 +47,7 @@ public class StringAl {
         int[] pi = new int[len];
         for (int i = 1; i < len; i += 1) {
             int j = pi[i - 1];
-            while (j > 0 && str.charAt(i) != str.charAt(j)) j = pi[j - 1];
+            while(j > 0 && str.charAt(i) != str.charAt(j)) j = pi[j - 1];
             if (str.charAt(i) == str.charAt(j)) pi[i] = j + 1;
         }
         return pi;
