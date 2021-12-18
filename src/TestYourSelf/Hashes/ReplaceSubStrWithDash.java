@@ -23,7 +23,7 @@ public class ReplaceSubStrWithDash {
     }
 
     private static String searchStr(long[] phAbc, long[] phStr, String str) {
-        int lenStr = phStr.length, lenAbc = phAbc.length, len = 2;
+        int lenAbc = phAbc.length, lenStr = phStr.length, len = 2;
         StringBuilder res = new StringBuilder();
         Map<Integer, Integer> indexes = new HashMap<>();
         while (len < lenAbc) {
@@ -44,21 +44,22 @@ public class ReplaceSubStrWithDash {
         List<Integer> positions = new ArrayList<>(indexes.keySet()).stream().sorted().collect(Collectors.toList());
         for (int startPos : positions) {
             int endPos = indexes.get(startPos) + startPos - 1;
-            res.append(str, curPos, startPos).append(convert(startPos, endPos, str));
+            res.append(str, curPos, startPos).append(zipStr(str, startPos, endPos));
             curPos = endPos + 1;
         }
         if (curPos < lenStr) res.append(str, curPos, lenStr);
         return res.toString();
     }
 
-    private static String getAbc() {
-        StringBuilder abc = new StringBuilder();
-        IntStream.range(31, 255).forEach(i -> abc.append(Character.toString(i)));
-        return abc.toString();
+    private static String zipStr(String str, int start, int end) {
+        return "[" + str.charAt(start) + "-" + str.charAt(end) + "]";
     }
 
-    private static String convert(int start, int end, String str) {
-        return "[" + str.charAt(start) + "-" + str.charAt(end) + "]";
+    private static String getAbc() {
+        StringBuilder abc = new StringBuilder();
+        for (int i = 33; i < 256; i += 1)
+            abc.append(Character.toString(i));
+        return abc.toString();
     }
 
     private static int binSearch(long n, long[] arr) {
@@ -105,7 +106,7 @@ public class ReplaceSubStrWithDash {
     }
 
     private static long[] pows() {
-        int max = (int) 1e5;
+        int max = (int) 1e5 + 5;
         long[] pows = new long[max];
         pows[0] = 1;
         for (int i = 1; i < max; i += 1)

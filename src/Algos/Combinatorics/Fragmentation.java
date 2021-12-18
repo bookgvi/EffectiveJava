@@ -7,8 +7,7 @@ public class Fragmentation {
         int len = arr.length;
         int off = len - 1;
         while (arr[off] == 0) off -= 1;
-        off = len - off - 1;
-        int s = Math.max(len - 2 - off, 0), index = len - 1;
+        int s = Math.max(off - 1, 0), index = len - 1;
         while (s > 0 && arr[s - 1] <= arr[s]) {
             s -= 1;
         }
@@ -19,7 +18,7 @@ public class Fragmentation {
     }
 
     public static void main(String[] args) {
-        int[] arr = new int[]{1, 1, 1, 1, 1, 1, 1};
+        int[] arr = new int[]{1, 1, 1, 1};
         System.out.println(Arrays.toString(arr));
         while (arr[0] != arr.length) {
             arr = nextFragment(arr);

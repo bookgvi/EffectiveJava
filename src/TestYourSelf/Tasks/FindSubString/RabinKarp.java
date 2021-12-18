@@ -22,12 +22,12 @@ public class RabinKarp {
 
     private static List<Integer> searchSubStr(String str, String ss) {
         List<Integer> indexes = new ArrayList<>();
-        int lenStr = str.length(), lenSS = ss.length();
-        long[] phs = prefixHashes(str);
-        long hashStr = getHash(ss);
-        for (int i = 0; i + lenSS  - 1< lenStr; i += 1) {
+        int len = str.length(), lenSS = ss.length();
+        long strHash = getHash(ss);
+        long[] phs = prefixHash(str);
+        for (int i = 0; i + lenSS - 1 < len; i += 1) {
             long calcHash = hash(phs, i, lenSS - 1);
-            if (calcHash == hashStr) indexes.add(i);
+            if (calcHash == strHash) indexes.add(i);
         }
         return indexes;
     }
@@ -48,7 +48,7 @@ public class RabinKarp {
         return (strH - prefH) * invP[pos] % mod;
     }
 
-    private static long[] prefixHashes(String str) {
+    private static long[] prefixHash(String str) {
         int len = str.length();
         long[] hashes = new long[len];
         byte[] strBytes = str.getBytes();
@@ -59,7 +59,7 @@ public class RabinKarp {
     }
 
     private static long[] pows() {
-        int max = (int) 1e5;
+        int max = (int) 1e5 + 1;
         long[] pows = new long[max];
         pows[0] = 1;
         for (int i = 1; i < max; i += 1)

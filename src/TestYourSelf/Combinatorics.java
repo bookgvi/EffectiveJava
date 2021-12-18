@@ -35,7 +35,7 @@ public class Combinatorics {
             k = pn;
             int pos = 0;
             for (int j = 1; j <= n; j += 1) {
-                if (digits[j] == 0) pos += 1;
+                if (digits[j] != 1) pos += 1;
                 if (pos == d) {
                     digits[j] = 1;
                     res.append(j);
@@ -68,23 +68,22 @@ public class Combinatorics {
         arr[j] = tmp;
     }
 
-    private static void reverse(int start, int end, int[] arr) {
-        for (int i = start; i <= (start + end) >> 1; i += 1) {
-            int tmp = start + end - i;
-            swap(i, tmp, arr);
+    private static void reverse(int l, int r, int[] arr) {
+        for (int i = l; i <= (r + l) >> 1; i += 1) {
+            int tmp = r + l - i;
+            swap(tmp, i, arr);
         }
     }
 
     private static int[][] comb() {
-        int[][] dp = new int[maxF + 1][maxF + 1];
-        dp[0][0] = 1;
+        int[][] comb = new int[maxF + 1][maxF + 1];
+        comb[0][0] = 1;
         for (int i = 1; i <= maxF; i += 1) {
-            dp[i][0] = 1;
-            dp[i][i] = 1;
+            comb[i][0] = 1; comb[i][i] = 1;
             for (int j = 1; j < i; j += 1)
-                dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+                comb[i][j] = comb[i - 1][j] + comb[i - 1][j - 1];
         }
-        return dp;
+        return comb;
     }
 
     private static int[] facts() {

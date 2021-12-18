@@ -44,13 +44,14 @@ public class BracketSequence {
     }
 
     private static long[] catalan() {
-        int len = 19;
-        long[] dp = new long[len + 1];
-        dp[0] = 1;
-        dp[1] = 1;
-        for (int i = 2; i <= len; i += 1)
-            for (int j = 0; j < i; j += 1)
-                dp[i] += dp[j] * dp[i - j - 1];
-        return dp;
+        int n = 19;
+        long[] res = new long[n + 1];
+        res[0] = 1;
+        res[1] = 1;
+        for (int i = 2; i <= n; i += 1) {
+            for(int j = 0; j < i; j += 1)
+                res[i] += res[j] * res[i - j - 1];
+        }
+        return res;
     }
 }
