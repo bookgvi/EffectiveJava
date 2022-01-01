@@ -23,9 +23,9 @@ public class Catalan {
         for (int i = len - 1; i >= 0; i -= 1) {
             if (seq.charAt(i) == '(') depth -= 1;
             else depth += 1;
-            if (depth > 0 && seq.charAt(i) == '(') {
+            if(depth > 0 && seq.charAt(i) == '(') {
                 depth -= 1;
-                int open = (len - i - 1 - depth) >> 1;
+                int open = (len - i - 1 - depth >> 1);
                 int close = len - i - 1 - open;
                 res.append(seq, 0, i).append(")").append(repeat("(", open)).append(repeat(")", close));
                 break;
@@ -34,10 +34,10 @@ public class Catalan {
         return res.toString();
     }
 
-    private static StringBuilder repeat(String ch, int count) {
+    private static String repeat(String ch, int count) {
         StringBuilder res = new StringBuilder();
         IntStream.range(0, count).forEach(i -> res.append(ch));
-        return res;
+        return res.toString();
     }
 
     private static long catalan(int n) {
@@ -45,21 +45,20 @@ public class Catalan {
     }
 
     private static long[] catalanDP() {
-        int max = 20;
-        long[] dp = new long[max];
-        dp[0] = 1;
-        dp[1] = 1;
-        for (int i = 2; i < max; i += 1)
+        long[] catalan = new long[maxF];
+        catalan[0] = 1;
+        catalan[1] = 1;
+        for (int i = 2; i < maxF; i+= 1)
             for (int j = 0; j < i; j += 1)
-                dp[i] += dp[j] * dp[i - j - 1];
-        return dp;
+                catalan[i] += catalan[j] * catalan[i - j - 1];
+        return catalan;
     }
 
     private static long[] fact() {
-        long[] facts = new long[maxF];
-        facts[0] = 1;
+        long[] fact = new long[maxF];
+        fact[0] = 1;
         for (int i = 1; i < maxF; i += 1)
-            facts[i] = facts[i - 1] * i;
-        return facts;
+            fact[i] = fact[i - 1] * i;
+        return fact;
     }
 }

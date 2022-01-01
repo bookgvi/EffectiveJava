@@ -3,26 +3,31 @@ package Algos.Combinatorics;
 import java.util.*;
 
 public class Fragmentation {
-    private static int[] nextFragment(int[] arr) {
-        int len = arr.length;
-        int off = len - 1;
-        while (arr[off] == 0) off -= 1;
-        int s = Math.max(off - 1, 0), index = len - 1;
-        while (s > 0 && arr[s - 1] <= arr[s]) {
-            s -= 1;
-        }
-        arr[s] += 1;
-        while (arr[index] == 0) index -= 1;
-        arr[index] -= 1;
-        return arr;
+    private static int[] nextFragment(int[] arr, int n) {
+        int len = arr.length, i;
+        for (i = 0; i < len - 1; i += 1)
+            if (i < len - 1 && arr[i] == 1) break;
+        if (i == len - 1)
+            for (i = 0; i < len - 2; i += 1)
+                if (arr[i] == arr[i + 1]) break;
+        int tmpInc = arr[i] + 1, sum = tmpInc;
+        for (int j = 0; j < i; j += 1)
+            sum += arr[j];
+        int newLen = n - sum + i + 1;
+        int[] newArr = new int[newLen];
+        for (int j = 0; j < newLen; j += 1)
+            if (j < i) newArr[j] = arr[j];
+            else if (j == i) newArr[j] = tmpInc;
+            else newArr[j] = 1;
+        return newArr;
     }
 
     public static void main(String[] args) {
-        int[] arr = new int[]{1, 1, 1, 1};
-        System.out.println(Arrays.toString(arr));
-        while (arr[0] != arr.length) {
-            arr = nextFragment(arr);
+        int[] arr = new int[]{1, 1, 1, 1, 1, 1,1};
+        int count = Arrays.stream(arr).reduce(0, Integer::sum);
+        while (arr.length > 0) {
             System.out.println(Arrays.toString(arr));
+            arr = nextFragment(arr, count);
         }
     }
 }

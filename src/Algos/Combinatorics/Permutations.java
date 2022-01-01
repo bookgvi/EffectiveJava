@@ -31,7 +31,7 @@ public class Permutations {
             k = np;
             int pos = 0;
             for (int j = 1; j <= n; j += 1) {
-                if (digits[j] == 0) pos++;
+                if (digits[j] == 0) pos += 1;
                 if (pos == d) {
                     digits[j] = 1;
                     res.append(j);
