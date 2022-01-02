@@ -4,16 +4,16 @@ import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
-public class RadixSortWithSomeBase {
+public class RadixSortWithSomeMod {
     private static int[] sort(int[] arr, int mod) {
         int len = arr.length;
         int[] t = new int[mod], count = new int[mod];
         for (int i = 0; i < len; i += 1)
-            count[arr[i] % mod] += 1;
+            count[(arr[i] ^ Integer.MIN_VALUE) % mod] += 1;
         for (int i = 1; i < mod; i += 1)
             count[i] += count[i - 1];
         for (int i = len - 1; i >= 0; i -= 1)
-            t[--count[arr[i] % mod]] = arr[i];
+            t[--count[(arr[i] ^ Integer.MIN_VALUE) % mod]] = arr[i];
         System.arraycopy(t, 0, arr, 0, len);
         return arr;
     }
