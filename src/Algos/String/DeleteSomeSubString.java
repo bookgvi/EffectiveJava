@@ -1,44 +1,38 @@
-package TestYourSelf.Hashes;
+package Algos.String;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class RabinKarp {
-    private static int k = (int) 1e5 + 5;
-    private static int mod = (int) 1e9 + 7;
-    private static long[] pows = pows();
-    private static long[] invP = invP();
+public class DeleteSomeSubString {
+    private static final int maxP = (int) 1e5 + 5;
+    private static final int k = (int) 1e5 + 5;
+    private static final int mod = (int) 1e9 + 7;
+    private static final int firstCharByte = "a".getBytes()[0];
+    private static final long[] pows = pows();
+    private static final long[] invP = invP();
 
-    private static String firstChar = "a";
-    private static int firstCharByte = firstChar.getBytes(StandardCharsets.UTF_8)[0];
-
-    public static void main(String[] args) {
-        String str = "aabc";
-        String ss = "abc";
-        List<Integer> indexes = rabinKarp(str, ss);
-        System.out.printf("%s\t<-\t%s\n", str, ss);
-        System.out.println(indexes);
-    }
-
-    private static List<Integer> rabinKarp(String str, String ss) {
+    private static String processString(String str, String ss) {
         List<Integer> indexes = new ArrayList<>();
-        int lenStr = str.length(), ssLen = ss.length();
-        long strH = getHash(ss);
-        long[] phs = prefixHash(str);
-        for (int i = 0; i + ssLen - 1 < lenStr; i += 1) {
-            long calcHash = hash(phs, i, ssLen - 1);
-            if (strH == calcHash) indexes.add(i);
+        int len = str.length(), lenSS = ss.length();
+        long strHash = getHash(ss);
+        long[] phs = phs(str);
+        for (int i = 0; i + lenSS - 1 < len; i += 1) {
+            long calcHash =  hash(phs, i, lenSS - 1);
+            if (calcHash == strHash) indexes.add(i);
         }
-        return indexes;
+        StringBuilder res = new StringBuilder(str);
+        for (int index : indexes) {
+            int dl = len - res.length();
+            res.delete(index - dl, lenSS + index - dl);
+            res.insert(index - dl, "...");
+        }
+        return res.toString();
     }
 
     private static long getHash(String str) {
         int len = str.length();
-        byte[] strBytes = str.getBytes();
         long hash = 0;
         for (int i = 0; i < len; i += 1)
-            hash = (hash + (strBytes[i] - firstCharByte + 1) * pows[i]) % mod;
+            hash = (hash + (str.charAt(i) - firstCharByte + 1) * pows[i]) % mod;
         return hash;
     }
 
@@ -49,7 +43,7 @@ public class RabinKarp {
         return (strH - prefH) * invP[pos] % mod;
     }
 
-    private static long[] prefixHash(String str) {
+    private static long[] phs(String str) {
         int len = str.length();
         long[] hashes = new long[len];
         byte[] strBytes = str.getBytes();
@@ -60,19 +54,17 @@ public class RabinKarp {
     }
 
     private static long[] pows() {
-        int max = (int) 1e5;
-        long[] pows = new long[max];
+        long[] pows = new long[maxP];
         pows[0] = 1;
-        for (int i = 1; i < max; i += 1)
+        for (int i = 1; i < maxP; i += 1)
             pows[i] = pows[i - 1] * k % mod;
         return pows;
     }
 
     private static long[] invP() {
-        int max = pows.length;
-        long[] invP = new long[max];
+        long[] invP = new long[maxP];
         long phi = phi(mod) - 1;
-        for (int i = 0; i < max; i += 1)
+        for (int i = 0; i < maxP; i += 1)
             invP[i] = modPow(pows[i], phi, mod);
         return invP;
     }
@@ -81,7 +73,7 @@ public class RabinKarp {
         long res = n;
         for (int i = 2; (long) i * i <= n; i += 1) {
             if (n % i == 0) {
-                while (n % i == 0) n /= i;
+                while(n % i == 0) n /= i;
                 res -= res / i;
             }
         }
@@ -91,11 +83,18 @@ public class RabinKarp {
 
     private static long modPow(long n, long pow, int mod) {
         long res = 1;
-        while (pow > 0) {
+        while(pow > 0) {
             if ((pow & 1) == 1) res = res * n % mod;
             n = n * n % mod;
             pow >>= 1;
         }
         return res;
+    }
+
+    public static void main(String[] args) {
+        String str = "aabcdfgdfgabcasd";
+        String ss = "abc";
+        String res = processString(str, ss);
+        System.out.printf("%s -> %s", str, res);
     }
 }

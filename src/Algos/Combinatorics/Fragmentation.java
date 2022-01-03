@@ -6,24 +6,25 @@ public class Fragmentation {
     private static int[] nextFragment(int[] arr, int n) {
         int len = arr.length, i;
         for (i = 0; i < len - 1; i += 1)
-            if (i < len - 1 && arr[i] == 1) break;
-        if (i == len - 1)
+            if (arr[i] == 1) break;
+        if (i == len - 1) {
             for (i = 0; i < len - 2; i += 1)
                 if (arr[i] == arr[i + 1]) break;
-        int tmpInc = arr[i] + 1, sum = tmpInc;
+        }
+        int incElt = arr[i] + 1, sum = incElt;
         for (int j = 0; j < i; j += 1)
             sum += arr[j];
         int newLen = n - sum + i + 1;
         int[] newArr = new int[newLen];
         for (int j = 0; j < newLen; j += 1)
             if (j < i) newArr[j] = arr[j];
-            else if (j == i) newArr[j] = tmpInc;
+            else if (j == i) newArr[j] = incElt;
             else newArr[j] = 1;
         return newArr;
     }
 
     public static void main(String[] args) {
-        int[] arr = new int[]{1, 1, 1, 1, 1, 1,1};
+        int[] arr = new int[]{1, 1, 1, 1, 1, 1, 1};
         int count = Arrays.stream(arr).reduce(0, Integer::sum);
         while (arr.length > 0) {
             System.out.println(Arrays.toString(arr));

@@ -1,11 +1,14 @@
 package TestYourSelf;
 
-import java.util.Arrays;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Combinatorics {
     private static final int maxF = (int) 1e2;
     private static final int[] fact = facts();
     private static final int[][] comb = comb();
+    private static final List<List<Integer>> traingle = triangle();
     private static int[] arr = {1, 2, 3, 4};
 
     public static void main(String[] args) {
@@ -84,6 +87,17 @@ public class Combinatorics {
                 comb[i][j] = comb[i - 1][j] + comb[i - 1][j - 1];
         }
         return comb;
+    }
+
+    private static List<List<Integer>> triangle() {
+        List<List<Integer>> triangle = new ArrayList<>();
+        triangle.add(List.of(1));
+        for (int i = 1; i < maxF; i += 1) {
+            triangle.add(IntStream.rangeClosed(0, i).mapToObj(t -> 1).collect(Collectors.toList()));
+            for (int j = 1; j < i; j += 1)
+                triangle.get(i).set(j, triangle.get(i - 1).get(j) + triangle.get(i - 1).get(j - 1));
+        }
+        return triangle;
     }
 
     private static int[] facts() {

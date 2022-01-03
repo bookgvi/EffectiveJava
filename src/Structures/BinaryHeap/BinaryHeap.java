@@ -23,11 +23,11 @@ public class BinaryHeap {
     }
 
     private static void siftDown(int v) {
-        int len = heap.length, half = len >> 1;
+        int half = DEFAULT_SIZE >> 1;
         while (v < half) {
             int l = (v << 1) + 1;
             int r = l + 1;
-            int t = r < len && heap[r] < heap[l] ? r : l;
+            int t = r < DEFAULT_SIZE && heap[r] < heap[l] ? r : l;
             if (heap[v] <= heap[t]) break;
             swap(v, t);
             v = t;
@@ -35,11 +35,10 @@ public class BinaryHeap {
     }
 
     private static void buildHeap() {
-        for (int i = heap.length; i > 0; i -= 1) {
+        for (int i = DEFAULT_SIZE; i > 0; i -= 1)
             siftDown(i);
-        }
     }
-    
+
     private static void swap(int i, int j) {
         heap[i] += heap[j];
         heap[j] = heap[i] - heap[j];

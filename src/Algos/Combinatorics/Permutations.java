@@ -15,7 +15,7 @@ public class Permutations {
         System.out.printf("%d)\t%s\n", 1, Arrays.toString(arr));
         int n = fact[arr.length];
         for (int i = 1; i < n; i += 1) {
-            arr = nextPermutation(arr);
+            nextPermutation(arr);
             System.out.printf("%d)\t%s\n", i + 1, Arrays.toString(arr));
         }
     }
@@ -54,18 +54,27 @@ public class Permutations {
      * Такой алгоритм позволяет получить все перестановки в лексикографическом порядке.
      * */
     private static int[] nextPermutation(int[] arr) {
-        for (int len = arr.length, i = len - 2; i >= 0; i -= 1) {
+        int len = arr.length;
+        for (int i = len - 2; i >= 0; i -= 1) {
             if (arr[i] < arr[i + 1]) {
                 int min = i + 1;
                 for (int j = min; j < len; j += 1)
                     if (arr[j] > arr[i] && arr[j] < arr[min])
                         min = j;
                 swap(i, min, arr);
-                sort(i + 1, arr);
-                return arr;
+                reverse(i + 1, len - 1, arr);
+//                sort(i + 1, arr);
+                break;
             }
         }
-        return null;
+        return arr;
+    }
+
+    private static void reverse(int start, int end, int[] arr) {
+        for (int i = start; i <= (start + end) >> 1; i += 1) {
+            int tmp = start + end - i;
+            swap(i, tmp, arr);
+        }
     }
 
     private static void sort(int start, int[] arr) {
@@ -84,9 +93,9 @@ public class Permutations {
     }
 
     private static void swap(int i, int j, int[] arr) {
-        arr[i] += arr[j];
-        arr[j] = arr[i] - arr[j];
-        arr[i] = arr[i] - arr[j];
+        int tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
     }
 
     private static int[] facts() {

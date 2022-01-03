@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class SuffixArrayTrivial {
     public static void main(String[] args) {
-        String str = "abracadabra";
+        String str = "babad";
         String ss = "abra";
 
         int[] index = searchSubStr(str, ss);

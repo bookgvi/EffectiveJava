@@ -8,7 +8,7 @@ public class AhoKorasik {
 
     public static void main(String[] args) {
         String str = "abrakadabra";
-        String ss = "";
+        String ss = "a";
 
         Map<String, List<Integer>> res = findSubString(str, ss);
         System.out.println(res);
@@ -18,37 +18,37 @@ public class AhoKorasik {
         Map<String, List<Integer>> words = new HashMap<>();
         addKeyWord(ss);
         init();
-        Vertex curVertex = root;
+        Vertex cur = root;
         int index = 0;
         for (String ch : str.split("")) {
             index += 1;
-            curVertex = delta(ch, curVertex);
-            if (curVertex == root) {
-                if (curVertex.toNext.get(ch) == null) continue;
-                else curVertex = curVertex.toNext.get(ch);
+            cur = delta(ch, cur);
+            if (cur == root) {
+                if (cur.toNext.get(ch) == null) continue;
+                else cur = cur.toNext.get(ch);
             }
-            isOut(curVertex, words, index);
+            isOutArr(cur, words, index);
         }
         return words;
     }
 
-    private static Vertex delta(String ch, Vertex curVertex) {
-        if (curVertex.toNext.get(ch) == null && curVertex.suffLink.toNext.get(ch) != null)
-            return curVertex.suffLink.toNext.get(ch);
-        else if (curVertex.toNext.get(ch) != null)
-            return curVertex.toNext.get(ch);
+    private static Vertex delta(String ch, Vertex cur) {
+        if (cur.toNext.get(ch) == null && cur.suffLink.toNext.get(ch) != null)
+            return cur.suffLink.toNext.get(ch);
+        else if (cur.toNext.get(ch) != null)
+            return cur.toNext.get(ch);
         return root;
     }
 
-    private static void isOut(Vertex curVertex, Map<String, List<Integer>> words, int index) {
-        for (Vertex outVertex : curVertex.outArr) fillWords(outVertex, words, index);
+    private static void isOutArr(Vertex cur, Map<String, List<Integer>> words, int index) {
+        for (Vertex out: cur.outArr) fillWords(out, words, index);
     }
 
-    private static void fillWords(Vertex outVertex, Map<String, List<Integer>> words, int index) {
-        int pos = index - outVertex.suffix.length();
-        List<Integer> positions = words.getOrDefault(outVertex.suffix, new ArrayList<>());
+    private static void fillWords(Vertex out, Map<String, List<Integer>> words, int index) {
+        int pos = index - out.suffix.length();
+        List<Integer> positions = words.getOrDefault(out.suffix, new ArrayList<>());
         positions.add(pos);
-        words.putIfAbsent(outVertex.suffix, positions);
+        words.putIfAbsent(out.suffix, positions);
     }
 
     private static void addKeyWord(String keyWord) {
@@ -63,58 +63,58 @@ public class AhoKorasik {
     }
 
     private static void init() {
-        Vertex startVertex = root, curVertex, nextVertex;
-        VertexQueue<Vertex> vertexQueue = new VertexQueue<>();
+        Vertex start = root, cur, next;
+        VertexQueue<Vertex> queue = new VertexQueue<>();
         setRootSuffLink();
-        startVertex.isVisited = true;
-        vertexQueue.offer(startVertex);
-        while (!vertexQueue.isEmpty()) {
-            curVertex = vertexQueue.poll();
-            if (curVertex == null) continue;
-            while ((nextVertex = getUnvisited(curVertex)) != null) {
-                nextVertex.isVisited = true;
-                vertexQueue.offer(nextVertex);
-                setSuffLink(curVertex, nextVertex);
+        start.isVisited = true;
+        queue.offer(start);
+        while (!queue.isEmpty()) {
+            cur = queue.poll();
+            if (cur == null) continue;
+            while ((next = getUnvisited(cur)) != null) {
+                next.isVisited = true;
+                queue.offer(next);
+                setSuffLink(cur, next);
             }
         }
         setOutArr(root);
         setUnvisited(root);
     }
 
-    private static void setOutArr(Vertex curVertex) {
-        for (Vertex nextVertex : curVertex.toNext.values()) {
-            fillOutArr(nextVertex, nextVertex.outArr);
-            setOutArr(nextVertex);
-        }
-    }
-
-    private static void fillOutArr(Vertex curVertex, List<Vertex> outArr) {
-        if (curVertex.isTerminal) outArr.add(curVertex);
-        if (curVertex.suffLink == root) return;
-        fillOutArr(curVertex.suffLink, outArr);
-    }
-
-    private static void setSuffLink(Vertex parentVertex, Vertex curVertex) {
-        Vertex parentSuffLink = parentVertex.suffLink;
-        if (curVertex.suffLink == null) {
-            curVertex.suffLink = parentSuffLink.toNext.get(curVertex.label);
-            if (curVertex.suffLink == null) curVertex.suffLink = root;
+    private static void setSuffLink(Vertex parent, Vertex cur) {
+        Vertex parentSuffLink = parent.suffLink;
+        if (cur.suffLink == null) {
+            cur.suffLink = parentSuffLink.toNext.get(cur.label);
+            if (cur.suffLink == null) cur.suffLink = root;
         }
     }
 
     private static void setRootSuffLink() {
         root.suffLink = root;
-        for (Vertex firstAfterRoot : root.toNext.values()) firstAfterRoot.suffLink = root;
+        for (Vertex next : root.toNext.values()) next.suffLink = root;
     }
 
-    private static void setUnvisited(Vertex curVertex) {
-        curVertex.isVisited = false;
-        for (Vertex nextVertex : curVertex.toNext.values()) setUnvisited(nextVertex);
+    private static void setOutArr(Vertex cur) {
+        for (Vertex next : cur.toNext.values()) {
+            fillOutArr(next, next.outArr);
+            setOutArr(next);
+        }
     }
 
-    private static Vertex getUnvisited(Vertex curVertex) {
-        for (Vertex nextVertex : curVertex.toNext.values())
-            if (!nextVertex.isVisited) return nextVertex;
+    private static void fillOutArr(Vertex cur, List<Vertex> outArr) {
+        if (cur.isTerminal) outArr.add(cur);
+        if (cur.suffLink == root) return;
+        fillOutArr(cur.suffLink, outArr);
+    }
+
+    private static void setUnvisited(Vertex cur) {
+        cur.isVisited = false;
+        for (Vertex next : cur.toNext.values()) setUnvisited(next);
+    }
+
+    private static Vertex getUnvisited(Vertex cur) {
+        for (Vertex next : cur.toNext.values())
+            if (!next.isVisited) return next;
         return null;
     }
 

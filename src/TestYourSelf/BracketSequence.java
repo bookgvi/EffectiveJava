@@ -37,21 +37,20 @@ public class BracketSequence {
         return repeat("(", n) + repeat(")", n);
     }
 
-    private static String repeat(String ch, int count) {
+    private static String repeat(String ch, int n) {
         StringBuilder res = new StringBuilder();
-        IntStream.range(0, count).forEach(i -> res.append(ch));
+        IntStream.range(0, n).forEach(i -> res.append(ch));
         return res.toString();
     }
 
     private static long[] catalan() {
-        int n = 19;
-        long[] res = new long[n + 1];
-        res[0] = 1;
-        res[1] = 1;
-        for (int i = 2; i <= n; i += 1) {
-            for(int j = 0; j < i; j += 1)
-                res[i] += res[j] * res[i - j - 1];
-        }
-        return res;
+        int max = 20;
+        long[] catalan = new long[max];
+        catalan[0] = 1;
+        catalan[1] = 1;
+        for (int i = 2; i < max; i += 1)
+            for (int j = 0; j < i; j += 1)
+                catalan[i] += catalan[j] * catalan[i - j - 1];
+        return catalan;
     }
 }

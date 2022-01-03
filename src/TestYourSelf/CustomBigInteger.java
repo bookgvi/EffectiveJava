@@ -34,21 +34,6 @@ public class CustomBigInteger {
         return res;
     }
 
-    private static List<Integer> mul(String num1, String num2) {
-        List<Integer> a = strToList(num1), b = strToList(num2),
-                c = IntStream.range(0, a.size() + b.size()).mapToObj(i -> 0).collect(Collectors.toList());
-        for (int i = 0; i < a.size(); i += 1) {
-            for (int j = 0, carry = 0; j < b.size() || carry != 0; j += 1) {
-                int valA = a.get(i);
-                int valB = j < b.size() ? b.get(j) : 0;
-                int tmp = c.get(i + j) + valA * valB + carry;
-                c.set(i + j, tmp % base);
-                carry = tmp / base;
-            }
-        }
-        return c;
-    }
-
     private static List<Integer> sum(String num1, String num2) {
         List<Integer> a = strToList(num1), b = strToList(num2);
         int len = Math.max(a.size(), b.size());
@@ -65,11 +50,10 @@ public class CustomBigInteger {
 
     private static List<Integer> sub(String num1, String num2) {
         List<Integer> a = strToList(num1), b = strToList(num2);
-        int len = a.size();
-        for (int i = 0, carry = 0; i < len || carry != 0; i += 1) {
+        for (int i = 0, carry = 0; i < a.size() || carry != 0; i += 1) {
             if (i == a.size()) return List.of(0);
-            int valB = i < b.size() ? b.get(i) : 0;
             int valA = a.get(i);
+            int valB = i < b.size() ? b.get(i) : 0;
             a.set(i, valA - valB - carry);
             carry = a.get(i) < 0 ? 1 : 0;
             if (carry == 1) a.set(i, a.get(i) + base);
@@ -77,8 +61,22 @@ public class CustomBigInteger {
         return a;
     }
 
+    private static List<Integer> mul(String num1, String num2) {
+        List<Integer> a = strToList(num1), b = strToList(num2),
+                c = IntStream.range(0, a.size() + b.size()).mapToObj(i -> 0).collect(Collectors.toList());
+        for (int  i = 0; i < a.size(); i += 1)
+            for (int j = 0, carry = 0; j < b.size() || carry != 0; j += 1) {
+                int valA = a.get(i);
+                int valB = j < b.size() ? b.get(j) : 0;
+                int tmp = valA * valB + carry;
+                c.set(i + j, tmp % base);
+                carry = tmp / base;
+            }
+        return c;
+    }
+
     public static void main(String[] args) {
-        String num1 = "156";
+        String num1 = "1560";
         String num2 = "232";
         List<Integer> n1 = strToList(num1);
         List<Integer> n2 = strToList(num2);
