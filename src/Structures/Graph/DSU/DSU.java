@@ -2,8 +2,8 @@ package Structures.Graph.DSU;
 
 public class DSU {
     private static final int n = 10;
-    private static int[] parent = new int[n];
-    private static int[] size = new int[n];
+    private static final int[] parent = new int[n];
+    private static final int[] size = new int[n];
 
     private static int createSet(int v) {
         return parent[v] = v;

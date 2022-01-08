@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class Permutations {
     private static final int maxF = (int) 1e2;
     private static final int[] fact = facts();
-    private static int[] arr = {1, 2, 3, 4};
+    private static final int[] arr = {1, 2, 3, 4};
 
     public static void main(String[] args) {
 

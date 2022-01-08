@@ -23,9 +23,9 @@ public class Catalan {
         for (int i = len - 1; i >= 0; i -= 1) {
             if (seq.charAt(i) == '(') depth -= 1;
             else depth += 1;
-            if(depth > 0 && seq.charAt(i) == '(') {
+            if (depth > 0 && seq.charAt(i) == '(') {
                 depth -= 1;
-                int open = (len - i - 1 - depth >> 1);
+                int open = (len - i - 1 - depth) >> 1;
                 int close = len - i - 1 - open;
                 res.append(seq, 0, i).append(")").append(repeat("(", open)).append(repeat(")", close));
                 break;

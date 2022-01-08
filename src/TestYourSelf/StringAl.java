@@ -9,7 +9,8 @@ public class StringAl {
         System.out.printf("\t\tZ-func: %s\n", Arrays.toString(zFunc(str)));
         System.out.printf("p-func trivial:\t%s\n", Arrays.toString(piFunc(str)));
         System.out.printf("\t   pi-func: %s\n", Arrays.toString(piFuncExt(str)));
-        System.out.printf("\tpalindroms: %s\n", Arrays.toString(manacher(str)));
+        System.out.printf("\tpalindroms: %s\n", Arrays.toString(manacherOdd(str)));
+        System.out.printf("\tpalindroms: %s\n", Arrays.toString(manacherEven(str)));
 
         int posToZip = zipStr(str);
         String strAfterZip = posToZip != -1 ? str.substring(0, posToZip) : str;
@@ -53,7 +54,7 @@ public class StringAl {
         return pi;
     }
 
-    private static int[] manacher(String str) {
+    private static int[] manacherOdd(String str) {
         int len = str.length();
         int[] m = new int[len];
         for (int i = 1, l = 0, r = 0; i < len; i += 1) {
@@ -62,6 +63,20 @@ public class StringAl {
             if (i + m[i] - 1 > r) {
                 l = i - m[i] + 1;
                 r = i + m[i] - 1;
+            }
+        }
+        return m;
+    }
+
+    private static int[] manacherEven(String str) {
+        int len = str.length();
+        int[] m = new int[len];
+        for (int i = 0, l = - 1, r = -1; i < len; i += 1) {
+            if (i < r) m[i] = Math.min(m[l + r - i - 1], r - i);
+            while(i + m[i] + 1 < len && i - m[i] >= 0 && str.charAt(i + m[i] + 1) == str.charAt(i -m[i])) m[i] += 1;
+            if (i + m[i] > r) {
+                l = i - m[i] + 1;
+                r = i + m[i];
             }
         }
         return m;
