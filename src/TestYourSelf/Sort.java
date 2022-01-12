@@ -43,8 +43,8 @@ public class Sort {
         List<List<Integer>> digits = IntStream.range(0, max).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
         List<List<Integer>> digits2 = IntStream.range(0, max).mapToObj(i -> new ArrayList<Integer>()).collect(Collectors.toList());
         Arrays.stream(arr).forEach(elt -> digits.get(elt % max).add(elt));
-        digits.forEach(list -> list.forEach(elt -> digits2.get(elt / max).add(elt)));
-        return digits2.stream().flatMapToInt(list -> list.stream().mapToInt(i -> i)).toArray();
+        digits.forEach(eltList -> eltList.forEach(elt -> digits2.get(elt / max).add(elt)));
+        return digits2.stream().flatMapToInt(eltList -> eltList.stream().mapToInt(i -> i)).toArray();
     }
 
     private static int[] countSort(int[] arr) {
@@ -70,7 +70,7 @@ public class Sort {
         return arr;
     }
 
-    private static void merge(int l, int mid, int r, int[] arr) {
+    private static void merge(int l , int mid, int r, int[] arr) {
         int it1 = 0, it2 = 0;
         int[] merge = new int[r - l];
         while(l + it1 < mid && mid + it2 < r) {

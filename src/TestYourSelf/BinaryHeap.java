@@ -9,42 +9,23 @@ public class BinaryHeap {
         System.out.println(Arrays.toString(arr));
 
         int[] heap = build(arr);
-        heap = insert(3, heap);
+//        heap = insert(3, heap);
         arr = sort(arr);
+        System.out.println(Arrays.toString(heap));
         System.out.println(Arrays.toString(arr));
-
     }
 
-    private static int[] sort(int[] arr) {
-        int len = arr.length;
-        int[] sorted = new int[len];
-        build(arr);
-        for (int i = 0; i < len; i += 1) {
-            sorted[i] = arr[0];
-            arr[0] = Integer.MAX_VALUE;
-            siftDown(0, arr);
-        }
-        return sorted;
-    }
-
-    private static int[] build(int[] origArr) {
-        int len = origArr.length;
-        int[] arr = Arrays.copyOf(origArr, len);
-        for (int i = len - 1; i >= 0; i -= 1)
-            siftDown(i, arr);
-        return arr;
-    }
-
-    private static void siftDown(int v, int[] arr) {
-        int len = arr.length, half = len >> 1;
+    private static int[] siftDown(int v, int[] heap) {
+        int len = heap.length, half = len >> 1;
         while (v < half) {
             int l = (v << 1) + 1;
             int r = l + 1;
-            int tmp = r < len && arr[r] < arr[l] ? r : l;
-            if (arr[v] <= arr[tmp]) break;
-            swap(v, tmp, arr);
-            v = tmp;
+            int t = r < len && heap[r] < heap[l] ? r : l;
+            if (heap[v] <= heap[t]) break;
+            swap(v, t, heap);
+            v = t;
         }
+        return heap;
     }
 
     private static void siftUp(int v, int[] heap) {
@@ -54,13 +35,23 @@ public class BinaryHeap {
         }
     }
 
-    private static int[] insert(int value, int[] heap) {
-        int len = heap.length;
-        int[] newHeap = new int[len + 1];
-        System.arraycopy(heap, 0, newHeap, 0, len);
-        newHeap[len] = value;
-        siftUp(len, newHeap);
-        return newHeap;
+    private static int[] build(int[] arr) {
+        int len = arr.length;
+        int[] heap = Arrays.copyOf(arr, len);
+        for (int i = len - 1; i >= 0; i -= 1)
+            siftDown(i, heap);
+        return heap;
+    }
+
+    private static int[] sort(int[] arr) {
+        int len = arr.length;
+        int[] heap = build(arr), sorted = new int[len];
+        for (int i = 0; i < len; i += 1) {
+            sorted[i] = heap[0];
+            heap[0] = Integer.MAX_VALUE;
+            siftDown(0, heap);
+        }
+        return sorted;
     }
 
     private static void swap(int i, int j, int[] arr) {
@@ -68,4 +59,5 @@ public class BinaryHeap {
         arr[i] = arr[j];
         arr[j] = tmp;
     }
+
 }
