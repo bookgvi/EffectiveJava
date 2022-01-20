@@ -6,7 +6,7 @@ public class App {
     public static void main(String[] args) {
         AhoKorasik bor = new AhoKorasik();
         String[] keyWords1 = {"i", "in", "tin", "sting"};
-        String[] keyWords2 = {"he", "s", "she", "his", "hers", "him"};
+        String[] keyWords2 = {"he", "s", "she", "his", "her", "hers", "him"};
         String[] keyWords3 = {"a", "aa", "aaa", "aaaa", "hers", "s"};
         String[] keyWords4 = {"a", "bc", "abc", "dab", "dabc"};
 

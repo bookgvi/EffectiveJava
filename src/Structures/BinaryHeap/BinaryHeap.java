@@ -34,6 +34,13 @@ public class BinaryHeap {
         }
     }
 
+    private static void siftUp(int v) {
+        while(v > 1 && heap[v] < heap[v >> 1]) {
+            swap(v, v >> 1);
+            v >>= 1;
+        }
+    }
+
     private static void buildHeap() {
         for (int i = DEFAULT_SIZE; i > 0; i -= 1)
             siftDown(i);

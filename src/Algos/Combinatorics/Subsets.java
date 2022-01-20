@@ -7,18 +7,18 @@ public class Subsets {
 
     private static int[] nextSubSet(int[] subSet) {
         int len = subSet.length, i, k;
-        int[] newSet = Arrays.copyOf(subSet, len);
         for (i = len - 2; i >= 0; i -= 1)
             if (subSet[i] == 0 && subSet[i + 1] == 1) break;
-        newSet[i] = 1;
+        int[] newSubset = Arrays.copyOf(subSet, len);
+        newSubset[i] = 1;
         int ones = 0;
         for (int j = i + 1; j < len; j += 1)
             ones += subSet[j];
         for (k = i + 1; k <= len - ones; k += 1)
-            newSet[k] = 0;
-        for (; k < len; k += 1)
-            newSet[k] = 1;
-        return newSet;
+            newSubset[k] = 0;
+        for (;k < len; k += 1)
+            newSubset[k] = 1;
+        return newSubset;
     }
 
     private static long[] fact() {

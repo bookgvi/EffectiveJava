@@ -12,7 +12,7 @@ public class RabinKarp {
 
     public static void main(String[] args) {
         String str = "abracadabra";
-        String ss = "a";
+        String ss = "racadabr";
 
         List<Integer> index = searchSubStr(str, ss);
         System.out.println(str);
@@ -22,12 +22,14 @@ public class RabinKarp {
 
     private static List<Integer> searchSubStr(String str, String ss) {
         List<Integer> indexes = new ArrayList<>();
-        int len = str.length(), lenSS = ss.length();
-        long strHash = getHash(ss);
-        long[] phs = prefixHash(str);
-        for (int i = 0; i + lenSS - 1 < len; i += 1) {
-            long calcHash = hash(phs, i, lenSS - 1);
-            if (calcHash == strHash) indexes.add(i);
+        long[] phs = prefixHashes(str);
+        long strH = getHash(ss);
+        int lenSS = ss.length(), len = str.length();
+        if (lenSS > 0) {
+            for (int i = 0; i + lenSS - 1 < len; i += 1) {
+                long calcHash = hash(phs, i, lenSS - 1);
+                if (calcHash == strH) indexes.add(i);
+            }
         }
         return indexes;
     }
@@ -35,9 +37,8 @@ public class RabinKarp {
     private static long getHash(String str) {
         int len = str.length();
         long hash = 0;
-        byte[] strBytes = str.getBytes();
         for (int i = 0; i < len; i += 1)
-            hash = (hash + (strBytes[i] - "a".getBytes()[0] + 1) * pows[i]) % mod;
+            hash = (hash + (str.charAt(i) - 'a' + 1) * pows[i]) % mod;
         return hash;
     }
 
@@ -48,18 +49,17 @@ public class RabinKarp {
         return (strH - prefH) * invP[pos] % mod;
     }
 
-    private static long[] prefixHash(String str) {
+    private static long[] prefixHashes(String str) {
         int len = str.length();
         long[] hashes = new long[len];
-        byte[] strBytes = str.getBytes();
-        hashes[0] = (strBytes[0] - "a".getBytes()[0] + 1) * pows[0] % mod;
+        hashes[0] = (str.charAt(0) - 'a' + 1) * pows[0] % mod;
         for (int i = 1; i < len; i += 1)
-            hashes[i] = hashes[i - 1] + (strBytes[i] - "a".getBytes()[0] + 1) * pows[i] % mod;
+            hashes[i] = hashes[i - 1] + (str.charAt(i) - 'a' + 1) * pows[i] % mod;
         return hashes;
     }
 
     private static long[] pows() {
-        int max = (int) 1e5 + 1;
+        int max = (int) 1e5;
         long[] pows = new long[max];
         pows[0] = 1;
         for (int i = 1; i < max; i += 1)
@@ -78,7 +78,7 @@ public class RabinKarp {
 
     private static long modPow(long n, long pow, int mod) {
         long res = 1;
-        while (pow > 0) {
+        while(pow > 0) {
             if ((pow & 1) == 1) res = res * n % mod;
             n = n * n % mod;
             pow >>= 1;

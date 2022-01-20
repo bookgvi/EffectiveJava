@@ -12,11 +12,8 @@ public class CustomBigInteger {
         StringBuilder res = new StringBuilder();
         for (int i = nums.size() - 1; i >= 0; i -= 1) {
             String tmp = String.valueOf(nums.get(i));
-            if (tmp.length() < digits) {
-                StringBuilder zeros = new StringBuilder();
-                zeros.append("0".repeat(digits - tmp.length()));
-                res.append(zeros);
-            }
+            if (tmp.length() < digits)
+                res.append("0".repeat(digits - tmp.length()));
             res.append(tmp);
         }
         while (res.length() > 0 && res.charAt(0) == '0') res.delete(0, 1);
@@ -26,7 +23,8 @@ public class CustomBigInteger {
 
     private static List<Integer> strToList(String num) {
         List<Integer> res = new ArrayList<>();
-        for (int i = num.length(); i > 0; i -= digits) {
+        int len = num.length();
+        for (int i = len; i > 1; i -= digits) {
             if (i < digits) res.add(Integer.parseInt(num.substring(0, i), radix));
             else res.add(Integer.parseInt(num.substring(i - digits, i), radix));
         }
@@ -50,7 +48,6 @@ public class CustomBigInteger {
     private static List<Integer> sub(String num1, String num2) {
         List<Integer> a = strToList(num1), b = strToList(num2);
         for (int i = 0, carry = 0; i < a.size() || carry != 0; i += 1) {
-            if (i == a.size()) return List.of(0);
             int valA = a.get(i);
             int valB = i < b.size() ? b.get(i) : 0;
             a.set(i, valA - valB - carry);
@@ -63,7 +60,7 @@ public class CustomBigInteger {
     private static List<Integer> mul(String num1, String num2) {
         List<Integer> a = strToList(num1), b = strToList(num2),
                 c = IntStream.range(0, a.size() + b.size()).mapToObj(i -> 0).collect(Collectors.toList());
-        for (int  i = 0; i < a.size(); i += 1)
+        for (int i = 0; i < a.size(); i += 1) {
             for (int j = 0, carry = 0; j < b.size() || carry != 0; j += 1) {
                 int valA = a.get(i);
                 int valB = j < b.size() ? b.get(j) : 0;
@@ -71,6 +68,7 @@ public class CustomBigInteger {
                 c.set(i + j, tmp % base);
                 carry = tmp / base;
             }
+        }
         return c;
     }
 
