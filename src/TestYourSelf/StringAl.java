@@ -58,7 +58,7 @@ public class StringAl {
         int len = str.length();
         int[] m = new int[len];
         for (int i = 1, l = 0, r = 0; i < len; i += 1) {
-            if (i < r) m[i] = Math.min(m[l - i + r], r - i + 1);
+            if (i < r) m[i] = Math.min(m[l + r - i], r - i + 1);
             while (i - m[i] >= 0 && i + m[i] < len && str.charAt(i - m[i]) == str.charAt(i + m[i])) m[i] += 1;
             if (i + m[i] - 1 > r) {
                 l = i - m[i] + 1;
@@ -71,9 +71,9 @@ public class StringAl {
     private static int[] manacherEven(String str) {
         int len = str.length();
         int[] m = new int[len];
-        for (int i = 0, l = - 1, r = -1; i < len; i += 1) {
+        for (int i = 0, l = -1, r = -1; i < len; i += 1) {
             if (i < r) m[i] = Math.min(m[l + r - i - 1], r - i);
-            while(i + m[i] + 1 < len && i - m[i] >= 0 && str.charAt(i + m[i] + 1) == str.charAt(i -m[i])) m[i] += 1;
+            while(i - m[i] >= 0 && i + m[i] + 1 < len && str.charAt(i - m[i]) == str.charAt(i + m[i] + 1)) m[i] += 1;
             if (i + m[i] > r) {
                 l = i - m[i] + 1;
                 r = i + m[i];
