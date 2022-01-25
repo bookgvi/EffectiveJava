@@ -63,6 +63,15 @@ public class BinaryTree {
         used = new int[g.length];
     }
 
+    //dfs
+    private static void dfs(int v) {
+        used[v] = 1;
+        int next;
+        while((next = getNext(v)) != -1)
+            dfs(next);
+        System.out.printf("%d; ", g[v]);
+    }
+
     private static int getNext(int cur) {
         int l = (cur << 1) | 1;
         int r = l + 1;
@@ -80,6 +89,8 @@ public class BinaryTree {
         postorder(0);
         System.out.println();
         bfs(0);
+        System.out.println();
+        dfs(0);
     }
 
     private static class Queue<V> extends AbstractQueue<V> {
