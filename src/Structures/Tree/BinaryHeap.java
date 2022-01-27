@@ -5,7 +5,7 @@ import java.util.Arrays;
 /*
  * Двоичное дерево на основе кучи
  * */
-public class BinaryTree {
+public class BinaryHeap {
     private static int minElt = Integer.MAX_VALUE;
     private static int maxElt = Integer.MIN_VALUE;
 

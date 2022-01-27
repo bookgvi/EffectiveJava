@@ -1,4 +1,4 @@
-package Structures.Graph.ArrayAndRecursion;
+package Structures.Tree.ArrayAndRecursion;
 
 import java.util.*;
 
