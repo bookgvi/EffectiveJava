@@ -8,9 +8,17 @@ import java.util.stream.Stream;
  * Алгоритм Манакера по нахождению подпалиндромов
  * */
 public class Palindroms {
+    private static final long k = (int) 1e5 + 1;
+    private static final long mod = (int) 1e9 + 7;
+    private static final long[] pows = pows();
+
     public static void main(String[] args) {
-        String str = "12343211232";
+        String str = "aabrrrbaa";
         System.out.println(Arrays.toString(manakerOdds(str)));
+        long h1 = getHash(str);
+        long h2 = getReverseHash(str);
+        String isPalindrome = h1 == h2 ? "is palindrome" : "isn't palindrome";
+        System.out.printf("String \"%s\" %s", str, isPalindrome);
     }
 
     private static int[] manakerOdds(String str) {
@@ -28,4 +36,28 @@ public class Palindroms {
         return m;
     }
 
+    private static long getHash(String str) {
+        int len = str.length();
+        long hash = 0;
+        for (int i = 0; i < len; i += 1)
+            hash = (hash + (str.charAt(i) - 'a' + 1) * pows[i]) % mod;
+        return hash;
+    }
+
+    private static long getReverseHash(String str) {
+        int len = str.length();
+        long hash = 0;
+        for (int i = 0; i < len; i += 1)
+            hash = (hash + (str.charAt(i) - 'a' + 1) * pows[len - 1 - i]) % mod;
+        return hash;
+    }
+
+    private static long[] pows() {
+        int max = (int) 1e5;
+        long[] pows = new long[max];
+        pows[0] = 1;
+        for (int i = 1; i < max; i += 1)
+            pows[i] = pows[i - 1] * k % mod;
+        return pows;
+    }
 }
