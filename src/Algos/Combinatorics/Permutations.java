@@ -24,15 +24,15 @@ public class Permutations {
         StringBuilder res = new StringBuilder();
         int[] digits = new int[n + 1];
         for (int i = n; i > 0; i -= 1) {
-            int np = k % fact[i - 1];
+            int pn = k % fact[i - 1];
             int d = k / fact[i - 1];
-            if (np == 0) np += fact[i - 1];
+            if (pn == 0) pn = fact[i - 1];
             else d += 1;
-            k = np;
+            k = pn;
             int pos = 0;
             for (int j = 1; j <= n; j += 1) {
                 if (digits[j] == 0) pos += 1;
-                if (pos == d) {
+                if (d == pos) {
                     digits[j] = 1;
                     res.append(j);
                     break;
@@ -59,11 +59,10 @@ public class Permutations {
             if (arr[i] < arr[i + 1]) {
                 int min = i + 1;
                 for (int j = min; j < len; j += 1)
-                    if (arr[j] > arr[i] && arr[j] < arr[min])
+                    if (arr[j] < arr[min] && arr[j] > arr[i])
                         min = j;
                 swap(i, min, arr);
                 reverse(i + 1, len - 1, arr);
-//                sort(i + 1, arr);
                 break;
             }
         }

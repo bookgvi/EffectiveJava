@@ -9,7 +9,7 @@ public class Catalan {
 
     public static void main(String[] args) {
         String startArr = "(((())))";
-        long Cn = catalan(startArr.length() / 2);
+        long Cn = catalanArr[startArr.length() >> 1]; //catalan(startArr.length() / 2);
         System.out.printf("Cn = %d\n", Cn);
         for (int i = 1; i <= Cn; i += 1) {
             System.out.printf("%d)\t%s\n", i, startArr);
@@ -34,24 +34,22 @@ public class Catalan {
         return res.toString();
     }
 
-    private static String repeat(String ch, int count) {
-        StringBuilder res = new StringBuilder();
-        IntStream.range(0, count).forEach(i -> res.append(ch));
-        return res.toString();
+    private static String repeat(String str, int n) {
+        return str.repeat(n);
     }
+
 
     private static long catalan(int n) {
         return fact[2 * n] / (fact[n] * fact[n + 1]);
     }
 
     private static long[] catalanDP() {
-        long[] catalan = new long[maxF];
-        catalan[0] = 1;
-        catalan[1] = 1;
-        for (int i = 2; i < maxF; i+= 1)
-            for (int j = 0; j < i; j += 1)
-                catalan[i] += catalan[j] * catalan[i - j - 1];
-        return catalan;
+        long[] dp = new long[maxF];
+        dp[0] = 1; dp[1] = 1;
+        for (int i = 2; i < maxF; i += 1)
+            for(int j = 0; j < i; j += 1)
+                dp[i] += dp[i - j - 1] * dp[j];
+        return dp;
     }
 
     private static long[] fact() {

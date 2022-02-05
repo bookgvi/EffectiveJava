@@ -24,7 +24,7 @@ public class Fragmentation {
     }
 
     public static void main(String[] args) {
-        int[] arr = new int[]{1, 1, 1, 1, 1, 1, 1};
+        int[] arr = new int[]{1, 1, 1, 1, 1};
         int count = Arrays.stream(arr).reduce(0, Integer::sum);
         while (arr.length > 0) {
             System.out.println(Arrays.toString(arr));
