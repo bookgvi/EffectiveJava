@@ -4,13 +4,12 @@ import java.util.Arrays;
 
 public class StringAl {
     public static void main(String[] args) {
-        String str = "aabcaabaacv";
+        String str = "123123";
         System.out.println(str);
         System.out.printf("\t\tZ-func: %s\n", Arrays.toString(zFunc(str)));
         System.out.printf("p-func trivial:\t%s\n", Arrays.toString(piFunc(str)));
         System.out.printf("\t   pi-func: %s\n", Arrays.toString(piFuncExt(str)));
         System.out.printf("\tpalindroms: %s\n", Arrays.toString(manacherOdd(str)));
-        System.out.printf("\tpalindroms: %s\n", Arrays.toString(manacherEven(str)));
 
         int posToZip = zipStr(str);
         String strAfterZip = posToZip != -1 ? str.substring(0, posToZip) : str;
@@ -22,7 +21,7 @@ public class StringAl {
         int[] z = new int[len];
         for (int i = 1, l = 0, r = 0; i < len; i += 1) {
             if (i <= r) z[i] = Math.min(z[i - l], r - i + 1);
-            while (i + z[i] < len && str.charAt(z[i]) == str.charAt(i + z[i])) z[i] += 1;
+            while (i + z[i] < len && str.charAt(i + z[i]) == str.charAt(z[i])) z[i] += 1;
             if (i + z[i] - 1 > r) {
                 l = i;
                 r = i + z[i] - 1;
@@ -48,7 +47,7 @@ public class StringAl {
         int[] pi = new int[len];
         for (int i = 1; i < len; i += 1) {
             int j = pi[i - 1];
-            while (j > 0 && str.charAt(i) != str.charAt(j)) j = pi[j - 1];
+            while(j > 0 && str.charAt(i) != str.charAt(j)) j = pi[j - 1];
             if (str.charAt(i) == str.charAt(j)) pi[i] = j + 1;
         }
         return pi;
@@ -58,8 +57,8 @@ public class StringAl {
         int len = str.length();
         int[] m = new int[len];
         for (int i = 1, l = 0, r = 0; i < len; i += 1) {
-            if (i < r) m[i] = Math.min(m[l + r - i], r - i + 1);
-            while (i - m[i] >= 0 && i + m[i] < len && str.charAt(i - m[i]) == str.charAt(i + m[i])) m[i] += 1;
+            if (i < r) m[i] = Math.min(m[l + r - i], r - l + 1);
+            while(i - m[i] >= 0 && i + m[i] < len && str.charAt(i - m[i]) == str.charAt(i + m[i])) m[i] += 1;
             if (i + m[i] - 1 > r) {
                 l = i - m[i] + 1;
                 r = i + m[i] - 1;
@@ -68,23 +67,9 @@ public class StringAl {
         return m;
     }
 
-    private static int[] manacherEven(String str) {
-        int len = str.length();
-        int[] m = new int[len];
-        for (int i = 0, l = -1, r = -1; i < len; i += 1) {
-            if (i < r) m[i] = Math.min(m[l + r - i - 1], r - i);
-            while(i - m[i] >= 0 && i + m[i] + 1 < len && str.charAt(i - m[i]) == str.charAt(i + m[i] + 1)) m[i] += 1;
-            if (i + m[i] > r) {
-                l = i - m[i] + 1;
-                r = i + m[i];
-            }
-        }
-        return m;
-    }
-
     private static int zipStr(String str) {
         int len = str.length(), lastSuff = piFuncExt(str)[len - 1];
-        int pos = len - lastSuff;
+        int pos  = len - lastSuff;
         if (len % pos == 0) return pos;
         return -1;
     }

@@ -52,8 +52,8 @@ public class Sort {
         int[] t = new int[len];
         for (int p = 0; p < dw; p += 1) {
             int[] count = new int[1 << b];
-            for (int i = 0; i < len; i += 1)
-                count[((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
+            for (int elt : arr)
+                count[((elt ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
             for (int i = 1; i < 1 << b; i += 1)
                 count[i] += count[i - 1];
             for (int i = len - 1; i >= 0; i -= 1)
@@ -73,7 +73,7 @@ public class Sort {
     private static void merge(int l, int mid, int r, int[] arr) {
         int it1 = 0, it2 = 0;
         int[] merge = new int[r - l];
-        while (l + it1 < mid && mid + it2 < r) {
+        while(l + it1 < mid && mid + it2 < r) {
             if (arr[l + it1] < arr[mid + it2]) {
                 merge[it1 + it2] = arr[l + it1];
                 it1 += 1;
@@ -86,7 +86,7 @@ public class Sort {
             merge[it1 + it2] = arr[l + it1];
             it1 += 1;
         }
-        while (mid + it2 < r) {
+        while(mid + it2 < r) {
             merge[it1 + it2] = arr[mid + it2];
             it2 += 1;
         }

@@ -4,112 +4,123 @@ import java.util.*;
 
 public class AhoKorasik {
 
-    private final Vertex root = new Vertex("root", "");
+    private static final Vertex root = new Vertex("root", "");
 
-    void addKeyWord(String keyWord) {
-        Vertex curVertex = root;
-        StringBuilder suffix = new StringBuilder();
-        for (String ch : keyWord.split("")) {
-            suffix.append(ch);
-            curVertex.toNext.putIfAbsent(ch, new Vertex(ch, suffix.toString()));
-            curVertex = curVertex.toNext.get(ch);
+    public static void main(String[] args) {
+        String[] words = {"he", "she", "his", "hers"};
+        String text = "heheshersshis";
+        addWords(words);
+        Map<String, List<Integer>> res = analizeText(text);
+        System.out.println(text);
+        System.out.println(Arrays.toString(words));
+        System.out.println(res);
+    }
+
+    private static void addWord(String word) {
+        Vertex cur = root;
+        StringBuilder suff = new StringBuilder();
+        for (String ch : word.split("")) {
+            suff.append(ch);
+            cur.toNext.putIfAbsent(ch, new Vertex(ch, suff.toString()));
+            cur = cur.toNext.get(ch);
         }
-        curVertex.isTerminal = true;
+        cur.isTerminal = true;
     }
 
-    void addKeyWord(String[] keyWords) {
-        for (String keyWord : keyWords) addKeyWord(keyWord);
+    private static void addWords(String[] words) {
+        for (String word : words) addWord(word);
     }
 
-    Map<String, List<Integer>> analizeText(String text) {
+    private static Map<String, List<Integer>> analizeText(String text) {
         Map<String, List<Integer>> words = new HashMap<>();
-        Vertex curVertex = root;
+        init();
+        Vertex cur = root;
         int index = 0;
         for (String ch : text.split("")) {
             index += 1;
-            curVertex = delta(ch, curVertex);
-            if (curVertex == root) {
-                if (curVertex.toNext.get(ch) == null) continue;
-                else curVertex = curVertex.toNext.get(ch);
+            cur = delta(ch, cur);
+            if (cur == root) {
+                if (cur.toNext.get(ch) == null) continue;
+                else cur = cur.toNext.get(ch);
             }
-            isOut(curVertex, words, index);
+            isOut(cur, words, index);
         }
         return words;
     }
 
-    private Vertex delta(String ch, Vertex curVertex) {
-        if (curVertex.toNext.get(ch) == null && curVertex.suffLink.toNext.get(ch) != null)
-            return curVertex.suffLink.toNext.get(ch);
-        else if (curVertex.toNext.get(ch) != null)
-            return curVertex.toNext.get(ch);
+    private static Vertex delta(String ch, Vertex cur) {
+        if (cur.toNext.get(ch) == null && cur.suffLink.toNext.get(ch) != null)
+            return cur.suffLink.toNext.get(ch);
+        else if (cur.toNext.get(ch) != null)
+            return cur.toNext.get(ch);
         return root;
     }
 
-    private void isOut(Vertex curVertex, Map<String, List<Integer>> words, int index) {
-        for (Vertex outVertex : curVertex.outArr) fillWords(outVertex, words, index);
+    private static void isOut(Vertex cur, Map<String, List<Integer>> words, int index) {
+        for (Vertex out : cur.outArr) fillWords(out, words, index);
     }
 
-    private void fillWords(Vertex outVertex, Map<String, List<Integer>> words, int index) {
-        int pos = index - outVertex.suffix.length();
-        List<Integer> positions = words.getOrDefault(outVertex.suffix, new ArrayList<>());
+    private static void fillWords(Vertex out, Map<String, List<Integer>> words, int index) {
+        int pos = index - out.suffix.length();
+        List<Integer> positions = words.getOrDefault(out.suffix, new ArrayList<>());
         positions.add(pos);
-        words.putIfAbsent(outVertex.suffix, positions);
+        words.putIfAbsent(out.suffix, positions);
     }
 
-    void initBor() {
-        Vertex startVertex = root, curVertex, nextVertex;
-        VertexQueue<Vertex> vertexQueue = new VertexQueue<>();
+    private static void init() {
+        Vertex start = root, cur, next;
+        VQueue<Vertex> vq = new VQueue<>();
+        start.isVisited = true;
+        vq.offer(start);
         setRootSuffLink();
-        startVertex.isVisited = true;
-        vertexQueue.offer(startVertex);
-        while (!vertexQueue.isEmpty()) {
-            curVertex = vertexQueue.poll();
-            if (curVertex == null) continue;
-            while ((nextVertex = getUnvisited(curVertex)) != null) {
-                nextVertex.isVisited = true;
-                vertexQueue.offer(nextVertex);
-                setSuffLink(curVertex, nextVertex);
+        while (!vq.isEmpty()) {
+            cur = vq.poll();
+            if (cur == null) continue;
+            while ((next = getNext(cur)) != null) {
+                next.isVisited = true;
+                vq.offer(next);
+                setSuffLink(cur, next);
             }
         }
         setOutArr(root);
-        setUnvisited(root);
+        setUnused(root);
     }
 
-    private void setRootSuffLink() {
-        root.suffLink = root;
-        for (Vertex firstAfterRoot : root.toNext.values()) firstAfterRoot.suffLink = root;
-    }
-
-    private void setSuffLink(Vertex parentVertex, Vertex curVertex) {
-        Vertex parentSuffLink = parentVertex.suffLink;
-        if (curVertex.suffLink == null) {
-            curVertex.suffLink = parentSuffLink.toNext.get(curVertex.label);
-            if (curVertex.suffLink == null) curVertex.suffLink = root;
-        }
-    }
-
-    private void setOutArr(Vertex curVertex) {
-        for (Vertex nextVertex : curVertex.toNext.values()) {
-            fillOutArr(nextVertex, nextVertex.outArr);
-            setOutArr(nextVertex);
-        }
-    }
-
-    private void fillOutArr(Vertex curVertex, List<Vertex> outArr) {
-        if (curVertex.isTerminal) outArr.add(curVertex);
-        if (curVertex.suffLink == root) return;
-        fillOutArr(curVertex.suffLink, outArr);
-    }
-
-    private void setUnvisited(Vertex curVertex) {
-        curVertex.isVisited = false;
-        for (Vertex nextVertex : curVertex.toNext.values()) setUnvisited(nextVertex);
-    }
-
-    private Vertex getUnvisited(Vertex curVertex) {
-        for (Vertex nextVertex : curVertex.toNext.values())
-            if (!nextVertex.isVisited) return nextVertex;
+    private static Vertex getNext(Vertex cur) {
+        for (Vertex next : cur.toNext.values())
+            if (!next.isVisited) return next;
         return null;
+    }
+
+    private static void setSuffLink(Vertex parent, Vertex cur) {
+        Vertex parentSuffLink = parent.suffLink;
+        if (cur.suffLink == null) {
+            cur.suffLink = parentSuffLink.toNext.get(cur.label);
+            if (cur.suffLink == null) cur.suffLink = root;
+        }
+    }
+
+    private static void setRootSuffLink() {
+        root.suffLink = root;
+        for (Vertex far : root.toNext.values()) far.suffLink = root;
+    }
+
+    private static void fillOutArr(Vertex cur, List<Vertex> outArr) {
+        if (cur.isTerminal) outArr.add(cur);
+        if (cur.suffLink == root) return;
+        fillOutArr(cur.suffLink, outArr);
+    }
+
+    private static void setOutArr(Vertex cur) {
+        for (Vertex next : cur.toNext.values()) {
+            fillOutArr(next, next.outArr);
+            setOutArr(next);
+        }
+    }
+
+    private static void setUnused(Vertex cur) {
+        cur.isVisited = false;
+        for (Vertex next : cur.toNext.values()) setUnused(next);
     }
 
     private static class Vertex {
@@ -131,33 +142,35 @@ public class AhoKorasik {
         }
     }
 
-    private static class VertexQueue<V> extends AbstractQueue<V> {
-        LinkedList<V> vList = new LinkedList<>();
+    private static class VQueue<V> extends AbstractQueue<V> {
+        LinkedList<V> vl = new LinkedList<>();
 
         @Override
         public Iterator<V> iterator() {
-            return vList.iterator();
+            return vl.iterator();
         }
 
         @Override
         public int size() {
-            return vList.size();
+            return vl.size();
         }
 
         @Override
         public boolean offer(V v) {
             boolean res = false;
             if (v != null) {
-                res = vList.offer(v);
+                vl.add(v);
+                res = true;
             }
             return res;
         }
 
         @Override
         public V poll() {
-            if (iterator().hasNext()) {
-                V v = iterator().next();
-                vList.poll();
+            Iterator<V> iter = iterator();
+            V v = iter.next();
+            if (v != null) {
+                vl.remove();
                 return v;
             }
             return null;
@@ -165,7 +178,7 @@ public class AhoKorasik {
 
         @Override
         public V peek() {
-            return vList.getFirst();
+            return vl.getFirst();
         }
     }
 }

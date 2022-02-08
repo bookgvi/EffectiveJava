@@ -12,6 +12,9 @@ public class NumberTheory {
 
         List<Integer> primes = erat(20);
         System.out.println(primes);
+
+        List<Integer> divisors = divisors(b + a);
+        System.out.printf("Divisors for %d: \n\t%s\n",a + b, divisors);
     }
 
     private static int gcd(int a, int b) {
@@ -43,5 +46,16 @@ public class NumberTheory {
                 erath[j] = 1;
         }
         return primes;
+    }
+
+    private static List<Integer> divisors(int n) {
+        List<Integer> res = new ArrayList<>();
+        for (int i = 1; i <= n; i += 1) {
+            if (n % i == 0) {
+                res.add(i);
+                res.add(-i);
+            }
+        }
+        return res;
     }
 }

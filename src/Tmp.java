@@ -141,6 +141,16 @@ public class Tmp {
         return res;
     }
 
+    private static void classes(String str) {
+        int classes = 1, len = str.length();
+        int[] c = new int[1 << 8];
+        for (int i = 0; i < len; i += 1)
+            c[str.charAt(i)] = 1;
+        for (int i = 1; i < 1 << 8; i += 1)
+            c[i] += c[i - 1];
+        int res = c[(1 << 8) - 1];
+    }
+
     public static void main(String[] args) {
         int a = 5, b = 6;
         int[] res = evklidExt((int) 1e9 + 7, (int) 1e5);
@@ -157,5 +167,7 @@ public class Tmp {
         int calcRes = n * (n + 1) / 2;
 
         int mul = binMul(a, b);
+
+        classes("aaaabbbaa");
     }
 }

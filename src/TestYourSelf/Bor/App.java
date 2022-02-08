@@ -10,14 +10,14 @@ public class App {
         String[] keyWords2 = {"a", "abba", "aca"};
 
         String textForAnal = "abacabba";
-        List.of(keyWords1, keyWords2).forEach(bor::addKeyWord);
-        bor.initBor();
+//        List.of(keyWords1, keyWords2).forEach(bor::addKeyWord);
+//        bor.initBor();
         System.out.println(textForAnal);
-        Map<String, List<Integer>> res = bor.analizeText(textForAnal);
-        List<String> resValues = res.keySet().stream().sorted().collect(Collectors.toList());
-        System.out.println(resValues.get(resValues.size() - 1));
+//        Map<String, List<Integer>> res = bor.analizeText(textForAnal);
+//        List<String> resValues = res.keySet().stream().sorted().collect(Collectors.toList());
+//        System.out.println(resValues.get(resValues.size() - 1));
 //        bor.dfs();
-        System.out.println(res);
+//        System.out.println(res);
         System.out.println();
 
         String str = "abracadabra";

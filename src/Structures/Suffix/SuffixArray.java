@@ -16,33 +16,30 @@ public class SuffixArray {
     }
 
     private static int[] lexicoGraphikSuffixSort(String str) {
-        int len = str.length();
-        int[] count = new int[1 << 8], p = new int[len], c = new int[len];
-        byte[] strBytes = str.getBytes();
-        int firstCharByte = "a".getBytes()[0];
-        for (int i =0; i < len; i += 1)
-            count[strBytes[i] - firstCharByte + 1] += 1;
-        for (int i = 1; i < 1 << 8; i += 1)
+        int len = str.length(), b = 8;
+        int[] p = new int[len], c = new int[len], count = new int[1 << b];
+        for (int i = 0; i < len; i += 1)
+            count[str.charAt(i) - 'a'] += 1;
+        for (int i = 1; i < 1 << b; i += 1)
             count[i] += count[i - 1];
-        for (int i = len - 1; i >=0; i -= 1)
-            p[--count[strBytes[i] - firstCharByte + 1]] = i;
-
+        for (int i = len - 1; i >= 0; i -= 1)
+            p[--count[str.charAt(i) - 'a']] = i;
+        c[p[0]] = 0;
         int classes = 1;
         for (int i = 1; i < len; i += 1) {
-            if (str.charAt(p[i - 1]) != str.charAt(p[i])) classes += 1;
+            if (str.charAt(p[i]) != str.charAt(p[i - 1])) classes += 1;
             c[p[i]] = classes - 1;
         }
-
         int[] pn = new int[len], cn = new int[len];
         for (int h = 0; (1 << h) < len; h += 1) {
-            count = new int[1 << 8];
             for (int i = 0; i < len; i += 1) {
                 pn[i] = p[i] - (1 << h);
                 if (pn[i] < 0) pn[i] += len;
             }
+            count = new int[1 << b];
             for (int i = 0; i < len; i += 1)
                 count[c[pn[i]]] += 1;
-            for (int i = 1; i < 1 << 8; i += 1)
+            for (int i = 1; i < 1 << b; i += 1)
                 count[i] += count[i - 1];
             for (int i = len - 1; i >= 0; i -= 1)
                 p[--count[c[pn[i]]]] = pn[i];

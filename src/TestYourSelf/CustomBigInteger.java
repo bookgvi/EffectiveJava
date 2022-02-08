@@ -39,7 +39,7 @@ public class CustomBigInteger {
             int valB = i < b.size() ? b.get(i) : 0;
             int valA = a.get(i);
             a.set(i, valA + valB + carry);
-            carry = a.get(i) > base ? 1 : 0;
+            carry = a.get(i) < base ? 0 : 1;
             if (carry == 1) a.set(i, a.get(i) - base);
         }
         return a;
@@ -64,9 +64,9 @@ public class CustomBigInteger {
             for (int j = 0, carry = 0; j < b.size() || carry != 0; j += 1) {
                 int valA = a.get(i);
                 int valB = j < b.size() ? b.get(j) : 0;
-                int tmp = valA * valB + carry;
-                c.set(i + j, tmp % base);
-                carry = tmp / base;
+                int tmpC = valA * valB + carry;
+                c.set(i + j, tmpC % base);
+                carry = tmpC / base;
             }
         }
         return c;
