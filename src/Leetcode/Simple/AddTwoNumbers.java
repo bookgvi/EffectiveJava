@@ -3,9 +3,35 @@ package Leetcode.Simple;
 import java.util.*;
 
 /*
-* https://leetcode.com/problems/add-two-numbers/submissions/
-* */
+ * https://leetcode.com/problems/add-two-numbers/submissions/
+ * */
 public class AddTwoNumbers {
+    // second solution
+    private static ListNode sum(ListNode l1, ListNode l2) {
+        ListNode sumAns = new ListNode(), sum = sumAns;
+        int carry = 0, base = 10;
+        while (l1 != null || l2 != null || carry != 0) {
+            int l1Val = l1 != null ? l1.val : 0;
+            int l2Val = l2 != null ? l2.val : 0;
+            sum.val = l1Val + l2Val + carry;
+            carry = sum.val >= base ? 1 : 0;
+            if (carry == 1) sum.val -= base;
+            if (l1 != null) l1 = l1.next;
+            if (l2 != null) l2 = l2.next;
+            if (l1 != null || l2 != null || carry != 0) {
+                sum.next = new ListNode();
+                sum = sum.next;
+            }
+        }
+        return sumAns;
+    }
+
+
+    /*
+     * =========================================================================================================
+     *
+     * first solution
+     * */
     private static ListNode arrToList(List<Integer> arr) {
         ListNode head, next;
         int len = arr.size();
@@ -44,13 +70,17 @@ public class AddTwoNumbers {
         return arrToList(a);
     }
 
+
+    // =========================================================================================================
     public static void main(String[] args) {
-        List<Integer> arr1 = List.of(1, 2, 3, 4);
-        List<Integer> arr2 = List.of(9, 3, 4);
+        List<Integer> arr1 = List.of(9, 9, 9, 9, 9, 9, 9);
+        List<Integer> arr2 = List.of(9, 9, 9, 9);
         ListNode head1 = arrToList(arr1);
         ListNode head2 = arrToList(arr2);
         List<Integer> num = listToArr(head1);
         ListNode res = addTwoNumbers(head1, head2);
+
+        ListNode sum = sum(head1, head2);
     }
 
     private static class ListNode {
