@@ -3,7 +3,7 @@ package Algos.BackTracking;
 import java.util.*;
 
 public class NQueensPuzzle {
-    private static final int n = 8;
+    private static final int n = 5;
     private static final List<Pair<Integer, Integer>> prevPositions = new ArrayList<>();
     private static final List<List<Pair<Integer, Integer>>> allPositions = new ArrayList<>();
 
@@ -31,7 +31,7 @@ public class NQueensPuzzle {
         for (Pair<Integer, Integer> pos : prevPositions) {
             int prevRow = pos.first;
             int prevCol = pos.second;
-            ans &= prevRow != row; // горизонталь
+//            ans &= prevRow != row; // горизонталь - избыточная проверка
             ans &= prevCol != col; // вертикаль
             ans &= Math.abs(prevRow - row) != Math.abs(prevCol - col); // диагональ
         }
