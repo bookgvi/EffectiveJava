@@ -21,7 +21,8 @@ public class CoinExchangeLimit {
     }
 
     private static void backTrackCoin(int[] coins) {
-        for (int i = 0; i < coinsLen; i += 1) {
+        int startIndex = prevIndex.size() > 0 ? prevIndex.get(prevIndex.size() - 1) : 0;
+        for (int i = startIndex; i < coinsLen; i += 1) {
             if (check(coins, i)) {
                 store(coins, i);
                 if (sum == n)
