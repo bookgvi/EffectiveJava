@@ -16,15 +16,14 @@ public class CustomBigInteger {
                 res.append("0".repeat(digits - tmp.length()));
             res.append(tmp);
         }
-        while (res.length() > 0 && res.charAt(0) == '0') res.delete(0, 1);
+        while (res.length() > 0 && res.charAt(0) == '0') res.deleteCharAt(0);
         if (res.length() < 1) return "0";
         return res.toString();
     }
 
     private static List<Integer> strToList(String num) {
         List<Integer> res = new ArrayList<>();
-        int len = num.length();
-        for (int i = len; i > 1; i -= digits) {
+        for (int i = num.length(); i > 1; i -= digits) {
             if (i < digits) res.add(Integer.parseInt(num.substring(0, i), radix));
             else res.add(Integer.parseInt(num.substring(i - digits, i), radix));
         }
@@ -64,17 +63,18 @@ public class CustomBigInteger {
             for (int j = 0, carry = 0; j < b.size() || carry != 0; j += 1) {
                 int valA = a.get(i);
                 int valB = j < b.size() ? b.get(j) : 0;
-                int tmpC = valA * valB + carry;
-                c.set(i + j, tmpC % base);
-                carry = tmpC / base;
+                int tmp = valA * valB + carry;
+                c.set(i + j, tmp % base);
+                carry = tmp / base;
             }
         }
         return c;
     }
 
     public static void main(String[] args) {
-        String num1 = "1560";
-        String num2 = "232";
+        long m = Long.MAX_VALUE;
+        String num1 = "9223372036854775807";
+        String num2 = "9223372036854775807";
         List<Integer> n1 = strToList(num1);
         List<Integer> n2 = strToList(num2);
         num1 = listToString(n1);

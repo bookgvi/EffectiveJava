@@ -5,10 +5,10 @@ import java.util.*;
 public class AhoKorasik {
     private final Vertex root = new Vertex("root", "");
 
-    void addKeyWord(String text) {
+    void addKeyWord(String word) {
         Vertex cur = root;
         StringBuilder suffix = new StringBuilder();
-        for (String ch : text.split("")) {
+        for (String ch : word.split("")) {
             suffix.append(ch);
             cur.toNext.putIfAbsent(ch, new Vertex(ch, suffix.toString()));
             cur = cur.toNext.get(ch);
@@ -16,13 +16,13 @@ public class AhoKorasik {
         cur.isTerminal = true;
     }
 
-    void addKeyWord(String[] keyWords) {
-        for (String keyWord : keyWords) addKeyWord(keyWord);
+    void addKeyWord(String[] strings) {
+        for (String word : strings) addKeyWord(word);
     }
 
     Map<String, List<Integer>> analizeText(String text) {
-        Map<String, List<Integer>> words = new HashMap<>();
         init();
+        Map<String, List<Integer>> words = new HashMap<>();
         Vertex cur = root;
         int index = 0;
         for (String ch : text.split("")) {
@@ -30,22 +30,11 @@ public class AhoKorasik {
             cur = delta(ch, cur);
             if (cur == root) {
                 if (cur.toNext.get(ch) == null) continue;
-                cur = cur.toNext.get(ch);
+                else cur = cur.toNext.get(ch);
             }
-            isOut(cur, words, index);
+            fillWords(words, cur, index);
         }
         return words;
-    }
-
-    private void isOut(Vertex cur, Map<String, List<Integer>> words , int index) {
-        for (Vertex outV : cur.outArr) fillWords(outV, words, index);
-    }
-
-    private void fillWords(Vertex outV, Map<String, List<Integer>> words, int index) {
-        int pos = index - outV.suffix.length();
-        List<Integer> positions = words.getOrDefault(outV.suffix, new ArrayList<>());
-        positions.add(pos);
-        words.putIfAbsent(outV.suffix, positions);
     }
 
     private Vertex delta(String ch, Vertex cur) {
@@ -56,12 +45,23 @@ public class AhoKorasik {
         return root;
     }
 
+    private void fillWords(Map<String, List<Integer>> words, Vertex cur, int index) {
+        for (Vertex outV : cur.outArr) storeWords(words, outV, index);
+    }
+
+    private void storeWords(Map<String, List<Integer>> words, Vertex outV, int index) {
+        int pos = index - outV.suffix.length();
+        List<Integer> positions = words.getOrDefault(outV.suffix, new ArrayList<>());
+        positions.add(pos);
+        words.putIfAbsent(outV.suffix, positions);
+    }
+
     private void init() {
-        Vertex start = root, cur, next;
-        VertexQueue<Vertex> queue = new VertexQueue<>();
-        setRootSuffLink();
-        start.isVisited = true;
-        queue.offer(start);
+        Vertex cur = root, next;
+        Queue<Vertex> queue = new Queue<>();
+        setRootSuffLinks();
+        cur.isVisited = true;
+        queue.offer(cur);
         while (!queue.isEmpty()) {
             cur = queue.poll();
             if (cur == null) continue;
@@ -75,6 +75,11 @@ public class AhoKorasik {
         setUnvisited(root);
     }
 
+    private void setRootSuffLinks() {
+        root.suffLink = root;
+        for (Vertex v : root.toNext.values()) v.suffLink = root;
+    }
+
     private void setSuffLink(Vertex parent, Vertex cur) {
         Vertex parentSuffLink = parent.suffLink;
         if (cur.suffLink == null) {
@@ -83,15 +88,10 @@ public class AhoKorasik {
         }
     }
 
-    private void setRootSuffLink() {
-        root.suffLink = root;
-        for (Vertex firstAfterRoot : root.toNext.values()) firstAfterRoot.suffLink = root;
-    }
-
-    private void fillOutArr(Vertex cur, List<Vertex> outArr) {
-        if (cur.isTerminal) outArr.add(cur);
-        if (cur.suffLink == root) return;
-        fillOutArr(cur.suffLink, outArr);
+    private Vertex getUnvisited(Vertex cur) {
+        for (Vertex next : cur.toNext.values())
+            if (!next.isVisited) return next;
+        return null;
     }
 
     private void setOutArr(Vertex cur) {
@@ -101,15 +101,16 @@ public class AhoKorasik {
         }
     }
 
-    private void setUnvisited(Vertex cur) {
-        cur.isVisited = false;
-        for (Vertex next : cur.toNext.values()) setUnvisited(next);
+    private void fillOutArr(Vertex cur, List<Vertex> outArr) {
+        if (cur.isTerminal) outArr.add(cur);
+        if (cur.suffLink == root) return;
+        fillOutArr(cur.suffLink, outArr);
     }
 
-    private Vertex getUnvisited(Vertex cur) {
+    private static void setUnvisited(Vertex cur) {
+        cur.isVisited = false;
         for (Vertex next : cur.toNext.values())
-            if (!next.isVisited) return next;
-        return null;
+            setUnvisited(next);
     }
 
     private static class Vertex {
@@ -131,24 +132,24 @@ public class AhoKorasik {
         }
     }
 
-    private static class VertexQueue<V> extends AbstractQueue<V> {
-        LinkedList<V> vList = new LinkedList<>();
+    private static class Queue<V> extends AbstractQueue<V> {
+        LinkedList<V> ll = new LinkedList<>();
 
         @Override
         public Iterator<V> iterator() {
-            return vList.iterator();
+            return ll.iterator();
         }
 
         @Override
         public int size() {
-            return vList.size();
+            return ll.size();
         }
 
         @Override
         public boolean offer(V v) {
             boolean res = false;
             if (v != null) {
-                vList.add(v);
+                ll.add(v);
                 res = true;
             }
             return res;
@@ -156,10 +157,10 @@ public class AhoKorasik {
 
         @Override
         public V poll() {
-            Iterator<V> iter = iterator();
-            V v = iter.next();
+            Iterator<V> it = iterator();
+            V v = it.next();
             if (v != null) {
-                iter.remove();
+                ll.remove();
                 return v;
             }
             return null;
@@ -167,7 +168,7 @@ public class AhoKorasik {
 
         @Override
         public V peek() {
-            return vList.getFirst();
+            return ll.getFirst();
         }
     }
 }

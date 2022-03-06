@@ -6,11 +6,10 @@ import java.util.*;
 public class MostCommonString {
     private static final int k = (int) 1e5 + 5;
     private static final int mod = (int) 1e9 + 7;
-    private static final String firstChar = "a";
-    private static final byte firstCharByte = firstChar.getBytes()[0];
+    private static final char firstChar = 'A';
 
     private static final String str1 = "VOTEFORTHEGREATALBANIAFORYOU";
-    private static final String str2 = "VOYOU";
+    private static final String str2 = "RTHEGREATALBANI";
     //    private static final String str1 = "for the horde!!";
 //    private static final String str2 = "for the alliance!";
     private static final long[] pows = pows();
@@ -28,35 +27,30 @@ public class MostCommonString {
     }
 
     private static String searchString(long[] phs1, long[] phs2) {
-        StringBuilder res = new StringBuilder();
-        int len1 = phs1.length, len2 = phs2.length, pos = -1, l = 0, r = Math.min(len1, len2) - 1;
+        int len1 = phs1.length, len2 = phs2.length, pos = -1, l = 0, r = Math.min(len1, len2);
         while (r - l >= 0) {
             int mid = (r + l) >>> 1;
-            long[] str1Hash = new long[len1 - mid];
+            long[] str1hashes = new long[len1 - mid];
             for (int i = 0; i + mid < len1; i += 1)
-                str1Hash[i] = hash(phs1, i, mid);
-            sort(str1Hash);
+                str1hashes[i] = hash(phs1, i, mid);
+            sort(str1hashes);
             int p = -1;
             for (int i = 0; i + mid < len2; i += 1) {
-                if (binSearch(hash(phs2, i, mid), str1Hash) != -1) {
+                if (binSearch(str1hashes, hash(phs2, i, mid)) != -1) {
                     p = i;
                     break;
                 }
             }
-            if (p != -1) {
+            if (p != - 1) {
                 pos = p;
                 l = mid + 1;
             } else r = mid - 1;
         }
         if (pos == -1) return "";
-        for (int it = pos; it < pos + l; it += 1) {
-            res.append(str2.charAt(it));
-        }
-        if (l >= (len2 >>> 1)) res.append(str2.charAt(pos + l));
-        return res.toString();
+        return str2.substring(pos, l + pos);
     }
 
-    private static int binSearch(long n, long[] arr) {
+    private static int binSearch(long[] arr, long n) {
         int len = arr.length, l = 0, r = len - 1;
         while (r - l >= 0) {
             int mid = (r + l) >> 1;
@@ -72,8 +66,8 @@ public class MostCommonString {
         long[] t = new long[len];
         for (int p = 0; p < dw; p += 1) {
             int[] count = new int[1 << b];
-            for (long elt : arr)
-                count[(int) ((elt ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
+            for (int i = 0; i < len; i += 1)
+                count[(int) ((arr[i] ^ Integer.MIN_VALUE) >>> (p * b)) & ((1 << b) - 1)] += 1;
             for (int i = 1; i < 1 << b; i += 1)
                 count[i] += count[i - 1];
             for (int i = len - 1; i >= 0; i -= 1)
@@ -92,10 +86,9 @@ public class MostCommonString {
     private static long[] prefixHashes(String str) {
         int len = str.length();
         long[] hashes = new long[len];
-        byte[] strBytes = str.getBytes();
-        hashes[0] = (strBytes[0] - firstCharByte + 1) * pows[0] % mod;
+        hashes[0] = (str.charAt(0) - firstChar + 1) * pows[0] % mod;
         for (int i = 1; i < len; i += 1)
-            hashes[i] = hashes[i - 1] + (strBytes[i] - firstCharByte + 1) * pows[i] % mod;
+            hashes[i] = (hashes[i - 1] + (str.charAt(i) - firstChar + 1) * pows[i] % mod) % mod;
         return hashes;
     }
 

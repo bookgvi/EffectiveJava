@@ -1,6 +1,6 @@
 package Algos.Combinatorics;
 
-public class Combinations {
+public class PascalTriangle {
     private static int combinations(int n, int k) {
         int[][] triangle = new int[n + 1][n + 1];
         triangle[0][0] = 1;

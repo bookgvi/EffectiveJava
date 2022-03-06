@@ -11,14 +11,14 @@ public class Fragmentation {
             for (i = 0; i < len - 2; i += 1)
                 if (arr[i] == arr[i + 1]) break;
         }
-        int tmpInc = arr[i] + 1, sum = tmpInc;
+        int incVal = arr[i] + 1, sum = incVal;
         for (int j = 0; j < i; j += 1)
             sum += arr[j];
         int newLen = n - sum + i + 1;
         int[] newArr = new int[newLen];
         for (int j = 0; j < newLen; j += 1)
             if (j < i) newArr[j] = arr[j];
-            else if (j == i) newArr[j] = tmpInc;
+            else if (j == i) newArr[j] = incVal;
             else newArr[j] = 1;
         return newArr;
     }

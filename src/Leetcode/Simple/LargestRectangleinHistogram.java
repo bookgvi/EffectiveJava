@@ -2,9 +2,12 @@ package Leetcode.Simple;
 
 import java.util.*;
 
+/*
+ * https://leetcode.com/problems/largest-rectangle-in-histogram/submissions/
+ * */
 public class LargestRectangleinHistogram {
     public static void main(String[] args) {
-        int[] heights = {1};
+        int[] heights = {2,1,5,6,2,3};
         int res = SolutionI.largestRectangleArea(heights);
     }
 
