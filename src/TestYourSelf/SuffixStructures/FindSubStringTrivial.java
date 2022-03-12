@@ -4,14 +4,13 @@ import java.util.Arrays;
 
 public class FindSubStringTrivial {
     public static void main(String[] args) {
-        String findMe = "ada";
+        String findMe = "bra";
         String str = "abracadabra";
         searchSubstring(str, findMe);
     }
 
     private static void searchSubstring(String str, String findMe) {
-        System.out.printf("%s <- %s\n positions ", str, findMe);
-        int lenSS = findMe.length(), lenStr = str.length();
+        int lenSS = findMe.length();
         int[] p = suffixArray(str);
         for (int i = 0; i < lenSS; i += 1) {
             int l = binSearchL(findMe.charAt(i), p, i, str);
