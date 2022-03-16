@@ -13,7 +13,7 @@ public class ReplaceSubStrWithDash {
     private static final String abc = getAbc();
 
     public static void main(String[] args) {
-        String str = "abcdeaaauvwx1234";
+        String str = "abcdefg";
         long[] phStr = phs(str);
         long[] phAbc = phs(abc);
 
@@ -23,7 +23,6 @@ public class ReplaceSubStrWithDash {
 
     private static String searchStr(long[] phAbc, long[] phStr, String str) {
         int lenAbc = phAbc.length, lenStr = phStr.length, len = 2;
-        StringBuilder res = new StringBuilder();
         Map<Integer, Integer> indexes = new HashMap<>();
         while (len < lenAbc) {
             len += 1;
@@ -39,27 +38,27 @@ public class ReplaceSubStrWithDash {
                 }
             }
         }
-        int cur = 0;
+        StringBuilder res = new StringBuilder();
         List<Integer> positions = indexes.keySet().stream().sorted().collect(Collectors.toList());
+        int curPos = 0;
         for (int start : positions) {
             int end = start + indexes.get(start) - 1;
-            res.append(str, cur, start).append(convert(start, end, str));
-            cur = end + 1;
+            res.append(str, curPos, start).append(process(start, end, str));
+            curPos = end + 1;
         }
-        if (cur < lenStr) res.append(str, cur, lenStr);
-
+        if (curPos < lenStr) res.append(str, curPos, lenStr);
         return res.toString();
-    }
-
-    private static String convert(int start, int end, String str) {
-        return "[" + str.charAt(start) + "-" + str.charAt(end) + "]";
     }
 
     private static String getAbc() {
         StringBuilder abc = new StringBuilder();
-        for (int i = 33; i < 255; i += 1)
+        for (int i = 37; i < 255; i += 1)
             abc.append(Character.toString(i));
         return abc.toString();
+    }
+
+    private static String process(int startPos, int endPos, String str) {
+        return "[" + str.charAt(startPos) + "-" + str.charAt(endPos) + "]";
     }
 
     private static int binSearch(long n, long[] arr) {
