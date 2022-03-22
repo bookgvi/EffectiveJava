@@ -100,14 +100,14 @@ public class Tmp {
     }
 
     private static List<Integer> erat(int n) {
-        boolean[] erat = new boolean[n + 1];
         List<Integer> primes = new ArrayList<>();
-        for (int i = 2; i <= n; i += 1) {
-            if (erat[i]) continue;
-            primes.add(i);
-            for (int j = i; j <= n; j += i)
-                erat[j] = true;
-        }
+        char[] isPrime = new char[n + 1];
+        for (int i = 2; i <= n; i += 1)
+            if (isPrime[i] == 0) {
+                primes.add(i);
+                for (int j = 2 * i; j <= n; j += i)
+                    isPrime[j] = 1;
+            }
         return primes;
     }
 
@@ -133,7 +133,7 @@ public class Tmp {
 
     private static int binMul(int n, int m) {
         int res = 0;
-        while(m > 0) {
+        while (m > 0) {
             if ((m & 1) == 1) res += n;
             n <<= 1;
             m >>= 1;
@@ -168,6 +168,7 @@ public class Tmp {
 
         int mul = binMul(a, b);
 
+        List<Integer> primes = erat(22);
         classes("aaaabbbaa");
     }
 }
