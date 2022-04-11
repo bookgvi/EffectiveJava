@@ -1,8 +1,12 @@
 package Structures.ThreadSafeStack;
 
 public class StackBaseLinkedList<V> {
-    ListNode<V> stack = null;
+    private ListNode<V> stack = null;
     private final CAS<ListNode<V>> atomicVal = new CAS<>();
+
+    public ListNode<V> getStack() {
+        return stack;
+    }
 
     public void threadSafePush(V val) {
         ListNode<V> newItem = new ListNode<>(val);
@@ -13,11 +17,27 @@ public class StackBaseLinkedList<V> {
         } while (!atomicVal.compareAndSet(oldItem, newItem));
     }
 
+    public V threadSafePop() {
+        ListNode<V> oldItem = null;
+        ListNode<V> newItem = null;
+        do {
+            oldItem = atomicVal.getVal();
+            if (oldItem == null) return null;
+            newItem = oldItem.next;
+        } while(!atomicVal.compareAndSet(oldItem, newItem));
+        return atomicVal.getVal() != null ? atomicVal.getVal().val : null;
+    }
+
+    // не потокобезопасная операция добавления элемента в стек
+    // в результате элемент(ы) может быть НЕ добавлен в стек
     public void push(V val) {
         ListNode<V> old = stack;
         stack = new ListNode<>(val, old);
     }
 
+
+    // не потокобезопасная операция извлечения элемента из стека
+    // в результате в стеке может остаться элемент
     public V pop() {
         V val = stack.val;
         stack = stack.next;

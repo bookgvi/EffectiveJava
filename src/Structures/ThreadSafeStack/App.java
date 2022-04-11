@@ -12,6 +12,8 @@ public class App {
         StackBaseLinkedList<Integer> threadSafeStack = new StackBaseLinkedList<>();
         AtomicInteger v = new AtomicInteger(), v2 = new AtomicInteger();
         arr.parallelStream().forEach(stack::push);
+        arr.parallelStream().forEach(i -> stack.pop());
         arr.parallelStream().forEach(threadSafeStack::threadSafePush);
+        arr.parallelStream().forEach(i -> threadSafeStack.threadSafePop());
     }
 }
