@@ -3,6 +3,7 @@ package Structures.ThreadSafeStack;
 public class StackBaseLinkedList<V> {
     private ListNode<V> stack = null;
     private final CAS<ListNode<V>> atomicVal = new CAS<>();
+    private int size = 0;
 
     public ListNode<V> getStack() {
         return stack;
@@ -33,14 +34,17 @@ public class StackBaseLinkedList<V> {
     public void push(V val) {
         ListNode<V> old = stack;
         stack = new ListNode<>(val, old);
+        size += 1;
     }
 
 
     // не потокобезопасная операция извлечения элемента из стека
     // в результате в стеке может остаться элемент
     public V pop() {
+        if (stack == null) return null;
         V val = stack.val;
         stack = stack.next;
+        size -= 1;
         return val;
     }
 
@@ -64,8 +68,8 @@ public class StackBaseLinkedList<V> {
     }
 
     private static class ListNode<V> {
-        V val;
-        ListNode<V> next;
+        private V val;
+        private ListNode<V> next;
 
         ListNode() {
         }
