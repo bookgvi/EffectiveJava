@@ -43,7 +43,10 @@ public class StackBaseLinkedList<V> {
     public V pop() {
         if (stack == null) return null;
         V val = stack.val;
-        stack = stack.next;
+        ListNode<V> next = stack.next;
+        stack.val = null;
+        stack.next = null;
+        stack = next;
         size -= 1;
         return val;
     }
