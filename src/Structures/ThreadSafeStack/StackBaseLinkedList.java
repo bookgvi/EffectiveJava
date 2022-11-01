@@ -3,6 +3,7 @@ package Structures.ThreadSafeStack;
 public class StackBaseLinkedList<V> {
     private ListNode<V> stack = null;
     private final CAS<ListNode<V>> atomicVal = new CAS<>();
+    private final CAS<ListNode<V>> atomicStack = new CAS<>();
     private int size = 0;
 
     public ListNode<V> getStack() {
@@ -16,17 +17,23 @@ public class StackBaseLinkedList<V> {
             oldItem = atomicVal.getVal();
             newItem.next = oldItem;
         } while (!atomicVal.compareAndSet(oldItem, newItem));
+        atomicStack.compareAndSet(atomicStack.getVal(), atomicVal.getVal());
     }
 
     public V threadSafePop() {
         ListNode<V> oldItem = null;
         ListNode<V> newItem = null;
+        V val = null;
         do {
             oldItem = atomicVal.getVal();
             if (oldItem == null) return null;
-            newItem = oldItem.next;
+            val = oldItem.val;
+            ListNode<V> next = oldItem.next;
+            oldItem.val = null;
+            oldItem.next = null;
+            newItem = next;
         } while(!atomicVal.compareAndSet(oldItem, newItem));
-        return atomicVal.getVal() != null ? atomicVal.getVal().val : null;
+        return val;
     }
 
     // не потокобезопасная операция добавления элемента в стек
@@ -60,7 +67,7 @@ public class StackBaseLinkedList<V> {
 
         private synchronized V comapreAndSwap(V expVal, V newVal) {
             V oldVal = val;
-            if (expVal == val)
+            if (expVal == oldVal)
                 val = newVal;
             return oldVal;
         }
