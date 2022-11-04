@@ -25,4 +25,11 @@ public class ColorPoint extends Point implements IPoint {
 //        if (o == null || o.getClass() != getClass()) return false;
         return super.equals(o) && ((ColorPoint) o).color == getColor();
     }
+
+    @Override
+    public int hashCode() {
+        int res = super.hashCode();
+        res = (res << 5) - res + color.hashCode();
+        return res;
+    }
 }

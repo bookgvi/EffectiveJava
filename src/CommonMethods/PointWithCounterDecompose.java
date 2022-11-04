@@ -37,4 +37,11 @@ public class PointWithCounterDecompose implements IPoint {
         PointWithCounterDecompose pwcd = (PointWithCounterDecompose) o;
         return pwcd.point.equals(point);
     }
+
+    @Override
+    public int hashCode() {
+        int res = point.hashCode();
+        res = (res << 5) - res + counter.hashCode();
+        return res;
+    }
 }

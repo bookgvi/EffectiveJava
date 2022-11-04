@@ -42,4 +42,11 @@ public class ColorPointDecompose implements IPoint {
         ColorPointDecompose cp = (ColorPointDecompose) o;
         return cp.point.equals(point) && cp.getColor().equals(color);
     }
+
+    @Override
+    public int hashCode() {
+        int res = point.hashCode();
+        res = (res << 5) - res + color.hashCode();
+        return res;
+    }
 }

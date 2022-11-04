@@ -22,6 +22,7 @@ public class App {
         IPoint cp2 = new ColorPoint(1, 0, Color.BLUE);
         IPoint cp3 = new ColorPoint(1, 0, Color.BLUE);
         boolean cp1_p = cp1.equals(p);
+        boolean p_cp1 = p.equals(cp1);
         boolean p_cp2 = p.equals(cp2);
         boolean cp1_cp2 = cp1.equals(cp2);
         boolean cp2_cp3 = cp2.equals(cp3);

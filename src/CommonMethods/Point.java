@@ -38,6 +38,8 @@ public class Point implements IPoint {
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y);
+        int res = Integer.hashCode(x);
+        res = (res << 5) - res + Integer.hashCode(y);
+        return res;
     }
 }
