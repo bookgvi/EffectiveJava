@@ -1,13 +1,18 @@
 package Lambda;
 
+import javax.swing.text.html.Option;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.*;
 
 public class FunctionalInterfaces {
-    private static final Function<String, Map<String, Predicate<Integer>>> fabric = key -> Map.of(key, x -> x > 0);
+    private static final Function<String, Map<String, Predicate<Integer>>> fabric = key -> Map.of(
+            "isPositive", x -> x > 0,
+            "isOdd", x -> (x & 1) == 1
+    );
 
-    private static Map<String, Predicate<Integer>> getMap(String key) {
-        return fabric.apply(key);
+    private static Optional<Predicate<Integer>> getMap(String key) {
+        return Optional.ofNullable(fabric.apply(key).get(key));
     }
 
     private static long binPow(int a, int pow) {
@@ -28,12 +33,14 @@ public class FunctionalInterfaces {
     }
 
     private static void fi() {
+        Predicate<Integer> isPositive1;
         Predicate<Integer> isPositive = x -> x > 0;
         ToLongBiFunction<Integer, Integer> pows = FunctionalInterfaces::binPow;
         Function<Integer, Long> fact = FunctionalInterfaces::fact;
 
-        Map<String, Predicate<Integer>> mapWithPredicate = getMap("key");
-        System.out.println(mapWithPredicate.get("key").test(10));
+        Optional<Predicate<Integer>> predicateOpt = getMap("isPositive");
+        boolean res = predicateOpt.map(integerPredicate -> integerPredicate.test(-11)).orElse(false);
+        System.out.println(res);
 
         System.out.println(isPositive.test(-10));
         System.out.println(pows.applyAsLong(-10, 2));
