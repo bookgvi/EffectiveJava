@@ -1,5 +1,6 @@
 package Concurrency;
 
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -7,28 +8,28 @@ public class MultiThreading {
 }
 
 
-public class ThisClass {
+//public class ThisClass {
 
-    Thread myThread;
+//    Thread myThread;
 
-    public ThisClass(Source source) {
-        source.registerListener(new EventListener() {
-            public void onEvent(Event e) {
-                ThisClass.this.dd
-            }
-        });
-
-        myThread = new Thread(); // в изначальном вопросе небыло
-
-        ....
-
-        myThread.start();
-    }
+//    public ThisClass(Source source) {
+//        source.registerListener(new EventListener() {
+//            public void onEvent(Event e) {
+//                ThisClass.this.dd
+//            }
+//        });
+//
+//        myThread = new Thread(); // в изначальном вопросе небыло
+//
+//        ....
+//
+//        myThread.start();
+//    }
 
 //    void myFunc() {
 //        myThread.start();
 //    }
-}
+//}
 
 class MakeitSafe2 {
     private static final int THRESHOLD = 60;
@@ -58,6 +59,8 @@ class MyClass {
     }
 
     public static void main(String[] args) {
+        Set<Integer> tmpSet = Set.of(1,2,3,4);
+        System.out.println("tmpSet = " + tmpSet);
         MyClass myObj = null;
 
         myObj.myFunc();
