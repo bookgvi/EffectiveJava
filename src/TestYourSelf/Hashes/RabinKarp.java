@@ -46,7 +46,9 @@ public class RabinKarp {
         long strH = phs[pos + off];
         long prefH = pos > 0 ? phs[pos - 1] : 0;
         strH = strH - prefH < 0 ? strH + mod : strH;
-        return (strH - prefH) * invP[pos] % mod;
+//        long inv = invP[pos];
+        long inv = invP(pows[pos]);
+        return (strH - prefH) * inv % mod;
     }
 
     private static long[] prefixHash(String str) {
@@ -66,6 +68,10 @@ public class RabinKarp {
         for (int i = 1; i < max; i += 1)
             pows[i] = pows[i - 1] * k % mod;
         return pows;
+    }
+
+    private static long invP(long n) {
+        return modPow(n, mod - 2, mod);
     }
 
     private static long[] invP() {

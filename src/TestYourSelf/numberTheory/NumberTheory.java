@@ -1,4 +1,4 @@
-package TestYourSelf;
+package TestYourSelf.numberTheory;
 
 import java.util.*;
 
