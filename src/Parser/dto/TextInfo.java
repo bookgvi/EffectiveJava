@@ -47,4 +47,18 @@ public class TextInfo {
     public Map<Integer, Integer> getIndexToLineMap() {
         return indexToLineMap;
     }
+    
+    public TextInfo buildForIndex(int index) {
+        index = Math.max(0, index);
+        TextInfo resultTextInfo = new TextInfo();
+        String path = this.path;
+        resultTextInfo.setPath(path);
+        resultTextInfo.setLineStartIndex(index);
+        if (indexToLineMap.get(index) != null) {
+            resultTextInfo.setText(this.indexToTextMap.get(index));
+            resultTextInfo.getIndexToTextMap().put(index, indexToTextMap.get(index));
+            resultTextInfo.getIndexToLineMap().put(index, indexToLineMap.get(index));
+        }
+        return resultTextInfo;
+    }
 }
