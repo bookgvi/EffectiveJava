@@ -79,7 +79,7 @@ public class Scanner {
         while (isNotEnd() && isIdentifier(peek())) {
             advance();
         }
-        String lexeme = new String(buffer, start, current);
+        String lexeme = new String(buffer, start, current - start);
         TokenType kind = TokenType.getTypesMap().getOrDefault(lexeme, TokenType.IDENTIFIER);
         addToken(kind, lexeme);
     }
@@ -110,7 +110,6 @@ public class Scanner {
     }
 
     private char peek() {
-        String str = "asdsd \"' ";
         return isNotEnd() ? buffer[current] : CTRL_Z;
     }
 

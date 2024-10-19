@@ -1,5 +1,6 @@
 package RPN.syntactic;
 
+import RPN.syntactic.visitor.GenericVisitor;
 import RPN.syntactic.visitor.Visitable;
 import RPN.syntactic.visitor.VoidVisitor;
 import RPN.token.Token;
@@ -15,6 +16,7 @@ import RPN.token.Token;
 public abstract class Expr implements Visitable {
 
     public abstract <A> void accept(VoidVisitor<A> visitor, A args);
+    public abstract <R, A> R accept(GenericVisitor<R, A> visitor, A args);
 
     public static class Binary extends Expr {
         private final Expr left;
@@ -43,6 +45,11 @@ public abstract class Expr implements Visitable {
         public <A> void accept(VoidVisitor<A> visitor, A args) {
             visitor.visit(this, args);
         }
+
+        @Override
+        public <R, A> R accept(GenericVisitor<R, A> visitor, A args) {
+            return visitor.visit(this, args);
+        }
     }
 
     public static class Unary extends Expr {
@@ -66,6 +73,11 @@ public abstract class Expr implements Visitable {
         public <A> void accept(VoidVisitor<A> visitor, A args) {
             visitor.visit(this, args);
         }
+
+        @Override
+        public <R, A> R accept(GenericVisitor<R, A> visitor, A args) {
+            return visitor.visit(this, args);
+        }
     }
 
     public static class Literal extends Expr {
@@ -83,6 +95,11 @@ public abstract class Expr implements Visitable {
         public <A> void accept(VoidVisitor<A> visitor, A args) {
             visitor.visit(this, args);
         }
+
+        @Override
+        public <R, A> R accept(GenericVisitor<R, A> visitor, A args) {
+            return visitor.visit(this, args);
+        }
     }
 
     public static class Grouping extends Expr {
@@ -99,6 +116,11 @@ public abstract class Expr implements Visitable {
         @Override
         public <A> void accept(VoidVisitor<A> visitor, A args) {
             visitor.visit(this, args);
+        }
+
+        @Override
+        public <R, A> R accept(GenericVisitor<R, A> visitor, A args) {
+            return visitor.visit(this, args);
         }
     }
 }
