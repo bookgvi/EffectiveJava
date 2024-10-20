@@ -1,6 +1,6 @@
 package RPN.syntactic;
 
-import RPN.lexer.Scanner;
+import RPN.lexerParser.Scanner;
 import RPN.token.Token;
 import RPN.token.TokenType;
 import org.junit.jupiter.api.Assertions;
@@ -22,12 +22,12 @@ class ReversePolishNotationTest {
             .value("-")
             .build();
     private final Token multiply = Token.builder()
-            .kind(TokenType.MULTIPLY)
+            .kind(TokenType.STAR)
             .lexeme("*")
             .value("*")
             .build();
     private final Token divide = Token.builder()
-            .kind(TokenType.DIVIDE)
+            .kind(TokenType.SLASH)
             .lexeme("/")
             .value("/")
             .build();
@@ -60,7 +60,7 @@ class ReversePolishNotationTest {
                 )
         );
 
-        String ans = "4 5 6 + () / () - 7 8 - () *";
+        String ans = "4 5 6 + group / group - 7 8 - group *";
         String res = new ReversePolishNotation().process(expr);
         System.out.println(res);
         System.out.println();
@@ -70,12 +70,12 @@ class ReversePolishNotationTest {
     @Test
     public void test2() {
         Expr expr = new Expr.Binary(
-                new Expr.Binary(new Expr.Literal(1), plus, new Expr.Literal(2)),
+                new Expr.Grouping(new Expr.Binary(new Expr.Literal(1), plus, new Expr.Literal(2))),
                 multiply,
-                new Expr.Binary(new Expr.Literal(4), minus, new Expr.Literal(3))
+                new Expr.Grouping(new Expr.Binary(new Expr.Literal(4), minus, new Expr.Literal(3)))
         );
 
-        String ans = "1 2 + 4 3 - *";
+        String ans = "1 2 + group 4 3 - group *";
         String res = new ReversePolishNotation().process(expr);
         System.out.println(res);
         System.out.println();

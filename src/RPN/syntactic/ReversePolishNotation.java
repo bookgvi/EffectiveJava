@@ -27,13 +27,15 @@ public class ReversePolishNotation implements GenericVisitor<String, String> {
 
     @Override
     public String visit(Expr.Grouping expr, String args) {
-        return result("()", expr.getExpr());
+        return result("group", expr.getExpr());
     }
 
     public String result(String op, Expr ...exprs) {
         StringBuilder sb = new StringBuilder();
         for (Expr expr : exprs) {
-            sb.append(expr.accept(this, null)).append(" ");
+            if (expr != null) {
+                sb.append(expr.accept(this, null)).append(" ");
+            }
         }
         sb.append(op);
         return sb.toString();
