@@ -1,4 +1,4 @@
-package RPN.lexer;
+package RPN.lexerParser;
 
 import RPN.token.Token;
 import RPN.token.TokenType;
@@ -34,12 +34,19 @@ public class Scanner {
         switch (ch) {
             case '+': addToken(TokenType.PLUS); break;
             case '-': addToken(TokenType.MINUS); break;
-            case '*': addToken(TokenType.MULTIPLY); break;
+            case '*': addToken(TokenType.STAR); break;
             case '(': addToken(TokenType.LEFT_PAREN); break;
             case ')': addToken(TokenType.RIGHT_PAREN); break;
-            case '{': addToken(TokenType.LEFT_BRACKET); break;
-            case '}': addToken(TokenType.RIGHT_BRACKET); break;
-            case '/': addToken(TokenType.DIVIDE); break;
+            case '{': addToken(TokenType.LEFT_BRACE); break;
+            case '}': addToken(TokenType.RIGHT_BRACE); break;
+            case '/': addToken(TokenType.SLASH); break;
+            case '.': addToken(TokenType.DOT); break;
+            case ';': addToken(TokenType.SEMICOLON); break;
+            case ',': addToken(TokenType.COMMA); break;
+            case '!': addToken(match('=') ? TokenType.BANG_EQUAL : TokenType.BANG);
+            case '<': addToken(match('=') ? TokenType.LESS_EQUAL : TokenType.LESS);
+            case '>': addToken(match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
+            case '=': addToken(match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL);
             case '"': string(); break;
             case '\n': line += 1; break;
             case ' ':
@@ -56,6 +63,17 @@ public class Scanner {
                 }
                 break;
         }
+    }
+
+    private boolean match(char ch) {
+        if (!isNotEnd()) {
+            return false;
+        }
+        if (peek() != ch) {
+            return false;
+        }
+        ++current;
+        return true;
     }
 
     private void string() {
