@@ -1,6 +1,6 @@
 package RPN.syntactic;
 
-import RPN.lexerParser.Scanner;
+import RPN.core.Scanner;
 import RPN.token.Token;
 import RPN.token.TokenType;
 import org.junit.jupiter.api.Assertions;

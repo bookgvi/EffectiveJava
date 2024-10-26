@@ -1,4 +1,4 @@
-package RPN.lexerParser;
+package RPN.core;
 
 import RPN.token.Token;
 import RPN.token.TokenType;

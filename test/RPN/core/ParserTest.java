@@ -1,4 +1,4 @@
-package RPN.lexerParser;
+package RPN.core;
 
 import RPN.syntactic.Expr;
 import RPN.syntactic.PrettyPrint;
