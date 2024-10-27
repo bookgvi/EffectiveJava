@@ -1,8 +1,5 @@
 package RPN.syntactic;
 
-import RPN.syntactic.visitor.GenericVisitor;
-import RPN.syntactic.visitor.Visitable;
-import RPN.syntactic.visitor.VoidVisitor;
 import RPN.token.Token;
 
 /**
@@ -13,7 +10,28 @@ import RPN.token.Token;
  * → expression operator expression ;
  * → "==" | "!=" | "<" | "<=" | ">" | ">=" | "+" | "-" | "*" | "/" ;
  */
-public abstract class Expr implements Visitable {
+public abstract class Expr implements VisitableExpr {
+
+    public interface GenericVisitor<R, A> {
+        R visit(Expr.Binary expr, A args);
+
+        R visit(Expr.Unary expr, A args);
+
+        R visit(Expr.Literal expr, A args);
+
+        R visit(Expr.Grouping expr, A args);
+
+    }
+
+    public interface VoidVisitor<A> {
+        void visit(Expr.Binary expr, A args);
+
+        void visit(Expr.Unary expr, A args);
+
+        void visit(Expr.Literal expr, A args);
+
+        void visit(Expr.Grouping expr, A args);
+    }
 
     public abstract <A> void accept(VoidVisitor<A> visitor, A args);
     public abstract <R, A> R accept(GenericVisitor<R, A> visitor, A args);

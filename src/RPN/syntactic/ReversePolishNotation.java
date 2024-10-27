@@ -1,6 +1,6 @@
 package RPN.syntactic;
 
-import RPN.syntactic.visitor.GenericVisitor;
+import RPN.syntactic.Expr.GenericVisitor;
 
 import java.util.Optional;
 

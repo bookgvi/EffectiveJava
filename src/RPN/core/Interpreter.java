@@ -1,12 +1,11 @@
 package RPN.core;
 
 import RPN.syntactic.Expr;
-import RPN.syntactic.visitor.GenericVisitor;
 import RPN.token.TokenType;
 
 import java.util.Objects;
 
-public class Interpreter implements GenericVisitor<Object, Object> {
+public class Interpreter implements Expr.GenericVisitor<Object, Object> {
 
     public Object interpret(Expr expression, Object args) {
         Object value = null;

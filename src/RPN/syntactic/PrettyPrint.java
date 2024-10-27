@@ -1,10 +1,8 @@
 package RPN.syntactic;
 
-import RPN.syntactic.visitor.GenericVisitor;
-
 import java.util.Optional;
 
-public class PrettyPrint implements GenericVisitor<String, String> {
+public class PrettyPrint implements Expr.GenericVisitor<String, String> {
 
     public String process(Expr expr, String arg) {
         return expr.accept(this, arg);
