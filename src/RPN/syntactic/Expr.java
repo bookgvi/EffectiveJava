@@ -21,6 +21,8 @@ public abstract class Expr implements VisitableExpr {
 
         R visit(Expr.Grouping expr, A args);
 
+        R visit(Expr.Variable expr, A args);
+
     }
 
     public interface VoidVisitor<A> {
@@ -31,6 +33,8 @@ public abstract class Expr implements VisitableExpr {
         void visit(Expr.Literal expr, A args);
 
         void visit(Expr.Grouping expr, A args);
+
+        void visit(Expr.Variable expr, A args);
     }
 
     public abstract <A> void accept(VoidVisitor<A> visitor, A args);
@@ -139,6 +143,28 @@ public abstract class Expr implements VisitableExpr {
         @Override
         public <R, A> R accept(GenericVisitor<R, A> visitor, A args) {
             return visitor.visit(this, args);
+        }
+    }
+
+    public static class Variable extends Expr {
+        private final Token name;
+
+        public Variable(Token name) {
+            this.name = name;
+        }
+
+        @Override
+        public <A> void accept(VoidVisitor<A> visitor, A args) {
+            visitor.visit(this, args);
+        }
+
+        @Override
+        public <R, A> R accept(GenericVisitor<R, A> visitor, A args) {
+            return visitor.visit(this, args);
+        }
+
+        public Token getName() {
+            return name;
         }
     }
 }

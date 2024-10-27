@@ -30,6 +30,11 @@ public class ReversePolishNotation implements GenericVisitor<String, String> {
         return result("group", expr.getExpr());
     }
 
+    @Override
+    public String visit(Expr.Variable expr, String args) {
+        return result(expr.getName().getLexeme(), expr);
+    }
+
     public String result(String op, Expr ...exprs) {
         StringBuilder sb = new StringBuilder();
         for (Expr expr : exprs) {

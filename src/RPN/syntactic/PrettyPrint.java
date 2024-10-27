@@ -27,6 +27,11 @@ public class PrettyPrint implements Expr.GenericVisitor<String, String> {
         return print("group", expr.getExpr());
     }
 
+    @Override
+    public String visit(Expr.Variable expr, String args) {
+        return print(expr.getName().getLexeme(), expr);
+    }
+
     public String print(String operation, Expr ...exprs) {
         StringBuilder sb = new StringBuilder();
         sb.append("(").append(operation);

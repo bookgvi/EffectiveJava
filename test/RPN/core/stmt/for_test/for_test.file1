@@ -6,3 +6,5 @@ print 2 * (2 - 1);
 print (4 / (5 + 5)) * (7 - 8);
 print "one";
 print true;
+var a = "2" + "1";
+var a = 4 * 12.15;

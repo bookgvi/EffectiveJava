@@ -43,10 +43,10 @@ public class Scanner {
             case '.': addToken(TokenType.DOT); break;
             case ';': addToken(TokenType.SEMICOLON); break;
             case ',': addToken(TokenType.COMMA); break;
-            case '!': addToken(match('=') ? TokenType.BANG_EQUAL : TokenType.BANG);
-            case '<': addToken(match('=') ? TokenType.LESS_EQUAL : TokenType.LESS);
-            case '>': addToken(match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
-            case '=': addToken(match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL);
+            case '!': addToken(match('=') ? TokenType.BANG_EQUAL : TokenType.BANG); break;
+            case '<': addToken(match('=') ? TokenType.LESS_EQUAL : TokenType.LESS); break;
+            case '>': addToken(match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER); break;
+            case '=': addToken(match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL); break;
             case '"': string(); break;
             case '\n': line += 1; break;
             case ' ':

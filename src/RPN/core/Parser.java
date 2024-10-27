@@ -11,10 +11,12 @@ import java.util.Optional;
 
 import static RPN.token.TokenType.BANG;
 import static RPN.token.TokenType.BANG_EQUAL;
+import static RPN.token.TokenType.EQUAL;
 import static RPN.token.TokenType.EQUAL_EQUAL;
 import static RPN.token.TokenType.FALSE;
 import static RPN.token.TokenType.GREATER;
 import static RPN.token.TokenType.GREATER_EQUAL;
+import static RPN.token.TokenType.IDENTIFIER;
 import static RPN.token.TokenType.LEFT_PAREN;
 import static RPN.token.TokenType.LESS;
 import static RPN.token.TokenType.LESS_EQUAL;
@@ -29,21 +31,26 @@ import static RPN.token.TokenType.SLASH;
 import static RPN.token.TokenType.STAR;
 import static RPN.token.TokenType.STRING;
 import static RPN.token.TokenType.TRUE;
+import static RPN.token.TokenType.VAR;
 
 /**
+ * program -> declaration* EOF" ;
+ * declaration -> varDeclaration | statement ;
+ * <p>
+ * varDeclaration -> "var" IDENTIFIER ("=" expression)? ";" ;
+ * <p>
+ * statement -> exprStmt | printStmt ;
+ * exprStmt -> expression ";" ;
+ * printStmt -> "print" expression ";" ;
+ * <p>
  * expression → equality ;
  * equality → comparison ( ( "!=" | "==" ) comparison )* ;
  * comparison → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
  * term → factor ( ( "-" | "+" ) factor )* ;
  * factor → unary ( ( "/" | "*" ) unary )* ;
  * unary → ( "!" | "-" | "+" ) unary | primary ;
- * primary → NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" ;
- * <p>
- * <p>
- * program -> statement* EOF" ;
- * statement -> exprStmt | printStmt ;
- * exprStmt -> expression ";" ;
- * printStmt -> "print" expression ";" ;
+ * primary → NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" | IDENTIFIER;
+ *
  */
 public class Parser {
     private final List<Token> tokens;
@@ -56,11 +63,40 @@ public class Parser {
     public List<Stmt> parse() {
         List<Stmt> statements = new ArrayList<>();
         while (isNotEnd()) {
-            statements.add(statement());
+            statements.add(declaration());
         }
         return statements;
     }
 
+    /**
+     * declaration -> varDeclaration | statement ;
+     * @return Statement
+     */
+    public Stmt declaration() {
+        if (match(VAR)) {
+            return varDeclaration();
+        }
+        return statement();
+    }
+
+    /**
+     * varDeclaration -> "var" IDENTIFIER ("=" expression)? ";" ;
+     * @return Statement
+     */
+    private Stmt varDeclaration() {
+        Token name = consume(IDENTIFIER, "Expect variable name.");
+        Expr initializer = null;
+        if (match(EQUAL)) {
+            initializer = expression();
+        }
+        consume(SEMICOLON, "Expect ';' after value.");
+        return new Stmt.Var(name, initializer);
+    }
+
+    /**
+     * statement -> exprStmt | printStmt ;
+     * @return Statement
+     */
     public Stmt statement() {
         if (match(PRINT)) {
             return printStmt();
@@ -68,18 +104,30 @@ public class Parser {
         return exprStmt();
     }
 
+    /**
+     * exprStmt -> expression ";" ;
+     * @return Statement
+     */
     private Stmt exprStmt() {
         Expr value = expression();
         consume(SEMICOLON,  "Expect ';' after value.");
         return new Stmt.Expression(value);
     }
 
+    /**
+     * printStmt -> "print" expression ";" ;
+     * @return Statement
+     */
     private Stmt printStmt() {
         Expr value = expression();
         consume(SEMICOLON,  "Expect ';' after value.");
         return new Stmt.Print(value);
     }
 
+    /**
+     * expression -> equality ;
+     * @return Expression
+     */
     public Expr expression() {
         return equality();
     }
@@ -169,6 +217,7 @@ public class Parser {
             consume(RIGHT_PAREN, "Expect ')'");
             return new Expr.Grouping(expr);
         }
+        if (match(IDENTIFIER)) return new Expr.Variable(previous());
         return null;
     }
 

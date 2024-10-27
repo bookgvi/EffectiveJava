@@ -7,6 +7,8 @@ import RPN.token.TokenType;
 import java.util.List;
 import java.util.Objects;
 
+import static java.lang.Thread.yield;
+
 public class Interpreter implements Expr.GenericVisitor<Object, Object>, Stmt.GenericVisitor<Object, Object> {
 
     public Object interpret(Expr expression, Object args) {
@@ -39,14 +41,15 @@ public class Interpreter implements Expr.GenericVisitor<Object, Object>, Stmt.Ge
 
     public String stringify(Object object) {
         if (object == null) return "nil";
+        String text = object.toString();
         if (object instanceof Double) {
-            String text = object.toString();
             if (text.endsWith(".0")) {
                 text = text.substring(0, text.length() - 2);
             }
-            return text;
+        } else if (object instanceof String) {
+            text = "\"" + text + "\"";
         }
-        return object.toString();
+        return text;
     }
 
     @Override
@@ -54,35 +57,26 @@ public class Interpreter implements Expr.GenericVisitor<Object, Object>, Stmt.Ge
         Object leftValue = evaluate(expr.getLeft(), args);
         Object rightValue = evaluate(expr.getRight(), args);
         TokenType operation = expr.getOperation().getKind();
-        switch (operation) {
-            case STAR:
-                return (double) leftValue * (double) rightValue;
-            case SLASH:
-                return (double) leftValue / (double) rightValue;
-            case MINUS:
-                return (double) leftValue - (double) rightValue;
-            case PLUS:
+        return switch (operation) {
+            case STAR -> (double) leftValue * (double) rightValue;
+            case SLASH -> (double) leftValue / (double) rightValue;
+            case MINUS -> (double) leftValue - (double) rightValue;
+            case PLUS -> {
                 if ((leftValue instanceof Double) && (rightValue instanceof Double)) {
-                    return (double) leftValue + (double) rightValue;
+                    yield (double) leftValue + (double) rightValue;
                 } else if ((leftValue instanceof String) && (rightValue instanceof String)) {
-                    return leftValue + (String) rightValue;
+                    yield leftValue + (String) rightValue;
                 }
-            case GREATER:
-                return (double) leftValue > (double) rightValue;
-            case GREATER_EQUAL:
-                return (double) leftValue >= (double) rightValue;
-            case LESS:
-                return (double) leftValue < (double) rightValue;
-            case LESS_EQUAL:
-                return (double) leftValue <= (double) rightValue;
-            case BANG_EQUAL:
-                return !isEqual(leftValue, rightValue);
-            case EQUAL_EQUAL:
-                return isEqual(leftValue, rightValue);
-            default:
-                break;
-        }
-        return null;
+                yield null;
+            }
+            case GREATER -> (double) leftValue > (double) rightValue;
+            case GREATER_EQUAL -> (double) leftValue >= (double) rightValue;
+            case LESS -> (double) leftValue < (double) rightValue;
+            case LESS_EQUAL -> (double) leftValue <= (double) rightValue;
+            case BANG_EQUAL -> !isEqual(leftValue, rightValue);
+            case EQUAL_EQUAL -> isEqual(leftValue, rightValue);
+            default -> null;
+        };
     }
 
     @Override
@@ -115,6 +109,11 @@ public class Interpreter implements Expr.GenericVisitor<Object, Object>, Stmt.Ge
     }
 
     @Override
+    public Object visit(Expr.Variable expr, Object args) {
+        return evaluate(expr, args);
+    }
+
+    @Override
     public Object visit(Stmt.Expression stmt, Object... args) {
         return evaluate(stmt.getExpr(), args);
     }
@@ -122,8 +121,13 @@ public class Interpreter implements Expr.GenericVisitor<Object, Object>, Stmt.Ge
     @Override
     public Object visit(Stmt.Print stmt, Object... args) {
         Object value = evaluate(stmt.getExpr(), args);
-        System.out.println("print " + stringify(value));
-        return null;
+        return "print " + stringify(value);
+    }
+
+    @Override
+    public Object visit(Stmt.Var stmt, Object... args) {
+        Object value = evaluate(stmt.getInitializer(), args);
+        return "var " + stmt.getName().getLexeme() + " = " + stringify(value);
     }
 
     private boolean isTruthy(Object value) {
