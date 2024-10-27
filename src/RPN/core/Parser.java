@@ -1,6 +1,7 @@
 package RPN.core;
 
 import RPN.syntactic.Expr;
+import RPN.syntactic.Stmt;
 import RPN.token.Token;
 import RPN.token.TokenType;
 
@@ -21,7 +22,9 @@ import static RPN.token.TokenType.MINUS;
 import static RPN.token.TokenType.NIL;
 import static RPN.token.TokenType.NUMBER;
 import static RPN.token.TokenType.PLUS;
+import static RPN.token.TokenType.PRINT;
 import static RPN.token.TokenType.RIGHT_PAREN;
+import static RPN.token.TokenType.SEMICOLON;
 import static RPN.token.TokenType.SLASH;
 import static RPN.token.TokenType.STAR;
 import static RPN.token.TokenType.STRING;
@@ -35,6 +38,12 @@ import static RPN.token.TokenType.TRUE;
  * factor → unary ( ( "/" | "*" ) unary )* ;
  * unary → ( "!" | "-" | "+" ) unary | primary ;
  * primary → NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" ;
+ * <p>
+ * <p>
+ * program -> statement* EOF" ;
+ * statement -> exprStmt | printStmt ;
+ * exprStmt -> expression ";" ;
+ * printStmt -> "print" expression ";" ;
  */
 public class Parser {
     private final List<Token> tokens;
@@ -42,6 +51,33 @@ public class Parser {
 
     public Parser(List<Token> tokens) {
         this.tokens = Optional.ofNullable(tokens).orElse(new ArrayList<>());
+    }
+
+    public List<Stmt> parse() {
+        List<Stmt> statements = new ArrayList<>();
+        while (isNotEnd()) {
+            statements.add(statement());
+        }
+        return statements;
+    }
+
+    public Stmt statement() {
+        if (match(PRINT)) {
+            return printStmt();
+        }
+        return exprStmt();
+    }
+
+    private Stmt exprStmt() {
+        Expr value = expression();
+        consume(SEMICOLON,  "Expect ';' after value.");
+        return new Stmt.Expression(value);
+    }
+
+    private Stmt printStmt() {
+        Expr value = expression();
+        consume(SEMICOLON,  "Expect ';' after value.");
+        return new Stmt.Print(value);
     }
 
     public Expr expression() {

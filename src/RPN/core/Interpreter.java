@@ -1,11 +1,13 @@
 package RPN.core;
 
 import RPN.syntactic.Expr;
+import RPN.syntactic.Stmt;
 import RPN.token.TokenType;
 
+import java.util.List;
 import java.util.Objects;
 
-public class Interpreter implements Expr.GenericVisitor<Object, Object> {
+public class Interpreter implements Expr.GenericVisitor<Object, Object>, Stmt.GenericVisitor<Object, Object> {
 
     public Object interpret(Expr expression, Object args) {
         Object value = null;
@@ -16,6 +18,23 @@ public class Interpreter implements Expr.GenericVisitor<Object, Object> {
             System.out.println("ERROR");
         }
         return value;
+    }
+
+    public void interpret(List<Stmt> statements, Object... args) {
+        for (Stmt stmt : statements) {
+            try {
+                Object res = execute(stmt, args);
+                if (res != null) {
+                    System.out.println(res);
+                }
+            } catch (RuntimeException exception) {
+                System.out.println(exception.getMessage());
+            }
+        }
+    }
+
+    private Object execute(Stmt stmt, Object... args) {
+        return stmt.accept(this, args);
     }
 
     public String stringify(Object object) {
@@ -85,16 +104,6 @@ public class Interpreter implements Expr.GenericVisitor<Object, Object> {
         return null;
     }
 
-    private boolean isTruthy(Object value) {
-        if (value == null) {
-            return false;
-        }
-        if (value instanceof Boolean) {
-            return (boolean) value;
-        }
-        return false;
-    }
-
     @Override
     public Object visit(Expr.Literal expr, Object args) {
         return expr.getValue();
@@ -103,6 +112,28 @@ public class Interpreter implements Expr.GenericVisitor<Object, Object> {
     @Override
     public Object visit(Expr.Grouping expr, Object args) {
         return evaluate(expr.getExpr(), args);
+    }
+
+    @Override
+    public Object visit(Stmt.Expression stmt, Object... args) {
+        return evaluate(stmt.getExpr(), args);
+    }
+
+    @Override
+    public Object visit(Stmt.Print stmt, Object... args) {
+        Object value = evaluate(stmt.getExpr(), args);
+        System.out.println("print " + stringify(value));
+        return null;
+    }
+
+    private boolean isTruthy(Object value) {
+        if (value == null) {
+            return false;
+        }
+        if (value instanceof Boolean) {
+            return (boolean) value;
+        }
+        return false;
     }
 
     private Object evaluate(Expr expr, Object args) {
